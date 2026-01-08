@@ -1,14 +1,19 @@
-# Clik Releases
+# Clik
 
-Download releases for [Clik](https://github.com/aiocean/clik) - a screenshot tool for AI feedback.
+Minimal screenshot tool for AI-assisted workflows. Capture, annotate, send to AI.
 
-## Installation (macOS Apple Silicon)
+## Install
 
+**Apple Silicon (M1/M2/M3):**
 ```bash
-curl -L https://github.com/aiocean/clik-releases/releases/latest/download/clik_0.1.0_aarch64.dmg -o ~/Downloads/Clik.dmg
-open ~/Downloads/Clik.dmg
+curl -L https://github.com/aiocean/clik-releases/releases/download/v0.4.0/clik_0.4.0_aarch64.dmg -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg
 ```
 
-After downloading, drag Clik to Applications.
+**Intel:**
+```bash
+curl -L https://github.com/aiocean/clik-releases/releases/download/v0.4.0/clik_0.4.0_x86_64.dmg -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg
+```
+
+After downloading, open the DMG and drag Clik to Applications.
 
 > **Note:** Since this app is ad-hoc signed, you may need to right-click and select "Open" the first time, or run `xattr -cr /Applications/Clik.app` in Terminal.
