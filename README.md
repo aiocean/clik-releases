@@ -2,6 +2,23 @@
 
 Minimal screenshot tool for AI-assisted workflows. Capture, annotate, send to AI.
 
+## Features
+
+### Simple & Clean
+![Simplicity](docs/screenshot/simplecity.webp)
+
+### Multiple Capture
+![Multiple Capture](docs/screenshot/multiple-capture.webp)
+
+### Annotation Tools
+![Annotation](docs/screenshot/anotation.webp)
+
+### Notes
+![Note](docs/screenshot/note.webp)
+
+### Advanced Tools - Freewriting & Highlight
+![Advanced Tools](docs/screenshot/advanced-tool-freewriting-highlight.webp)
+
 ## Install
 
 **Apple Silicon (M1/M2/M3):**
