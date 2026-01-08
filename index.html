@@ -470,31 +470,138 @@
             color: var(--text-muted);
         }
 
-        .code-block {
+        /* How to install section */
+        .install-howto {
             background: var(--bg-tertiary);
             border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 1rem;
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .howto-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 1.25rem;
+            color: var(--text-primary);
+        }
+
+        .howto-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+        }
+
+        .howto-steps {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .howto-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 0.75rem 1rem;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .step-number {
+            width: 24px;
+            height: 24px;
+            background: var(--accent);
+            color: var(--bg-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .step-text {
+            line-height: 1.5;
+        }
+
+        .step-text strong {
+            color: var(--text-primary);
+        }
+
+        kbd {
+            display: inline-block;
+            padding: 0.15rem 0.4rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border);
+            border-radius: 4px;
             font-family: var(--font-mono);
             font-size: 0.75rem;
-            color: var(--text-secondary);
-            overflow-x: auto;
+            color: var(--text-primary);
+        }
+
+        /* Code block styles */
+        .code-block {
+            background: #0d1117;
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            overflow: hidden;
             position: relative;
         }
 
+        .code-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.625rem 1rem;
+            background: rgba(255, 255, 255, 0.03);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .code-label {
+            font-family: var(--font-mono);
+            font-size: 0.6875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+        }
+
+        .code-block pre {
+            margin: 0;
+            padding: 1rem;
+            overflow-x: auto;
+        }
+
         .code-block code {
-            white-space: pre-wrap;
-            word-break: break-all;
+            font-family: var(--font-mono);
+            font-size: 0.8125rem;
+            line-height: 1.6;
+            color: #e6edf3;
+        }
+
+        .code-comment {
+            color: #8b949e;
         }
 
         .copy-btn {
-            position: absolute;
-            top: 0.5rem;
-            right: 0.5rem;
-            padding: 0.375rem 0.625rem;
-            background: var(--bg-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            padding: 0.375rem 0.75rem;
+            background: transparent;
             border: 1px solid var(--border);
             border-radius: 6px;
+            font-family: var(--font-display);
             font-size: 0.6875rem;
             color: var(--text-muted);
             cursor: pointer;
@@ -504,21 +611,69 @@
         .copy-btn:hover {
             color: var(--text-primary);
             border-color: var(--border-hover);
+            background: rgba(255, 255, 255, 0.05);
         }
 
-        .install-note {
+        .code-block-small {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 0.875rem;
+            margin-top: 0.5rem;
+            background: #0d1117;
+        }
+
+        .code-block-small code {
+            flex: 1;
+            font-family: var(--font-mono);
+            font-size: 0.8125rem;
+            color: #e6edf3;
+        }
+
+        .copy-btn-small {
+            padding: 0.25rem;
+            border: none;
+            background: transparent;
+        }
+
+        /* First run section */
+        .install-firstrun {
             margin-top: 2rem;
-            padding: 1rem 1.5rem;
-            background: rgba(34, 211, 238, 0.05);
-            border: 1px solid rgba(34, 211, 238, 0.15);
-            border-radius: 12px;
+            padding: 1.5rem;
+            background: rgba(251, 191, 36, 0.05);
+            border: 1px solid rgba(251, 191, 36, 0.2);
+            border-radius: 16px;
+        }
+
+        .firstrun-header {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            font-weight: 600;
+            font-size: 0.9375rem;
+            color: #fbbf24;
+            margin-bottom: 0.75rem;
+        }
+
+        .install-firstrun > p {
             font-size: 0.875rem;
             color: var(--text-secondary);
-            text-align: left;
+            margin-bottom: 1rem;
         }
 
-        .install-note strong {
-            color: var(--accent);
+        .firstrun-options {
+            display: grid;
+            gap: 0.75rem;
+        }
+
+        .firstrun-option {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            line-height: 1.5;
+        }
+
+        .firstrun-option strong {
+            color: var(--text-primary);
         }
 
         /* CTA Section */
@@ -774,6 +929,37 @@
                 </p>
             </div>
 
+            <!-- How to run -->
+            <div class="install-howto reveal">
+                <div class="howto-header">
+                    <div class="howto-icon">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="3" y="3" width="18" height="18" rx="2"/>
+                            <path d="M7 8h10M7 12h10M7 16h6"/>
+                        </svg>
+                    </div>
+                    <span>How to install</span>
+                </div>
+                <div class="howto-steps">
+                    <div class="howto-step">
+                        <span class="step-number">1</span>
+                        <span class="step-text">Open <strong>Terminal</strong> app (Press <kbd>Cmd</kbd> + <kbd>Space</kbd>, type "Terminal", press Enter)</span>
+                    </div>
+                    <div class="howto-step">
+                        <span class="step-number">2</span>
+                        <span class="step-text">Copy the command below (click the <strong>Copy</strong> button)</span>
+                    </div>
+                    <div class="howto-step">
+                        <span class="step-number">3</span>
+                        <span class="step-text">Paste into Terminal (<kbd>Cmd</kbd> + <kbd>V</kbd>) and press <kbd>Enter</kbd></span>
+                    </div>
+                    <div class="howto-step">
+                        <span class="step-number">4</span>
+                        <span class="step-text">Drag <strong>Clik.app</strong> to your <strong>Applications</strong> folder</span>
+                    </div>
+                </div>
+            </div>
+
             <div class="install-options">
                 <div class="install-card reveal">
                     <div class="install-card-header">
@@ -788,8 +974,19 @@
                         </div>
                     </div>
                     <div class="code-block">
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        <code>curl -L https://github.com/aiocean/clik-releases/releases/download/v0.4.0/clik_0.4.0_aarch64.dmg -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg</code>
+                        <div class="code-header">
+                            <span class="code-label">Terminal</span>
+                            <button class="copy-btn" onclick="copyCode(this)">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                                </svg>
+                                <span>Copy</span>
+                            </button>
+                        </div>
+                        <pre><code><span class="code-comment"># Download and open Clik installer</span>
+curl -L https://github.com/aiocean/clik-releases/releases/download/v0.4.0/clik_0.4.0_aarch64.dmg \
+  -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg</code></pre>
                     </div>
                 </div>
 
@@ -806,14 +1003,50 @@
                         </div>
                     </div>
                     <div class="code-block">
-                        <button class="copy-btn" onclick="copyCode(this)">Copy</button>
-                        <code>curl -L https://github.com/aiocean/clik-releases/releases/download/v0.4.0/clik_0.4.0_x86_64.dmg -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg</code>
+                        <div class="code-header">
+                            <span class="code-label">Terminal</span>
+                            <button class="copy-btn" onclick="copyCode(this)">
+                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                                </svg>
+                                <span>Copy</span>
+                            </button>
+                        </div>
+                        <pre><code><span class="code-comment"># Download and open Clik installer</span>
+curl -L https://github.com/aiocean/clik-releases/releases/download/v0.4.0/clik_0.4.0_x86_64.dmg \
+  -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg</code></pre>
                     </div>
                 </div>
             </div>
 
-            <div class="install-note reveal">
-                <strong>Note:</strong> After downloading, open the DMG and drag Clik to Applications. Since this app is ad-hoc signed, you may need to right-click and select "Open" the first time, or run <code>xattr -cr /Applications/Clik.app</code> in Terminal.
+            <!-- First run instructions -->
+            <div class="install-firstrun reveal">
+                <div class="firstrun-header">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M12 16v-4M12 8h.01"/>
+                    </svg>
+                    <span>First time running?</span>
+                </div>
+                <p>Since Clik is ad-hoc signed, macOS may block it on first run. To fix this:</p>
+                <div class="firstrun-options">
+                    <div class="firstrun-option">
+                        <strong>Option 1:</strong> Right-click on Clik.app and select <strong>"Open"</strong>
+                    </div>
+                    <div class="firstrun-option">
+                        <strong>Option 2:</strong> Run this command in Terminal:
+                        <div class="code-block code-block-small">
+                            <button class="copy-btn copy-btn-small" onclick="copyCode(this)">
+                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                                </svg>
+                            </button>
+                            <code>xattr -cr /Applications/Clik.app</code>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -856,12 +1089,25 @@
     <script>
         // Copy code functionality
         function copyCode(btn) {
-            const code = btn.parentElement.querySelector('code').textContent;
+            // Find code element - might be sibling (in code-block-small) or in parent's sibling (in code-block)
+            const codeBlock = btn.closest('.code-block') || btn.closest('.code-block-small');
+            const codeEl = codeBlock.querySelector('code');
+
+            // Get text content and clean up (remove comments for cleaner copy)
+            let code = codeEl.textContent;
+            // Remove comment lines for cleaner copy
+            code = code.split('\n').filter(line => !line.trim().startsWith('#')).join('\n').trim();
+
             navigator.clipboard.writeText(code).then(() => {
-                btn.textContent = 'Copied!';
-                setTimeout(() => {
-                    btn.textContent = 'Copy';
-                }, 2000);
+                const spanEl = btn.querySelector('span');
+                if (spanEl) {
+                    spanEl.textContent = 'Copied!';
+                    setTimeout(() => spanEl.textContent = 'Copy', 2000);
+                } else {
+                    // For small copy button (icon only)
+                    btn.style.color = 'var(--accent)';
+                    setTimeout(() => btn.style.color = '', 2000);
+                }
             });
         }
 
