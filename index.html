@@ -413,6 +413,90 @@
             }
         }
 
+        /* Tools Showcase Section */
+        .tools-showcase {
+            padding: 4rem 2rem 6rem;
+            text-align: center;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tools-label {
+            font-size: 0.9375rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .tools-grid {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .tool-item {
+            display: flex;
+            align-items: center;
+            gap: 0.625rem;
+            padding: 0.75rem 1.25rem;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 100px;
+            transition: all 0.3s var(--ease-out-expo);
+        }
+
+        .tool-item:hover {
+            border-color: var(--accent);
+            box-shadow: 0 4px 20px var(--accent-glow);
+            transform: translateY(-2px);
+        }
+
+        .tool-icon {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-secondary));
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+        }
+
+        .tool-icon svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        .tool-item:hover .tool-icon {
+            background: var(--gradient-1);
+            border-color: transparent;
+            color: white;
+        }
+
+        .tool-name {
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .tool-item kbd {
+            margin-left: 0.25rem;
+        }
+
+        @media (max-width: 640px) {
+            .tools-grid {
+                gap: 0.75rem;
+            }
+
+            .tool-item {
+                padding: 0.625rem 1rem;
+            }
+        }
+
         /* Features Section */
         .features {
             padding: 10rem 2rem;
@@ -1403,6 +1487,63 @@
         </div>
     </section>
 
+    <!-- Tools showcase -->
+    <section class="tools-showcase">
+        <p class="tools-label">5 essential tools for AI-assisted workflows</p>
+        <div class="tools-grid">
+            <div class="tool-item">
+                <div class="tool-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    </svg>
+                </div>
+                <span class="tool-name">Box</span>
+                <kbd>B</kbd>
+            </div>
+            <div class="tool-item">
+                <div class="tool-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="5" y1="12" x2="19" y2="12"/>
+                        <polyline points="12 5 19 12 12 19"/>
+                    </svg>
+                </div>
+                <span class="tool-name">Arrow</span>
+                <kbd>A</kbd>
+            </div>
+            <div class="tool-item">
+                <div class="tool-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="4 7 4 4 20 4 20 7"/>
+                        <line x1="9" y1="20" x2="15" y2="20"/>
+                        <line x1="12" y1="4" x2="12" y2="20"/>
+                    </svg>
+                </div>
+                <span class="tool-name">Text</span>
+                <kbd>T</kbd>
+            </div>
+            <div class="tool-item">
+                <div class="tool-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <path d="M8 12h8"/>
+                    </svg>
+                </div>
+                <span class="tool-name">Blur</span>
+                <kbd>U</kbd>
+            </div>
+            <div class="tool-item">
+                <div class="tool-icon">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="10"/>
+                        <text x="12" y="16" text-anchor="middle" font-size="12" font-weight="600" fill="currentColor" stroke="none">1</text>
+                    </svg>
+                </div>
+                <span class="tool-name">Counter</span>
+                <kbd>C</kbd>
+            </div>
+        </div>
+    </section>
+
     <section class="features" id="features">
         <div class="section-header reveal">
             <div class="section-label">Features</div>
@@ -1649,7 +1790,7 @@
                                                 <span>Copy</span>
                                             </button>
                                         </div>
-                                        <pre><code>curl -L https://github.com/aiocean/clik-releases/releases/download/v0.7.0/clik_0.7.0_aarch64.dmg -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg</code></pre>
+                                        <pre><code>curl -L https://github.com/aiocean/clik-releases/releases/download/v0.8.0/clik_0.8.0_aarch64.dmg -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg</code></pre>
                                     </div>
                                 </div>
                             </div>
@@ -1688,7 +1829,7 @@
                                                 <span>Copy</span>
                                             </button>
                                         </div>
-                                        <pre><code>curl -L https://github.com/aiocean/clik-releases/releases/download/v0.7.0/clik_0.7.0_x86_64.dmg -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg</code></pre>
+                                        <pre><code>curl -L https://github.com/aiocean/clik-releases/releases/download/v0.8.0/clik_0.8.0_x86_64.dmg -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg</code></pre>
                                     </div>
                                 </div>
                             </div>
