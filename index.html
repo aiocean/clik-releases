@@ -470,79 +470,135 @@
             color: var(--text-muted);
         }
 
-        /* How to install section */
-        .install-howto {
-            background: var(--bg-tertiary);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 1.5rem;
-            margin-bottom: 2rem;
-        }
-
-        .howto-header {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            font-weight: 600;
-            font-size: 1rem;
-            margin-bottom: 1.25rem;
-            color: var(--text-primary);
-        }
-
-        .howto-icon {
-            width: 36px;
-            height: 36px;
+        /* Tabs design */
+        .install-tabs {
             background: var(--bg-secondary);
             border: 1px solid var(--border);
-            border-radius: 10px;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .tabs-header {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .tab-btn {
+            flex: 1;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: var(--accent);
+            gap: 0.625rem;
+            padding: 1rem 1.5rem;
+            background: transparent;
+            border: none;
+            font-family: var(--font-display);
+            font-size: 0.9375rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
         }
 
-        .howto-steps {
-            display: grid;
-            gap: 0.75rem;
+        .tab-btn:first-child {
+            border-right: 1px solid var(--border);
         }
 
-        .howto-step {
-            display: flex;
-            align-items: flex-start;
-            gap: 1rem;
-            padding: 0.75rem 1rem;
-            background: var(--bg-secondary);
-            border-radius: 10px;
-            font-size: 0.9rem;
+        .tab-btn:hover {
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .tab-btn.active {
+            color: var(--text-primary);
+            background: var(--bg-tertiary);
+        }
+
+        .tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent);
+        }
+
+        .tab-subtitle {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 400;
+        }
+
+        .tab-btn.active .tab-subtitle {
             color: var(--text-secondary);
         }
 
+        .tabs-content {
+            padding: 1.5rem;
+        }
+
+        .tab-panel {
+            display: none;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        /* Install steps */
+        .install-steps {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .step {
+            display: flex;
+            gap: 1rem;
+        }
+
         .step-number {
-            width: 24px;
-            height: 24px;
+            width: 28px;
+            height: 28px;
             background: var(--accent);
             color: var(--bg-primary);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.75rem;
+            font-size: 0.8125rem;
             font-weight: 600;
             flex-shrink: 0;
         }
 
-        .step-text {
+        .step-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .step-title {
+            font-weight: 600;
+            font-size: 0.9375rem;
+            color: var(--text-primary);
+            margin-bottom: 0.375rem;
+        }
+
+        .step-desc {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
             line-height: 1.5;
         }
 
-        .step-text strong {
+        .step-desc strong {
             color: var(--text-primary);
         }
 
         kbd {
             display: inline-block;
-            padding: 0.15rem 0.4rem;
-            background: var(--bg-tertiary);
+            padding: 0.15rem 0.5rem;
+            background: var(--bg-primary);
             border: 1px solid var(--border);
             border-radius: 4px;
             font-family: var(--font-mono);
@@ -929,93 +985,102 @@
                 </p>
             </div>
 
-            <!-- How to run -->
-            <div class="install-howto reveal">
-                <div class="howto-header">
-                    <div class="howto-icon">
-                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <rect x="3" y="3" width="18" height="18" rx="2"/>
-                            <path d="M7 8h10M7 12h10M7 16h6"/>
+            <!-- Tabs for architecture selection -->
+            <div class="install-tabs reveal">
+                <div class="tabs-header">
+                    <button class="tab-btn active" data-tab="apple-silicon">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
                         </svg>
-                    </div>
-                    <span>How to install</span>
-                </div>
-                <div class="howto-steps">
-                    <div class="howto-step">
-                        <span class="step-number">1</span>
-                        <span class="step-text">Open <strong>Terminal</strong> app (Press <kbd>Cmd</kbd> + <kbd>Space</kbd>, type "Terminal", press Enter)</span>
-                    </div>
-                    <div class="howto-step">
-                        <span class="step-number">2</span>
-                        <span class="step-text">Copy the command below (click the <strong>Copy</strong> button)</span>
-                    </div>
-                    <div class="howto-step">
-                        <span class="step-number">3</span>
-                        <span class="step-text">Paste into Terminal (<kbd>Cmd</kbd> + <kbd>V</kbd>) and press <kbd>Enter</kbd></span>
-                    </div>
-                    <div class="howto-step">
-                        <span class="step-number">4</span>
-                        <span class="step-text">Drag <strong>Clik.app</strong> to your <strong>Applications</strong> folder</span>
-                    </div>
-                </div>
-            </div>
-
-            <div class="install-options">
-                <div class="install-card reveal">
-                    <div class="install-card-header">
-                        <div class="install-card-icon">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <div class="install-card-title">Apple Silicon</div>
-                            <div class="install-card-subtitle">M1, M2, M3, M4</div>
-                        </div>
-                    </div>
-                    <div class="code-block">
-                        <div class="code-header">
-                            <span class="code-label">Terminal</span>
-                            <button class="copy-btn" onclick="copyCode(this)">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                                </svg>
-                                <span>Copy</span>
-                            </button>
-                        </div>
-                        <pre><code><span class="code-comment"># Download and open Clik installer</span>
-curl -L https://github.com/aiocean/clik-releases/releases/download/v0.4.0/clik_0.4.0_aarch64.dmg \
-  -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg</code></pre>
-                    </div>
+                        <span>Apple Silicon</span>
+                        <span class="tab-subtitle">M1/M2/M3/M4</span>
+                    </button>
+                    <button class="tab-btn" data-tab="intel">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
+                        </svg>
+                        <span>Intel</span>
+                        <span class="tab-subtitle">x86_64</span>
+                    </button>
                 </div>
 
-                <div class="install-card reveal">
-                    <div class="install-card-header">
-                        <div class="install-card-icon">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-                                <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-                            </svg>
-                        </div>
-                        <div>
-                            <div class="install-card-title">Intel</div>
-                            <div class="install-card-subtitle">x86_64</div>
+                <div class="tabs-content">
+                    <!-- Apple Silicon tab -->
+                    <div class="tab-panel active" id="tab-apple-silicon">
+                        <div class="install-steps">
+                            <div class="step">
+                                <span class="step-number">1</span>
+                                <div class="step-content">
+                                    <div class="step-title">Open Terminal</div>
+                                    <div class="step-desc">Press <kbd>Cmd</kbd> + <kbd>Space</kbd>, type "Terminal", press Enter</div>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">2</span>
+                                <div class="step-content">
+                                    <div class="step-title">Run this command</div>
+                                    <div class="code-block">
+                                        <div class="code-header">
+                                            <span class="code-label">Terminal</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                                                </svg>
+                                                <span>Copy</span>
+                                            </button>
+                                        </div>
+                                        <pre><code>curl -L https://github.com/aiocean/clik-releases/releases/download/v0.4.0/clik_0.4.0_aarch64.dmg -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">3</span>
+                                <div class="step-content">
+                                    <div class="step-title">Install</div>
+                                    <div class="step-desc">Drag <strong>Clik.app</strong> to your <strong>Applications</strong> folder</div>
+                                </div>
+                            </div>
                         </div>
                     </div>
-                    <div class="code-block">
-                        <div class="code-header">
-                            <span class="code-label">Terminal</span>
-                            <button class="copy-btn" onclick="copyCode(this)">
-                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                                </svg>
-                                <span>Copy</span>
-                            </button>
+
+                    <!-- Intel tab -->
+                    <div class="tab-panel" id="tab-intel">
+                        <div class="install-steps">
+                            <div class="step">
+                                <span class="step-number">1</span>
+                                <div class="step-content">
+                                    <div class="step-title">Open Terminal</div>
+                                    <div class="step-desc">Press <kbd>Cmd</kbd> + <kbd>Space</kbd>, type "Terminal", press Enter</div>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">2</span>
+                                <div class="step-content">
+                                    <div class="step-title">Run this command</div>
+                                    <div class="code-block">
+                                        <div class="code-header">
+                                            <span class="code-label">Terminal</span>
+                                            <button class="copy-btn" onclick="copyCode(this)">
+                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                                                </svg>
+                                                <span>Copy</span>
+                                            </button>
+                                        </div>
+                                        <pre><code>curl -L https://github.com/aiocean/clik-releases/releases/download/v0.4.0/clik_0.4.0_x86_64.dmg -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg</code></pre>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="step">
+                                <span class="step-number">3</span>
+                                <div class="step-content">
+                                    <div class="step-title">Install</div>
+                                    <div class="step-desc">Drag <strong>Clik.app</strong> to your <strong>Applications</strong> folder</div>
+                                </div>
+                            </div>
                         </div>
-                        <pre><code><span class="code-comment"># Download and open Clik installer</span>
-curl -L https://github.com/aiocean/clik-releases/releases/download/v0.4.0/clik_0.4.0_x86_64.dmg \
-  -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg</code></pre>
                     </div>
                 </div>
             </div>
@@ -1110,6 +1175,21 @@ curl -L https://github.com/aiocean/clik-releases/releases/download/v0.4.0/clik_0
                 }
             });
         }
+
+        // Tab switching
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                const tabId = btn.dataset.tab;
+
+                // Update buttons
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+
+                // Update panels
+                document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+                document.getElementById('tab-' + tabId).classList.add('active');
+            });
+        });
 
         // Scroll reveal
         const reveals = document.querySelectorAll('.reveal');
