@@ -932,6 +932,151 @@
             color: var(--text-primary);
         }
 
+        /* Pricing Section */
+        .pricing {
+            padding: 8rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-top: 4rem;
+        }
+
+        .pricing-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            text-align: center;
+            transition: all 0.4s var(--ease-out-expo);
+            position: relative;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        .pricing-card.featured {
+            border: 2px solid var(--accent);
+            box-shadow: 0 0 40px var(--accent-glow);
+        }
+
+        .pricing-card.coming-soon {
+            opacity: 0.6;
+        }
+
+        .pricing-card.coming-soon:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .pricing-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            background: var(--accent-glow);
+            color: var(--accent);
+            font-size: 0.75rem;
+            font-weight: 600;
+            border-radius: 100px;
+            margin-bottom: 1rem;
+        }
+
+        .pricing-card.coming-soon .pricing-badge {
+            background: var(--purple-glow);
+            color: var(--purple);
+        }
+
+        .pricing-name {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .pricing-price {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+            letter-spacing: -0.02em;
+        }
+
+        .pricing-period {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+        }
+
+        .pricing-features {
+            list-style: none;
+            text-align: left;
+            margin-bottom: 2rem;
+        }
+
+        .pricing-features li {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            font-size: 0.9375rem;
+            color: var(--text-secondary);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .pricing-features li:last-child {
+            border-bottom: none;
+        }
+
+        .pricing-features li svg {
+            flex-shrink: 0;
+            color: var(--accent);
+        }
+
+        .pricing-card.coming-soon .pricing-features li svg {
+            color: var(--purple);
+        }
+
+        .pricing-btn {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            font-size: 0.9375rem;
+            font-weight: 500;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-btn-primary {
+            background: var(--text-primary);
+            color: white;
+            border: none;
+        }
+
+        .pricing-btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .pricing-btn-disabled {
+            background: var(--bg-tertiary);
+            color: var(--text-muted);
+            border: 1px solid var(--border);
+            cursor: not-allowed;
+        }
+
+        @media (max-width: 900px) {
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                max-width: 400px;
+                margin-left: auto;
+                margin-right: auto;
+            }
+        }
+
         /* CTA Section */
         .cta {
             padding: 12rem 2rem;
@@ -1221,6 +1366,7 @@
         </a>
         <div class="nav-links">
             <a href="#features">Features</a>
+            <a href="#pricing">Pricing</a>
             <a href="#install">Install</a>
             <a href="https://github.com/aiocean/clik-releases" target="_blank">GitHub</a>
             <a href="#install" class="btn btn-primary">Download</a>
@@ -1351,6 +1497,103 @@
         </div>
     </section>
 
+    <section class="pricing" id="pricing">
+        <div class="section-header reveal">
+            <div class="section-label">Pricing</div>
+            <h2 class="section-title">Choose your plan</h2>
+            <p class="section-desc">
+                Start free with all features. Upgrade when you need cloud storage or team collaboration.
+            </p>
+        </div>
+
+        <div class="pricing-grid">
+            <!-- Free Plan -->
+            <div class="pricing-card featured reveal">
+                <div class="pricing-badge">Current</div>
+                <h3 class="pricing-name">Free</h3>
+                <div class="pricing-price">$0</div>
+                <div class="pricing-period">Forever free</div>
+                <ul class="pricing-features">
+                    <li>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"/></svg>
+                        All capture modes
+                    </li>
+                    <li>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"/></svg>
+                        Full annotation tools
+                    </li>
+                    <li>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"/></svg>
+                        Quick notes & text
+                    </li>
+                    <li>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"/></svg>
+                        Instant copy to clipboard
+                    </li>
+                    <li>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"/></svg>
+                        Local storage
+                    </li>
+                </ul>
+                <a href="#install" class="pricing-btn pricing-btn-primary">Download Now</a>
+            </div>
+
+            <!-- Cloud Plan -->
+            <div class="pricing-card coming-soon reveal">
+                <div class="pricing-badge">Coming Soon</div>
+                <h3 class="pricing-name">Cloud</h3>
+                <div class="pricing-price">TBD</div>
+                <div class="pricing-period">Per month</div>
+                <ul class="pricing-features">
+                    <li>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"/></svg>
+                        Everything in Free
+                    </li>
+                    <li>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"/></svg>
+                        Cloud upload & storage
+                    </li>
+                    <li>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"/></svg>
+                        Shareable links
+                    </li>
+                    <li>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"/></svg>
+                        Sync across devices
+                    </li>
+                </ul>
+                <button class="pricing-btn pricing-btn-disabled" disabled>Coming Soon</button>
+            </div>
+
+            <!-- Enterprise Plan -->
+            <div class="pricing-card coming-soon reveal">
+                <div class="pricing-badge">Coming Soon</div>
+                <h3 class="pricing-name">Enterprise</h3>
+                <div class="pricing-price">TBD</div>
+                <div class="pricing-period">Per month</div>
+                <ul class="pricing-features">
+                    <li>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"/></svg>
+                        Everything in Cloud
+                    </li>
+                    <li>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"/></svg>
+                        Internal image sharing
+                    </li>
+                    <li>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"/></svg>
+                        Shared team vault
+                    </li>
+                    <li>
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"/></svg>
+                        Priority support
+                    </li>
+                </ul>
+                <button class="pricing-btn pricing-btn-disabled" disabled>Coming Soon</button>
+            </div>
+        </div>
+    </section>
+
     <section class="install" id="install">
         <div class="install-content">
             <div class="section-header">
@@ -1406,7 +1649,7 @@
                                                 <span>Copy</span>
                                             </button>
                                         </div>
-                                        <pre><code>curl -L https://github.com/aiocean/clik-releases/releases/download/v0.4.0/clik_0.4.0_aarch64.dmg -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg</code></pre>
+                                        <pre><code>curl -L https://github.com/aiocean/clik-releases/releases/download/v0.6.0/clik_0.6.0_aarch64.dmg -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg</code></pre>
                                     </div>
                                 </div>
                             </div>
@@ -1445,7 +1688,7 @@
                                                 <span>Copy</span>
                                             </button>
                                         </div>
-                                        <pre><code>curl -L https://github.com/aiocean/clik-releases/releases/download/v0.4.0/clik_0.4.0_x86_64.dmg -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg</code></pre>
+                                        <pre><code>curl -L https://github.com/aiocean/clik-releases/releases/download/v0.6.0/clik_0.6.0_x86_64.dmg -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg</code></pre>
                                     </div>
                                 </div>
                             </div>
