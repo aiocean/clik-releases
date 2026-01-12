@@ -1,1414 +1,1728 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Clik - Minimal Screenshot Tool for AI Workflows</title>
-    <meta name="description" content="Capture, annotate, send to AI. The minimal screenshot tool designed for modern AI-assisted workflows.">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <meta
+      name="description"
+      content="Capture, annotate, send to AI. The minimal screenshot tool designed for modern AI-assisted workflows."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <style>
-        :root {
-            --bg-primary: #ffffff;
-            --bg-secondary: #f8fafc;
-            --bg-tertiary: #f1f5f9;
-            --text-primary: #0f172a;
-            --text-secondary: #475569;
-            --text-muted: #94a3b8;
-            --accent: #0ea5e9;
-            --accent-dark: #0284c7;
-            --accent-light: #7dd3fc;
-            --accent-glow: rgba(14, 165, 233, 0.15);
-            --purple: #8b5cf6;
-            --purple-glow: rgba(139, 92, 246, 0.15);
-            --border: rgba(0, 0, 0, 0.06);
-            --border-hover: rgba(0, 0, 0, 0.12);
-            --gradient-1: linear-gradient(135deg, #0ea5e9 0%, #8b5cf6 100%);
-            --gradient-2: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-            --gradient-animated: linear-gradient(270deg, #0ea5e9, #8b5cf6, #ec4899, #0ea5e9);
-            --font-display: 'Outfit', sans-serif;
-            --font-mono: 'JetBrains Mono', monospace;
-            --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-            --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
+      :root {
+        --bg-primary: #ffffff;
+        --bg-secondary: #fafaf9;
+        --bg-tertiary: #f5f5f4;
+        --text-primary: #1c1917;
+        --text-secondary: #57534e;
+        --text-muted: #a8a29e;
+        --accent: #f59e0b;
+        --accent-dark: #d97706;
+        --accent-light: #fcd34d;
+        --accent-glow: rgba(245, 158, 11, 0.15);
+        --accent-deep: #ea580c;
+        --accent-deep-glow: rgba(234, 88, 12, 0.15);
+        --border: rgba(0, 0, 0, 0.06);
+        --border-hover: rgba(0, 0, 0, 0.12);
+        --gradient-1: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+        --gradient-2: linear-gradient(135deg, #fafaf9 0%, #e7e5e4 100%);
+        --font-display: "Outfit", sans-serif;
+        --font-mono: "JetBrains Mono", monospace;
+        --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+        --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+      }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-        html {
-            scroll-behavior: smooth;
-        }
+      html {
+        scroll-behavior: smooth;
+      }
 
-        body {
-            font-family: var(--font-display);
-            background: var(--bg-primary);
-            color: var(--text-primary);
-            line-height: 1.6;
-            overflow-x: hidden;
-        }
+      body {
+        font-family: var(--font-display);
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        line-height: 1.6;
+        overflow-x: hidden;
+      }
 
-        /* Noise texture overlay */
-        body::before {
-            content: '';
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0.03;
-            pointer-events: none;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E");
-            z-index: 9999;
-        }
+      /* Grid background - static, no animation */
+      .grid-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image:
+          linear-gradient(rgba(0, 0, 0, 0.02) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0, 0, 0, 0.02) 1px, transparent 1px);
+        background-size: 60px 60px;
+        pointer-events: none;
+        z-index: -1;
+      }
 
-        /* Grid background */
-        .grid-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image:
-                linear-gradient(rgba(0,0,0,0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0,0,0,0.03) 1px, transparent 1px);
-            background-size: 60px 60px;
-            pointer-events: none;
-            z-index: -1;
-        }
+      /* Glow orbs - static gradients, no blur filter */
+      .glow-orb {
+        position: fixed;
+        border-radius: 50%;
+        pointer-events: none;
+        z-index: -1;
+      }
 
-        /* Glow orbs */
-        .glow-orb {
-            position: fixed;
-            border-radius: 50%;
-            filter: blur(120px);
-            pointer-events: none;
-            z-index: -1;
-            animation: float 20s ease-in-out infinite;
-        }
+      .glow-orb-1 {
+        top: -200px;
+        right: -100px;
+        width: 700px;
+        height: 700px;
+        background: radial-gradient(
+          circle,
+          rgba(245, 158, 11, 0.1) 0%,
+          rgba(245, 158, 11, 0.02) 50%,
+          transparent 70%
+        );
+      }
 
-        .glow-orb-1 {
-            top: -200px;
-            right: -100px;
-            width: 700px;
-            height: 700px;
-            background: radial-gradient(circle, rgba(14, 165, 233, 0.2) 0%, rgba(14, 165, 233, 0.05) 70%);
-            animation-delay: 0s;
-        }
+      .glow-orb-2 {
+        bottom: -300px;
+        left: -200px;
+        width: 900px;
+        height: 900px;
+        background: radial-gradient(
+          circle,
+          rgba(234, 88, 12, 0.08) 0%,
+          rgba(234, 88, 12, 0.02) 50%,
+          transparent 70%
+        );
+      }
 
-        .glow-orb-2 {
-            bottom: -300px;
-            left: -200px;
-            width: 900px;
-            height: 900px;
-            background: radial-gradient(circle, rgba(139, 92, 246, 0.15) 0%, rgba(139, 92, 246, 0.03) 70%);
-            animation-delay: -10s;
-        }
+      .glow-orb-3 {
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 600px;
+        height: 600px;
+        background: radial-gradient(circle, rgba(251, 191, 36, 0.06) 0%, transparent 60%);
+      }
 
-        .glow-orb-3 {
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 600px;
-            height: 600px;
-            background: radial-gradient(circle, rgba(236, 72, 153, 0.1) 0%, transparent 70%);
-            animation: pulse-glow 8s ease-in-out infinite;
-        }
+      /* Navigation */
+      nav {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        padding: 1rem 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 100;
+        backdrop-filter: blur(20px) saturate(180%);
+        -webkit-backdrop-filter: blur(20px) saturate(180%);
+        background: rgba(255, 255, 255, 0.75);
+        border-bottom: 1px solid var(--border);
+        transition: all 0.3s ease;
+      }
 
-        @keyframes float {
-            0%, 100% { transform: translate(0, 0) scale(1); }
-            25% { transform: translate(30px, -30px) scale(1.05); }
-            50% { transform: translate(-20px, 20px) scale(0.95); }
-            75% { transform: translate(20px, 30px) scale(1.02); }
-        }
+      nav.scrolled {
+        padding: 0.75rem 2rem;
+        background: rgba(255, 255, 255, 0.9);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+      }
 
-        @keyframes pulse-glow {
-            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
-            50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.2); }
-        }
+      .logo {
+        font-family: var(--font-mono);
+        font-size: 1.25rem;
+        font-weight: 600;
+        letter-spacing: -0.02em;
+        color: var(--text-primary);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
 
-        /* Navigation */
-        nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            padding: 1rem 2rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            z-index: 100;
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
-            background: rgba(255, 255, 255, 0.75);
-            border-bottom: 1px solid var(--border);
-            transition: all 0.3s ease;
-        }
+      .logo-icon {
+        width: 28px;
+        height: 28px;
+        border-radius: 6px;
+        overflow: hidden;
+      }
 
-        nav.scrolled {
-            padding: 0.75rem 2rem;
-            background: rgba(255, 255, 255, 0.9);
-            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
-        }
+      .logo-icon img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
 
-        .logo {
-            font-family: var(--font-mono);
-            font-size: 1.25rem;
-            font-weight: 600;
-            letter-spacing: -0.02em;
-            color: var(--text-primary);
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+      .nav-links {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+      }
 
-        .logo-icon {
-            width: 28px;
-            height: 28px;
-            background: var(--gradient-1);
-            border-radius: 6px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+      .nav-links a {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
 
-        .logo-icon svg {
-            width: 16px;
-            height: 16px;
-        }
+      .nav-links a:hover {
+        color: var(--text-primary);
+      }
 
-        .nav-links {
-            display: flex;
-            align-items: center;
-            gap: 2rem;
-        }
+      .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.875rem 1.75rem;
+        font-family: var(--font-display);
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-decoration: none;
+        border-radius: 12px;
+        transition: all 0.4s var(--ease-out-expo);
+        cursor: pointer;
+        border: none;
+        position: relative;
+        overflow: hidden;
+      }
 
-        .nav-links a {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
+      .btn-primary {
+        background: var(--text-primary);
+        color: var(--bg-primary);
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+      }
 
-        .nav-links a:hover {
-            color: var(--text-primary);
-        }
+      .btn-primary::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s ease;
+      }
 
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.875rem 1.75rem;
-            font-family: var(--font-display);
-            font-size: 0.875rem;
-            font-weight: 500;
-            text-decoration: none;
-            border-radius: 12px;
-            transition: all 0.4s var(--ease-out-expo);
-            cursor: pointer;
-            border: none;
-            position: relative;
-            overflow: hidden;
-        }
+      .btn-primary:hover::before {
+        left: 100%;
+      }
 
-        .btn-primary {
-            background: var(--text-primary);
-            color: var(--bg-primary);
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        }
+      .btn-primary:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+      }
 
-        .btn-primary::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: -100%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            transition: left 0.5s ease;
-        }
+      .btn-secondary {
+        background: rgba(255, 255, 255, 0.8);
+        color: var(--text-primary);
+        border: 1px solid var(--border);
+        backdrop-filter: blur(10px);
+      }
 
-        .btn-primary:hover::before {
-            left: 100%;
-        }
+      .btn-secondary:hover {
+        border-color: var(--border-hover);
+        background: rgba(255, 255, 255, 0.95);
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+      }
 
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
-        }
+      .btn-gradient {
+        background: var(--gradient-1);
+        color: white;
+        border: none;
+        box-shadow: 0 4px 20px var(--accent-glow);
+      }
 
-        .btn-secondary {
-            background: rgba(255, 255, 255, 0.8);
-            color: var(--text-primary);
-            border: 1px solid var(--border);
-            backdrop-filter: blur(10px);
-        }
+      .btn-gradient:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 15px 40px var(--accent-glow);
+      }
 
-        .btn-secondary:hover {
-            border-color: var(--border-hover);
-            background: rgba(255, 255, 255, 0.95);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
-        }
+      /* Hero Section */
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 8rem 2rem 4rem;
+        position: relative;
+        overflow: hidden;
+      }
 
-        .btn-gradient {
-            background: var(--gradient-1);
-            color: white;
-            border: none;
-            box-shadow: 0 4px 20px var(--accent-glow);
-        }
+      .hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 200%;
+        height: 100%;
+        background: radial-gradient(
+          ellipse 50% 80% at 50% 0%,
+          var(--accent-glow) 0%,
+          transparent 50%
+        );
+        pointer-events: none;
+      }
 
-        .btn-gradient:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px var(--accent-glow);
-        }
+      .hero-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.625rem;
+        padding: 0.625rem 1.25rem;
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--border);
+        border-radius: 100px;
+        font-size: 0.8125rem;
+        color: var(--text-secondary);
+        margin-bottom: 2.5rem;
+        animation: fadeInUp 0.8s var(--ease-out-expo) both;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+      }
 
-        /* Hero Section */
-        .hero {
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            padding: 8rem 2rem 4rem;
-            position: relative;
-            overflow: hidden;
-        }
+      .hero-badge::before {
+        content: "";
+        width: 8px;
+        height: 8px;
+        background: #22c55e;
+        border-radius: 50%;
+        animation: pulse 2s ease infinite;
+        box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+      }
 
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            width: 200%;
-            height: 100%;
-            background: radial-gradient(ellipse 50% 80% at 50% 0%, var(--accent-glow) 0%, transparent 50%);
-            pointer-events: none;
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+          transform: scale(1);
         }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.625rem;
-            padding: 0.625rem 1.25rem;
-            background: rgba(255, 255, 255, 0.8);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
-            border-radius: 100px;
-            font-size: 0.8125rem;
-            color: var(--text-secondary);
-            margin-bottom: 2.5rem;
-            animation: fadeInUp 0.8s var(--ease-out-expo) both;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.04);
+        50% {
+          opacity: 0.7;
+          transform: scale(1.1);
         }
+      }
 
-        .hero-badge::before {
-            content: '';
-            width: 8px;
-            height: 8px;
-            background: #22c55e;
-            border-radius: 50%;
-            animation: pulse 2s ease infinite;
-            box-shadow: 0 0 10px rgba(34, 197, 94, 0.5);
+      .hero h1 {
+        font-size: clamp(3.5rem, 12vw, 7rem);
+        font-weight: 700;
+        letter-spacing: -0.05em;
+        line-height: 0.95;
+        margin-bottom: 1.75rem;
+        animation: fadeInUp 0.8s var(--ease-out-expo) 0.1s both;
+      }
+
+      .hero h1 span {
+        background: var(--gradient-1);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+      }
+
+      .hero-subtitle {
+        font-size: clamp(1.125rem, 2.5vw, 1.375rem);
+        color: var(--text-secondary);
+        max-width: 550px;
+        margin-bottom: 3rem;
+        font-weight: 400;
+        line-height: 1.7;
+        animation: fadeInUp 0.8s var(--ease-out-expo) 0.2s both;
+      }
+
+      .hero-actions {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+        justify-content: center;
+        animation: fadeInUp 0.8s var(--ease-out-expo) 0.3s both;
+      }
+
+      .hero-image {
+        margin-top: 5rem;
+        max-width: 1100px;
+        width: 100%;
+        animation: fadeInUp 1s var(--ease-out-expo) 0.4s both;
+        position: relative;
+      }
+
+      .hero-image::before {
+        content: "";
+        position: absolute;
+        inset: -2px;
+        background: var(--gradient-1);
+        border-radius: 20px;
+        opacity: 0.5;
+        filter: blur(20px);
+        z-index: -1;
+      }
+
+      .hero-image img {
+        width: 100%;
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        box-shadow:
+          0 0 0 1px rgba(0, 0, 0, 0.03),
+          0 30px 60px -15px rgba(0, 0, 0, 0.2),
+          0 0 120px var(--accent-glow);
+        transition:
+          transform 0.5s var(--ease-out-expo),
+          box-shadow 0.5s ease;
+      }
+
+      .hero-image:hover img {
+        transform: translateY(-5px) scale(1.01);
+        box-shadow:
+          0 0 0 1px rgba(0, 0, 0, 0.03),
+          0 40px 80px -20px rgba(0, 0, 0, 0.25),
+          0 0 150px var(--accent-glow);
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(40px);
         }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; transform: scale(1); }
-            50% { opacity: 0.7; transform: scale(1.1); }
+        to {
+          opacity: 1;
+          transform: translateY(0);
         }
+      }
 
-        .hero h1 {
-            font-size: clamp(3.5rem, 12vw, 7rem);
-            font-weight: 700;
-            letter-spacing: -0.05em;
-            line-height: 0.95;
-            margin-bottom: 1.75rem;
-            animation: fadeInUp 0.8s var(--ease-out-expo) 0.1s both;
-        }
+      /* Tools Showcase Section */
+      .tools-showcase {
+        padding: 4rem 2rem 6rem;
+        text-align: center;
+        background: var(--bg-secondary);
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+      }
 
-        .hero h1 span {
-            background: var(--gradient-1);
-            background-size: 200% 200%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradient-shift 8s ease infinite;
-        }
+      .tools-label {
+        font-size: 0.9375rem;
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+      }
 
-        @keyframes gradient-shift {
-            0%, 100% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-        }
+      .tools-grid {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        max-width: 800px;
+        margin: 0 auto;
+      }
 
-        .hero-subtitle {
-            font-size: clamp(1.125rem, 2.5vw, 1.375rem);
-            color: var(--text-secondary);
-            max-width: 550px;
-            margin-bottom: 3rem;
-            font-weight: 400;
-            line-height: 1.7;
-            animation: fadeInUp 0.8s var(--ease-out-expo) 0.2s both;
-        }
+      .tool-item {
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+        padding: 0.75rem 1.25rem;
+        background: var(--bg-primary);
+        border: 1px solid var(--border);
+        border-radius: 100px;
+        transition: all 0.3s var(--ease-out-expo);
+      }
 
-        .hero-actions {
-            display: flex;
-            gap: 1rem;
-            flex-wrap: wrap;
-            justify-content: center;
-            animation: fadeInUp 0.8s var(--ease-out-expo) 0.3s both;
-        }
+      .tool-item:hover {
+        border-color: var(--accent);
+        box-shadow: 0 4px 20px var(--accent-glow);
+        transform: translateY(-2px);
+      }
 
-        .hero-image {
-            margin-top: 5rem;
-            max-width: 1100px;
-            width: 100%;
-            animation: fadeInUp 1s var(--ease-out-expo) 0.4s both;
-            position: relative;
-        }
+      .tool-icon {
+        width: 32px;
+        height: 32px;
+        background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-secondary));
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--accent);
+      }
 
-        .hero-image::before {
-            content: '';
-            position: absolute;
-            inset: -2px;
-            background: var(--gradient-1);
-            border-radius: 20px;
-            opacity: 0.5;
-            filter: blur(20px);
-            z-index: -1;
-        }
+      .tool-icon svg {
+        width: 16px;
+        height: 16px;
+      }
 
-        .hero-image img {
-            width: 100%;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            box-shadow:
-                0 0 0 1px rgba(0,0,0,0.03),
-                0 30px 60px -15px rgba(0,0,0,0.2),
-                0 0 120px var(--accent-glow);
-            transition: transform 0.5s var(--ease-out-expo), box-shadow 0.5s ease;
-        }
+      .tool-item:hover .tool-icon {
+        background: var(--gradient-1);
+        border-color: transparent;
+        color: white;
+      }
 
-        .hero-image:hover img {
-            transform: translateY(-5px) scale(1.01);
-            box-shadow:
-                0 0 0 1px rgba(0,0,0,0.03),
-                0 40px 80px -20px rgba(0,0,0,0.25),
-                0 0 150px var(--accent-glow);
-        }
+      .tool-name {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: var(--text-primary);
+      }
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(40px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+      .tool-item kbd {
+        margin-left: 0.25rem;
+      }
 
-        /* Tools Showcase Section */
-        .tools-showcase {
-            padding: 4rem 2rem 6rem;
-            text-align: center;
-            background: var(--bg-secondary);
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
-        }
-
-        .tools-label {
-            font-size: 0.9375rem;
-            color: var(--text-secondary);
-            margin-bottom: 2rem;
-        }
-
+      @media (max-width: 640px) {
         .tools-grid {
-            display: flex;
-            justify-content: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-            max-width: 800px;
-            margin: 0 auto;
+          gap: 0.75rem;
         }
 
         .tool-item {
-            display: flex;
-            align-items: center;
-            gap: 0.625rem;
-            padding: 0.75rem 1.25rem;
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
-            border-radius: 100px;
-            transition: all 0.3s var(--ease-out-expo);
+          padding: 0.625rem 1rem;
         }
+      }
 
-        .tool-item:hover {
-            border-color: var(--accent);
-            box-shadow: 0 4px 20px var(--accent-glow);
-            transform: translateY(-2px);
-        }
+      /* Features Section */
+      .features {
+        padding: 10rem 2rem;
+        max-width: 1400px;
+        margin: 0 auto;
+        position: relative;
+      }
 
-        .tool-icon {
-            width: 32px;
-            height: 32px;
-            background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-secondary));
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--accent);
-        }
+      .section-header {
+        text-align: center;
+        margin-bottom: 5rem;
+      }
 
-        .tool-icon svg {
-            width: 16px;
-            height: 16px;
-        }
+      .section-label {
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        text-transform: uppercase;
+        letter-spacing: 0.2em;
+        color: var(--accent);
+        margin-bottom: 1rem;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
 
-        .tool-item:hover .tool-icon {
-            background: var(--gradient-1);
-            border-color: transparent;
-            color: white;
-        }
+      .section-label::before,
+      .section-label::after {
+        content: "";
+        width: 20px;
+        height: 1px;
+        background: var(--accent);
+        opacity: 0.5;
+      }
 
-        .tool-name {
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--text-primary);
-        }
+      .section-title {
+        font-size: clamp(2.25rem, 5vw, 3.75rem);
+        font-weight: 600;
+        letter-spacing: -0.03em;
+        margin-bottom: 1.25rem;
+        line-height: 1.1;
+      }
 
-        .tool-item kbd {
-            margin-left: 0.25rem;
-        }
+      .section-desc {
+        font-size: 1.125rem;
+        color: var(--text-secondary);
+        max-width: 600px;
+        margin: 0 auto;
+        line-height: 1.7;
+      }
 
-        @media (max-width: 640px) {
-            .tools-grid {
-                gap: 0.75rem;
-            }
+      .features-grid {
+        display: grid;
+        gap: 1.5rem;
+      }
 
-            .tool-item {
-                padding: 0.625rem 1rem;
-            }
-        }
+      .feature-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        padding: 2rem;
+        transition: all 0.5s var(--ease-out-expo);
+        overflow: hidden;
+        position: relative;
+      }
 
-        /* Features Section */
-        .features {
-            padding: 10rem 2rem;
-            max-width: 1400px;
-            margin: 0 auto;
-            position: relative;
-        }
+      .feature-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 1px;
+        background: linear-gradient(90deg, transparent, rgba(14, 165, 233, 0.3), transparent);
+        opacity: 0;
+        transition: opacity 0.3s ease;
+      }
 
-        .section-header {
-            text-align: center;
-            margin-bottom: 5rem;
-        }
+      .feature-card:hover {
+        border-color: rgba(14, 165, 233, 0.2);
+        transform: translateY(-8px);
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
+      }
 
-        .section-label {
-            font-family: var(--font-mono);
-            font-size: 0.75rem;
-            text-transform: uppercase;
-            letter-spacing: 0.2em;
-            color: var(--accent);
-            margin-bottom: 1rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+      .feature-card:hover::before {
+        opacity: 1;
+      }
 
-        .section-label::before,
-        .section-label::after {
-            content: '';
-            width: 20px;
-            height: 1px;
-            background: var(--accent);
-            opacity: 0.5;
-        }
+      .feature-card.large {
+        grid-column: span 2;
+      }
 
-        .section-title {
-            font-size: clamp(2.25rem, 5vw, 3.75rem);
-            font-weight: 600;
-            letter-spacing: -0.03em;
-            margin-bottom: 1.25rem;
-            line-height: 1.1;
-        }
+      .feature-icon {
+        width: 52px;
+        height: 52px;
+        background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-secondary));
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 1.5rem;
+        color: var(--accent);
+        transition: all 0.3s ease;
+      }
 
-        .section-desc {
-            font-size: 1.125rem;
-            color: var(--text-secondary);
-            max-width: 600px;
-            margin: 0 auto;
-            line-height: 1.7;
-        }
+      .feature-card:hover .feature-icon {
+        background: var(--gradient-1);
+        border-color: transparent;
+        color: white;
+        transform: scale(1.05);
+      }
 
+      .feature-title {
+        font-size: 1.375rem;
+        font-weight: 600;
+        margin-bottom: 0.75rem;
+        letter-spacing: -0.02em;
+      }
+
+      .feature-desc {
+        font-size: 0.9375rem;
+        color: var(--text-secondary);
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+      }
+
+      .feature-image-wrapper {
+        position: relative;
+        margin-top: 1rem;
+        border-radius: 12px;
+        overflow: hidden;
+      }
+
+      .feature-image {
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid var(--border);
+        cursor: pointer;
+        transition: all 0.4s var(--ease-out-expo);
+        display: block;
+      }
+
+      .feature-image-wrapper::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(0.8);
+        width: 56px;
+        height: 56px;
+        background: rgba(0, 0, 0, 0.7);
+        border-radius: 50%;
+        opacity: 0;
+        transition: all 0.3s ease;
+        pointer-events: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3Cline x1='11' y1='8' x2='11' y2='14'/%3E%3Cline x1='8' y1='11' x2='14' y2='11'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: center;
+        background-size: 24px;
+      }
+
+      .feature-image-wrapper:hover::after {
+        opacity: 1;
+        transform: translate(-50%, -50%) scale(1);
+      }
+
+      .feature-image:hover {
+        transform: scale(1.02);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
+        border-color: var(--accent);
+      }
+
+      /* Bento grid layout */
+      @media (min-width: 768px) {
         .features-grid {
-            display: grid;
-            gap: 1.5rem;
+          grid-template-columns: repeat(2, 1fr);
         }
+      }
 
-        .feature-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 2rem;
-            transition: all 0.5s var(--ease-out-expo);
-            overflow: hidden;
-            position: relative;
-        }
-
-        .feature-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(14, 165, 233, 0.3), transparent);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .feature-card:hover {
-            border-color: rgba(14, 165, 233, 0.2);
-            transform: translateY(-8px);
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.1);
-        }
-
-        .feature-card:hover::before {
-            opacity: 1;
+      @media (min-width: 1024px) {
+        .features-grid {
+          grid-template-columns: repeat(3, 1fr);
         }
 
         .feature-card.large {
-            grid-column: span 2;
+          grid-column: span 2;
         }
+      }
 
-        .feature-icon {
-            width: 52px;
-            height: 52px;
-            background: linear-gradient(135deg, var(--bg-tertiary), var(--bg-secondary));
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 1.5rem;
-            color: var(--accent);
-            transition: all 0.3s ease;
-        }
+      /* Install Section */
+      .install {
+        padding: 6rem 2rem;
+        background: var(--bg-secondary);
+        border-top: 1px solid var(--border);
+        border-bottom: 1px solid var(--border);
+      }
 
-        .feature-card:hover .feature-icon {
-            background: var(--gradient-1);
-            border-color: transparent;
-            color: white;
-            transform: scale(1.05);
-        }
+      .install-content {
+        max-width: 480px;
+        margin: 0 auto;
+        text-align: center;
+      }
 
-        .feature-title {
-            font-size: 1.375rem;
-            font-weight: 600;
-            margin-bottom: 0.75rem;
-            letter-spacing: -0.02em;
-        }
+      .install-content-wide {
+        max-width: 700px;
+        margin: 0 auto;
+      }
 
-        .feature-desc {
-            font-size: 0.9375rem;
-            color: var(--text-secondary);
-            margin-bottom: 1.5rem;
-            line-height: 1.6;
-        }
+      /* Architecture selector */
+      .arch-selector {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.75rem;
+        margin: 2.5rem 0;
+      }
 
-        .feature-image-wrapper {
-            position: relative;
-            margin-top: 1rem;
-            border-radius: 12px;
-            overflow: hidden;
-        }
+      .arch-label {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+      }
 
-        .feature-image {
-            width: 100%;
-            border-radius: 12px;
-            border: 1px solid var(--border);
-            cursor: pointer;
-            transition: all 0.4s var(--ease-out-expo);
-            display: block;
-        }
+      .arch-hint {
+        font-size: 0.6875rem;
+        color: var(--text-muted);
+        font-weight: 400;
+        margin-left: 0.25rem;
+      }
 
-        .feature-image-wrapper::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) scale(0.8);
-            width: 56px;
-            height: 56px;
-            background: rgba(0, 0, 0, 0.7);
-            border-radius: 50%;
-            opacity: 0;
-            transition: all 0.3s ease;
-            pointer-events: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='11' cy='11' r='8'/%3E%3Cline x1='21' y1='21' x2='16.65' y2='16.65'/%3E%3Cline x1='11' y1='8' x2='11' y2='14'/%3E%3Cline x1='8' y1='11' x2='14' y2='11'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: center;
-            background-size: 24px;
-        }
+      .arch-btn.active .arch-hint {
+        color: var(--text-secondary);
+      }
 
-        .feature-image-wrapper:hover::after {
-            opacity: 1;
-            transform: translate(-50%, -50%) scale(1);
-        }
+      /* Install wizard steps */
+      .install-steps-wizard {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        margin-bottom: 2rem;
+      }
 
-        .feature-image:hover {
-            transform: scale(1.02);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.1);
-            border-color: var(--accent);
-        }
+      .wizard-step {
+        display: flex;
+        gap: 1.25rem;
+        background: var(--bg-primary);
+        border: 1px solid var(--border);
+        border-radius: 16px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+      }
 
-        /* Bento grid layout */
-        @media (min-width: 768px) {
-            .features-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
+      .wizard-step:hover {
+        border-color: var(--accent);
+        box-shadow: 0 4px 20px var(--accent-glow);
+      }
 
-        @media (min-width: 1024px) {
-            .features-grid {
-                grid-template-columns: repeat(3, 1fr);
-            }
+      .step-badge {
+        width: 36px;
+        height: 36px;
+        background: var(--gradient-1);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        font-weight: 600;
+        flex-shrink: 0;
+      }
 
-            .feature-card.large {
-                grid-column: span 2;
-            }
-        }
+      .step-content {
+        flex: 1;
+        min-width: 0;
+      }
 
-        /* Install Section */
-        .install {
-            padding: 8rem 2rem;
-            background: var(--bg-secondary);
-            border-top: 1px solid var(--border);
-            border-bottom: 1px solid var(--border);
-        }
+      .step-content .step-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: var(--text-primary);
+        margin-bottom: 0.5rem;
+      }
 
-        .install-content {
-            max-width: 800px;
-            margin: 0 auto;
-            text-align: center;
-        }
+      .step-content .step-desc {
+        font-size: 0.9375rem;
+        color: var(--text-secondary);
+        line-height: 1.6;
+        margin-bottom: 1rem;
+      }
 
-        .install-options {
-            display: grid;
-            gap: 1.5rem;
-            margin-top: 3rem;
-            text-align: left;
-        }
+      .step-visual {
+        margin-top: 1rem;
+      }
 
-        @media (min-width: 640px) {
-            .install-options {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
+      /* Spotlight mock */
+      .spotlight-mock {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        background: rgba(255, 255, 255, 0.95);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 0.875rem 1.25rem;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        max-width: 280px;
+      }
 
-        .install-card {
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 1.5rem;
-            transition: all 0.3s var(--ease-out-expo);
-        }
+      .terminal-app-icon {
+        flex-shrink: 0;
+      }
 
-        .install-card:hover {
-            border-color: var(--border-hover);
-        }
+      .spotlight-input {
+        font-size: 1rem;
+        color: var(--text-primary);
+        font-weight: 500;
+      }
 
-        .install-card-header {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            margin-bottom: 1rem;
-        }
+      /* DMG mock */
+      .dmg-mock {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        background: linear-gradient(180deg, #f8f8f8 0%, #e8e8e8 100%);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1.5rem 2rem;
+        max-width: 320px;
+      }
 
-        .install-card-icon {
-            width: 40px;
-            height: 40px;
-            background: var(--bg-tertiary);
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+      .dmg-icons-row {
+        display: flex;
+        align-items: center;
+        gap: 1.5rem;
+      }
 
-        .install-card-title {
-            font-weight: 600;
-            font-size: 1rem;
-        }
+      .dmg-icon {
+        width: 64px;
+        height: 64px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
 
-        .install-card-subtitle {
-            font-size: 0.8125rem;
-            color: var(--text-muted);
-        }
+      .app-icon {
+        background: transparent;
+        overflow: hidden;
+      }
 
-        /* Tabs design */
-        .install-tabs {
-            background: var(--bg-secondary);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            overflow: hidden;
-        }
+      .folder-icon {
+        background: linear-gradient(180deg, #64b5f6 0%, #1e88e5 100%);
+        color: white;
+      }
 
-        .tabs-header {
-            display: flex;
-            border-bottom: 1px solid var(--border);
-        }
+      .dmg-arrow {
+        font-size: 2rem;
+        color: var(--text-muted);
+        font-weight: 300;
+      }
 
-        .tab-btn {
-            flex: 1;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.625rem;
-            padding: 1rem 1.5rem;
-            background: transparent;
-            border: none;
-            font-family: var(--font-display);
-            font-size: 0.9375rem;
-            font-weight: 500;
-            color: var(--text-muted);
-            cursor: pointer;
-            transition: all 0.2s ease;
-            position: relative;
-        }
+      .dmg-labels {
+        display: flex;
+        align-items: center;
+        gap: 3rem;
+        margin-top: 0.5rem;
+        font-size: 0.8125rem;
+        color: var(--text-secondary);
+        font-weight: 500;
+      }
 
-        .tab-btn:first-child {
-            border-right: 1px solid var(--border);
-        }
+      .dmg-labels span:nth-child(2) {
+        width: 1.5rem;
+      }
 
-        .tab-btn:hover {
-            color: var(--text-secondary);
-            background: rgba(0, 0, 0, 0.02);
-        }
+      /* Install done message */
+      .install-done {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.75rem;
+        padding: 1.25rem;
+        background: rgba(34, 197, 94, 0.1);
+        border: 1px solid rgba(34, 197, 94, 0.3);
+        border-radius: 12px;
+        color: #16a34a;
+        font-size: 0.9375rem;
+        font-weight: 500;
+      }
 
-        .tab-btn.active {
-            color: var(--text-primary);
-            background: var(--bg-tertiary);
-        }
+      .install-done svg {
+        flex-shrink: 0;
+      }
 
-        .tab-btn.active::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: var(--accent);
-        }
+      /* Terminal window in wizard */
+      .wizard-step .terminal-window {
+        margin-bottom: 1rem;
+      }
 
-        .tab-subtitle {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            font-weight: 400;
-        }
+      .wizard-step .copy-cmd-btn {
+        width: auto;
+        padding: 0.75rem 1.5rem;
+      }
 
-        .tab-btn.active .tab-subtitle {
-            color: var(--text-secondary);
-        }
+      .install-box {
+        background: var(--bg-primary);
+        border: 1px solid var(--border);
+        border-radius: 20px;
+        padding: 2rem;
+        margin-top: 2.5rem;
+      }
 
-        .tabs-content {
-            padding: 1.5rem;
-        }
+      /* Architecture toggle */
+      .arch-toggle {
+        display: inline-flex;
+        background: var(--bg-tertiary);
+        border-radius: 10px;
+        padding: 4px;
+        gap: 4px;
+        margin-bottom: 1.5rem;
+      }
 
-        .tab-panel {
-            display: none;
-        }
+      .arch-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.625rem 1rem;
+        background: transparent;
+        border: none;
+        border-radius: 8px;
+        font-family: var(--font-display);
+        font-size: 0.8125rem;
+        font-weight: 500;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
 
-        .tab-panel.active {
-            display: block;
-        }
+      .arch-btn:hover {
+        color: var(--text-secondary);
+      }
 
-        /* Install steps */
-        .install-steps {
-            display: flex;
-            flex-direction: column;
-            gap: 1.25rem;
-        }
+      .arch-btn.active {
+        background: var(--bg-primary);
+        color: var(--text-primary);
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+      }
 
-        .step {
-            display: flex;
-            gap: 1rem;
-        }
+      /* Download button */
+      .download-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+        width: 100%;
+        padding: 1.25rem 2rem;
+        background: var(--gradient-1);
+        color: white;
+        text-decoration: none;
+        border-radius: 14px;
+        font-size: 1rem;
+        font-weight: 600;
+        transition: all 0.3s var(--ease-out-expo);
+        box-shadow: 0 4px 20px var(--accent-glow);
+      }
 
-        .step-number {
-            width: 28px;
-            height: 28px;
-            background: var(--accent);
-            color: var(--bg-primary);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 0.8125rem;
-            font-weight: 600;
-            flex-shrink: 0;
-        }
+      .download-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 30px var(--accent-glow);
+      }
 
-        .step-content {
-            flex: 1;
-            min-width: 0;
-        }
+      .download-btn svg {
+        margin-bottom: 0.25rem;
+      }
 
-        .step-title {
-            font-weight: 600;
-            font-size: 0.9375rem;
-            color: var(--text-primary);
-            margin-bottom: 0.375rem;
-        }
+      .download-meta {
+        font-size: 0.75rem;
+        font-weight: 400;
+        opacity: 0.85;
+      }
 
-        .step-desc {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
+      /* Terminal window - macOS style */
+      .terminal-primary {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
 
-        .step-desc strong {
-            color: var(--text-primary);
-        }
+      .terminal-window {
+        background: #1e293b;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      }
 
-        kbd {
-            display: inline-block;
-            padding: 0.15rem 0.5rem;
-            background: var(--bg-primary);
-            border: 1px solid var(--border);
-            border-radius: 4px;
-            font-family: var(--font-mono);
-            font-size: 0.75rem;
-            color: var(--text-primary);
-        }
+      .terminal-header {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        padding: 10px 14px;
+        background: #334155;
+      }
 
-        /* Code block styles */
-        .code-block {
-            background: #1e293b;
-            border: 1px solid rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            overflow: hidden;
-            position: relative;
-        }
+      .terminal-dot {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        background: #475569;
+      }
 
-        .code-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 0.625rem 1rem;
-            background: rgba(0, 0, 0, 0.2);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
+      .terminal-dot:nth-child(1) {
+        background: #ef4444;
+      }
+      .terminal-dot:nth-child(2) {
+        background: #eab308;
+      }
+      .terminal-dot:nth-child(3) {
+        background: #22c55e;
+      }
 
-        .code-label {
-            font-family: var(--font-mono);
-            font-size: 0.6875rem;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #94a3b8;
-        }
+      .terminal-title {
+        flex: 1;
+        text-align: center;
+        font-size: 0.75rem;
+        color: #94a3b8;
+        margin-right: 42px; /* offset for dots */
+      }
 
-        .code-block pre {
-            margin: 0;
-            padding: 1rem;
-            overflow-x: auto;
-        }
+      .terminal-body {
+        padding: 1rem 1.25rem;
+        overflow-x: auto;
+      }
 
-        .code-block code {
-            font-family: var(--font-mono);
-            font-size: 0.8125rem;
-            line-height: 1.6;
-            color: #e6edf3;
-        }
+      .terminal-body code {
+        font-family: var(--font-mono);
+        font-size: 0.8125rem;
+        color: #e6edf3;
+        line-height: 1.6;
+        white-space: nowrap;
+      }
 
-        .code-comment {
-            color: #8b949e;
-        }
+      .terminal-body code span {
+        color: #7dd3fc;
+      }
 
-        .copy-btn {
-            display: flex;
-            align-items: center;
-            gap: 0.375rem;
-            padding: 0.375rem 0.75rem;
-            background: transparent;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            border-radius: 6px;
-            font-family: var(--font-display);
-            font-size: 0.6875rem;
-            color: #94a3b8;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
+      .copy-cmd-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        width: 100%;
+        padding: 0.875rem 1.5rem;
+        background: var(--gradient-1);
+        color: white;
+        border: none;
+        border-radius: 10px;
+        font-family: var(--font-display);
+        font-size: 0.9375rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s var(--ease-out-expo);
+        box-shadow: 0 4px 15px var(--accent-glow);
+      }
 
-        .copy-btn:hover {
-            color: #ffffff;
-            border-color: rgba(255, 255, 255, 0.3);
-            background: rgba(255, 255, 255, 0.1);
-        }
+      .copy-cmd-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 25px var(--accent-glow);
+      }
 
-        .code-block-small {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.625rem 0.875rem;
-            margin-top: 0.5rem;
-            background: #1e293b;
-            border-radius: 8px;
-        }
+      .copy-cmd-btn:active {
+        transform: translateY(0);
+      }
 
-        .code-block-small code {
-            flex: 1;
-            font-family: var(--font-mono);
-            font-size: 0.8125rem;
-            color: #e6edf3;
-        }
+      /* Install instruction */
+      .install-instruction {
+        margin-top: 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border);
+        text-align: center;
+      }
 
-        .copy-btn-small {
-            padding: 0.25rem;
-            border: none;
-            background: transparent;
-        }
+      .instruction-step {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+      }
 
-        /* First run section */
-        .install-firstrun {
-            margin-top: 2rem;
-            padding: 1.5rem;
-            background: rgba(245, 158, 11, 0.08);
-            border: 1px solid rgba(245, 158, 11, 0.25);
-            border-radius: 16px;
-        }
+      .instruction-step strong {
+        color: var(--text-primary);
+      }
 
-        .firstrun-header {
-            display: flex;
-            align-items: center;
-            gap: 0.625rem;
-            font-weight: 600;
-            font-size: 0.9375rem;
-            color: #d97706;
-            margin-bottom: 0.75rem;
-        }
+      /* Legacy tab styles (kept for compatibility) */
+      .tab-btn {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.625rem;
+        padding: 1rem 1.5rem;
+        background: transparent;
+        border: none;
+        font-family: var(--font-display);
+        font-size: 0.9375rem;
+        font-weight: 500;
+        color: var(--text-muted);
+        cursor: pointer;
+        transition: all 0.2s ease;
+        position: relative;
+      }
 
-        .install-firstrun > p {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            margin-bottom: 1rem;
-        }
+      .tab-btn:first-child {
+        border-right: 1px solid var(--border);
+      }
 
-        .firstrun-options {
-            display: grid;
-            gap: 0.75rem;
-        }
+      .tab-btn:hover {
+        color: var(--text-secondary);
+        background: rgba(0, 0, 0, 0.02);
+      }
 
-        .firstrun-option {
-            font-size: 0.875rem;
-            color: var(--text-secondary);
-            line-height: 1.5;
-        }
+      .tab-btn.active {
+        color: var(--text-primary);
+        background: var(--bg-tertiary);
+      }
 
-        .firstrun-option strong {
-            color: var(--text-primary);
-        }
+      .tab-btn.active::after {
+        content: "";
+        position: absolute;
+        bottom: -1px;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--accent);
+      }
 
-        /* Pricing Section */
-        .pricing {
-            padding: 8rem 2rem;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
+      .tab-subtitle {
+        font-size: 0.75rem;
+        color: var(--text-muted);
+        font-weight: 400;
+      }
 
+      .tab-btn.active .tab-subtitle {
+        color: var(--text-secondary);
+      }
+
+      .tabs-content {
+        padding: 1.5rem;
+      }
+
+      .tab-panel {
+        display: none;
+      }
+
+      .tab-panel.active {
+        display: block;
+      }
+
+      /* Install steps */
+      .install-steps {
+        display: flex;
+        flex-direction: column;
+        gap: 1.25rem;
+      }
+
+      .step {
+        display: flex;
+        gap: 1rem;
+      }
+
+      .step-number {
+        width: 28px;
+        height: 28px;
+        background: var(--accent);
+        color: var(--bg-primary);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.8125rem;
+        font-weight: 600;
+        flex-shrink: 0;
+      }
+
+      .step-content {
+        flex: 1;
+        min-width: 0;
+      }
+
+      .step-title {
+        font-weight: 600;
+        font-size: 0.9375rem;
+        color: var(--text-primary);
+        margin-bottom: 0.375rem;
+      }
+
+      .step-desc {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        line-height: 1.5;
+      }
+
+      .step-desc strong {
+        color: var(--text-primary);
+      }
+
+      kbd {
+        display: inline-block;
+        padding: 0.15rem 0.5rem;
+        background: var(--bg-primary);
+        border: 1px solid var(--border);
+        border-radius: 4px;
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        color: var(--text-primary);
+      }
+
+      /* Code block styles */
+      .code-block {
+        background: #1e293b;
+        border: 1px solid rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        overflow: hidden;
+        position: relative;
+      }
+
+      .code-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.625rem 1rem;
+        background: rgba(0, 0, 0, 0.2);
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      }
+
+      .code-label {
+        font-family: var(--font-mono);
+        font-size: 0.6875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #94a3b8;
+      }
+
+      .code-block pre {
+        margin: 0;
+        padding: 1rem;
+        overflow-x: auto;
+      }
+
+      .code-block code {
+        font-family: var(--font-mono);
+        font-size: 0.8125rem;
+        line-height: 1.6;
+        color: #e6edf3;
+      }
+
+      .code-comment {
+        color: #8b949e;
+      }
+
+      .copy-btn {
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.375rem 0.75rem;
+        background: transparent;
+        border: 1px solid rgba(255, 255, 255, 0.15);
+        border-radius: 6px;
+        font-family: var(--font-display);
+        font-size: 0.6875rem;
+        color: #94a3b8;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .copy-btn:hover {
+        color: #ffffff;
+        border-color: rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .code-block-small {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.625rem 0.875rem;
+        margin-top: 0.5rem;
+        background: #1e293b;
+        border-radius: 8px;
+      }
+
+      .code-block-small code {
+        flex: 1;
+        font-family: var(--font-mono);
+        font-size: 0.8125rem;
+        color: #e6edf3;
+      }
+
+      .copy-btn-small {
+        padding: 0.25rem;
+        border: none;
+        background: transparent;
+      }
+
+      /* First run section */
+      .install-firstrun {
+        margin-top: 2rem;
+        padding: 1.5rem;
+        background: rgba(245, 158, 11, 0.08);
+        border: 1px solid rgba(245, 158, 11, 0.25);
+        border-radius: 16px;
+      }
+
+      .firstrun-header {
+        display: flex;
+        align-items: center;
+        gap: 0.625rem;
+        font-weight: 600;
+        font-size: 0.9375rem;
+        color: #d97706;
+        margin-bottom: 0.75rem;
+      }
+
+      .install-firstrun > p {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        margin-bottom: 1rem;
+      }
+
+      .firstrun-options {
+        display: grid;
+        gap: 0.75rem;
+      }
+
+      .firstrun-option {
+        font-size: 0.875rem;
+        color: var(--text-secondary);
+        line-height: 1.5;
+      }
+
+      .firstrun-option strong {
+        color: var(--text-primary);
+      }
+
+      /* Pricing Section */
+      .pricing {
+        padding: 8rem 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+      }
+
+      .pricing-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1.5rem;
+        margin-top: 4rem;
+      }
+
+      .pricing-card {
+        background: rgba(255, 255, 255, 0.7);
+        backdrop-filter: blur(10px);
+        border: 1px solid var(--border);
+        border-radius: 24px;
+        padding: 2.5rem;
+        text-align: center;
+        transition: all 0.4s var(--ease-out-expo);
+        position: relative;
+      }
+
+      .pricing-card:hover {
+        transform: translateY(-8px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
+      }
+
+      .pricing-card.featured {
+        border: 2px solid var(--accent);
+        box-shadow: 0 0 40px var(--accent-glow);
+      }
+
+      .pricing-card.coming-soon {
+        opacity: 0.6;
+      }
+
+      .pricing-card.coming-soon:hover {
+        transform: none;
+        box-shadow: none;
+      }
+
+      .pricing-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        background: var(--accent-glow);
+        color: var(--accent);
+        font-size: 0.75rem;
+        font-weight: 600;
+        border-radius: 100px;
+        margin-bottom: 1rem;
+      }
+
+      .pricing-card.coming-soon .pricing-badge {
+        background: rgba(168, 162, 158, 0.15);
+        color: var(--text-muted);
+      }
+
+      .pricing-name {
+        font-size: 1.5rem;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+
+      .pricing-price {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 0.25rem;
+        letter-spacing: -0.02em;
+      }
+
+      .pricing-period {
+        font-size: 0.875rem;
+        color: var(--text-muted);
+        margin-bottom: 2rem;
+      }
+
+      .pricing-features {
+        list-style: none;
+        text-align: left;
+        margin-bottom: 2rem;
+      }
+
+      .pricing-features li {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 0.75rem 0;
+        font-size: 0.9375rem;
+        color: var(--text-secondary);
+        border-bottom: 1px solid var(--border);
+      }
+
+      .pricing-features li:last-child {
+        border-bottom: none;
+      }
+
+      .pricing-features li svg {
+        flex-shrink: 0;
+        color: var(--accent);
+      }
+
+      .pricing-card.coming-soon .pricing-features li svg {
+        color: var(--text-muted);
+      }
+
+      .pricing-btn {
+        width: 100%;
+        padding: 1rem 1.5rem;
+        font-size: 0.9375rem;
+        font-weight: 500;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .pricing-btn-primary {
+        background: var(--text-primary);
+        color: white;
+        border: none;
+      }
+
+      .pricing-btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+      }
+
+      .pricing-btn-disabled {
+        background: var(--bg-tertiary);
+        color: var(--text-muted);
+        border: 1px solid var(--border);
+        cursor: not-allowed;
+      }
+
+      @media (max-width: 900px) {
         .pricing-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 1.5rem;
-            margin-top: 4rem;
+          grid-template-columns: 1fr;
+          max-width: 400px;
+          margin-left: auto;
+          margin-right: auto;
         }
+      }
 
-        .pricing-card {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(10px);
-            border: 1px solid var(--border);
-            border-radius: 24px;
-            padding: 2.5rem;
-            text-align: center;
-            transition: all 0.4s var(--ease-out-expo);
-            position: relative;
-        }
+      /* CTA Section */
+      .cta {
+        padding: 12rem 2rem;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+      }
 
-        .pricing-card:hover {
-            transform: translateY(-8px);
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.08);
-        }
+      .cta::before {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 800px;
+        height: 800px;
+        background: radial-gradient(
+          circle,
+          var(--accent-glow) 0%,
+          var(--accent-deep-glow) 40%,
+          transparent 70%
+        );
+        pointer-events: none;
+      }
 
-        .pricing-card.featured {
-            border: 2px solid var(--accent);
-            box-shadow: 0 0 40px var(--accent-glow);
-        }
+      .cta h2 {
+        font-size: clamp(2.75rem, 7vw, 4.5rem);
+        font-weight: 700;
+        letter-spacing: -0.04em;
+        margin-bottom: 1.5rem;
+        position: relative;
+        line-height: 1.1;
+      }
 
-        .pricing-card.coming-soon {
-            opacity: 0.6;
-        }
+      .cta p {
+        font-size: 1.25rem;
+        color: var(--text-secondary);
+        margin-bottom: 3rem;
+        position: relative;
+        max-width: 500px;
+        margin-left: auto;
+        margin-right: auto;
+      }
 
-        .pricing-card.coming-soon:hover {
-            transform: none;
-            box-shadow: none;
-        }
+      .cta .btn {
+        position: relative;
+      }
 
-        .pricing-badge {
-            display: inline-block;
-            padding: 0.25rem 0.75rem;
-            background: var(--accent-glow);
-            color: var(--accent);
-            font-size: 0.75rem;
-            font-weight: 600;
-            border-radius: 100px;
-            margin-bottom: 1rem;
-        }
+      /* Lightbox */
+      .lightbox {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.9);
+        backdrop-filter: blur(20px);
+        -webkit-backdrop-filter: blur(20px);
+        z-index: 10000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        transition: all 0.4s var(--ease-out-expo);
+        cursor: zoom-out;
+      }
 
-        .pricing-card.coming-soon .pricing-badge {
-            background: var(--purple-glow);
-            color: var(--purple);
-        }
+      .lightbox.active {
+        opacity: 1;
+        visibility: visible;
+        pointer-events: auto;
+      }
 
-        .pricing-name {
-            font-size: 1.5rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
+      .lightbox-content {
+        max-width: 90vw;
+        max-height: 90vh;
+        position: relative;
+        transform: scale(0.9);
+        transition: transform 0.4s var(--ease-out-expo);
+      }
 
-        .pricing-price {
-            font-size: 3rem;
-            font-weight: 700;
-            margin-bottom: 0.25rem;
-            letter-spacing: -0.02em;
-        }
+      .lightbox.active .lightbox-content {
+        transform: scale(1);
+      }
 
-        .pricing-period {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            margin-bottom: 2rem;
-        }
+      .lightbox-content img {
+        max-width: 100%;
+        max-height: 90vh;
+        border-radius: 16px;
+        box-shadow: 0 30px 100px rgba(0, 0, 0, 0.5);
+      }
 
-        .pricing-features {
-            list-style: none;
-            text-align: left;
-            margin-bottom: 2rem;
-        }
+      .lightbox-close {
+        position: absolute;
+        top: 1.5rem;
+        right: 1.5rem;
+        width: 48px;
+        height: 48px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: white;
+        transition: all 0.3s ease;
+        z-index: 10001;
+      }
 
-        .pricing-features li {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.75rem 0;
-            font-size: 0.9375rem;
-            color: var(--text-secondary);
-            border-bottom: 1px solid var(--border);
-        }
+      .lightbox-close:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: rotate(90deg);
+      }
 
-        .pricing-features li:last-child {
-            border-bottom: none;
-        }
+      .lightbox-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 48px;
+        height: 48px;
+        background: rgba(255, 255, 255, 0.1);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: white;
+        transition: all 0.3s ease;
+      }
 
-        .pricing-features li svg {
-            flex-shrink: 0;
-            color: var(--accent);
-        }
+      .lightbox-nav:hover {
+        background: rgba(255, 255, 255, 0.2);
+      }
 
-        .pricing-card.coming-soon .pricing-features li svg {
-            color: var(--purple);
-        }
+      .lightbox-prev {
+        left: 1.5rem;
+      }
 
-        .pricing-btn {
-            width: 100%;
-            padding: 1rem 1.5rem;
-            font-size: 0.9375rem;
-            font-weight: 500;
-            border-radius: 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
+      .lightbox-next {
+        right: 1.5rem;
+      }
 
-        .pricing-btn-primary {
-            background: var(--text-primary);
-            color: white;
-            border: none;
-        }
+      .lightbox-caption {
+        position: absolute;
+        bottom: -3rem;
+        left: 50%;
+        transform: translateX(-50%);
+        color: rgba(255, 255, 255, 0.8);
+        font-size: 0.9375rem;
+        text-align: center;
+        white-space: nowrap;
+      }
 
-        .pricing-btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-        }
+      /* Footer */
+      footer {
+        padding: 4rem 2rem 3rem;
+        border-top: 1px solid var(--border);
+        background: var(--bg-secondary);
+      }
 
-        .pricing-btn-disabled {
-            background: var(--bg-tertiary);
-            color: var(--text-muted);
-            border: 1px solid var(--border);
-            cursor: not-allowed;
-        }
+      .footer-content {
+        max-width: 1200px;
+        margin: 0 auto;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 2rem;
+      }
 
-        @media (max-width: 900px) {
-            .pricing-grid {
-                grid-template-columns: 1fr;
-                max-width: 400px;
-                margin-left: auto;
-                margin-right: auto;
-            }
-        }
-
-        /* CTA Section */
-        .cta {
-            padding: 12rem 2rem;
-            text-align: center;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .cta::before {
-            content: '';
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 800px;
-            height: 800px;
-            background: radial-gradient(circle, var(--accent-glow) 0%, var(--purple-glow) 40%, transparent 70%);
-            pointer-events: none;
-            animation: pulse-glow 8s ease-in-out infinite;
-        }
-
-        .cta h2 {
-            font-size: clamp(2.75rem, 7vw, 4.5rem);
-            font-weight: 700;
-            letter-spacing: -0.04em;
-            margin-bottom: 1.5rem;
-            position: relative;
-            line-height: 1.1;
-        }
-
-        .cta p {
-            font-size: 1.25rem;
-            color: var(--text-secondary);
-            margin-bottom: 3rem;
-            position: relative;
-            max-width: 500px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-
-        .cta .btn {
-            position: relative;
-        }
-
-        /* Lightbox */
-        .lightbox {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-            z-index: 10000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            opacity: 0;
-            visibility: hidden;
-            pointer-events: none;
-            transition: all 0.4s var(--ease-out-expo);
-            cursor: zoom-out;
-        }
-
-        .lightbox.active {
-            opacity: 1;
-            visibility: visible;
-            pointer-events: auto;
-        }
-
-        .lightbox-content {
-            max-width: 90vw;
-            max-height: 90vh;
-            position: relative;
-            transform: scale(0.9);
-            transition: transform 0.4s var(--ease-out-expo);
-        }
-
-        .lightbox.active .lightbox-content {
-            transform: scale(1);
-        }
-
-        .lightbox-content img {
-            max-width: 100%;
-            max-height: 90vh;
-            border-radius: 16px;
-            box-shadow: 0 30px 100px rgba(0, 0, 0, 0.5);
-        }
-
-        .lightbox-close {
-            position: absolute;
-            top: 1.5rem;
-            right: 1.5rem;
-            width: 48px;
-            height: 48px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: white;
-            transition: all 0.3s ease;
-            z-index: 10001;
-        }
-
-        .lightbox-close:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: rotate(90deg);
-        }
-
-        .lightbox-nav {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            width: 48px;
-            height: 48px;
-            background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            color: white;
-            transition: all 0.3s ease;
-        }
-
-        .lightbox-nav:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .lightbox-prev {
-            left: 1.5rem;
-        }
-
-        .lightbox-next {
-            right: 1.5rem;
-        }
-
-        .lightbox-caption {
-            position: absolute;
-            bottom: -3rem;
-            left: 50%;
-            transform: translateX(-50%);
-            color: rgba(255, 255, 255, 0.8);
-            font-size: 0.9375rem;
-            text-align: center;
-            white-space: nowrap;
-        }
-
-        /* Footer */
-        footer {
-            padding: 4rem 2rem 3rem;
-            border-top: 1px solid var(--border);
-            background: var(--bg-secondary);
-        }
-
+      @media (min-width: 640px) {
         .footer-content {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 2rem;
+          flex-direction: row;
+          justify-content: space-between;
+        }
+      }
+
+      .footer-links {
+        display: flex;
+        gap: 2rem;
+      }
+
+      .footer-links a {
+        font-size: 0.875rem;
+        color: var(--text-muted);
+        text-decoration: none;
+        transition: all 0.2s ease;
+        position: relative;
+      }
+
+      .footer-links a::after {
+        content: "";
+        position: absolute;
+        bottom: -2px;
+        left: 0;
+        width: 0;
+        height: 1px;
+        background: var(--accent);
+        transition: width 0.3s ease;
+      }
+
+      .footer-links a:hover {
+        color: var(--text-primary);
+      }
+
+      .footer-links a:hover::after {
+        width: 100%;
+      }
+
+      .footer-copy {
+        font-size: 0.8125rem;
+        color: var(--text-muted);
+      }
+
+      .footer-copy a {
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: color 0.2s ease;
+      }
+
+      .footer-copy a:hover {
+        color: var(--accent);
+      }
+
+      /* Scroll animations */
+      .reveal {
+        opacity: 0;
+        transform: translateY(40px);
+        transition: all 0.8s var(--ease-out-expo);
+      }
+
+      .reveal.visible {
+        opacity: 1;
+        transform: translateY(0);
+      }
+
+      /* Mobile menu */
+      @media (max-width: 768px) {
+        .nav-links {
+          display: none;
         }
 
-        @media (min-width: 640px) {
-            .footer-content {
-                flex-direction: row;
-                justify-content: space-between;
-            }
+        .feature-card.large {
+          grid-column: span 1;
         }
-
-        .footer-links {
-            display: flex;
-            gap: 2rem;
-        }
-
-        .footer-links a {
-            font-size: 0.875rem;
-            color: var(--text-muted);
-            text-decoration: none;
-            transition: all 0.2s ease;
-            position: relative;
-        }
-
-        .footer-links a::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 1px;
-            background: var(--accent);
-            transition: width 0.3s ease;
-        }
-
-        .footer-links a:hover {
-            color: var(--text-primary);
-        }
-
-        .footer-links a:hover::after {
-            width: 100%;
-        }
-
-        .footer-copy {
-            font-size: 0.8125rem;
-            color: var(--text-muted);
-        }
-
-        .footer-copy a {
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: color 0.2s ease;
-        }
-
-        .footer-copy a:hover {
-            color: var(--accent);
-        }
-
-        /* Scroll animations */
-        .reveal {
-            opacity: 0;
-            transform: translateY(40px);
-            transition: all 0.8s var(--ease-out-expo);
-        }
-
-        .reveal.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        /* Mobile menu */
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-
-            .feature-card.large {
-                grid-column: span 1;
-            }
-        }
+      }
     </style>
-</head>
-<body>
+  </head>
+  <body>
     <div class="grid-bg"></div>
     <div class="glow-orb glow-orb-1"></div>
     <div class="glow-orb glow-orb-2"></div>
@@ -1416,610 +1730,941 @@
 
     <!-- Lightbox -->
     <div class="lightbox" id="lightbox">
-        <button class="lightbox-close" onclick="closeLightbox()">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"/>
-                <line x1="6" y1="6" x2="18" y2="18"/>
-            </svg>
-        </button>
-        <button class="lightbox-nav lightbox-prev" onclick="navigateLightbox(-1)">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="15 18 9 12 15 6"/>
-            </svg>
-        </button>
-        <div class="lightbox-content">
-            <img id="lightbox-img" src="" alt="">
-            <div class="lightbox-caption" id="lightbox-caption"></div>
-        </div>
-        <button class="lightbox-nav lightbox-next" onclick="navigateLightbox(1)">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <polyline points="9 18 15 12 9 6"/>
-            </svg>
-        </button>
+      <button class="lightbox-close" onclick="closeLightbox()">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+      <button class="lightbox-nav lightbox-prev" onclick="navigateLightbox(-1)">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+      </button>
+      <div class="lightbox-content">
+        <img id="lightbox-img" src="" alt="" />
+        <div class="lightbox-caption" id="lightbox-caption"></div>
+      </div>
+      <button class="lightbox-nav lightbox-next" onclick="navigateLightbox(1)">
+        <svg
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <polyline points="9 18 15 12 9 6" />
+        </svg>
+      </button>
     </div>
 
     <nav>
-        <a href="#" class="logo">
-            <div class="logo-icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                    <circle cx="12" cy="13" r="4"/>
-                </svg>
-            </div>
-            Clik
-        </a>
-        <div class="nav-links">
-            <a href="#features">Features</a>
-            <a href="#pricing">Pricing</a>
-            <a href="#install">Install</a>
-            <a href="https://github.com/aiocean/clik-releases" target="_blank">GitHub</a>
-            <a href="#install" class="btn btn-primary">Download</a>
+      <a href="#" class="logo">
+        <div class="logo-icon">
+          <img src="images/app-logo.png" alt="Clik" />
         </div>
+        Clik
+      </a>
+      <div class="nav-links">
+        <a href="#features">Features</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#install">Install</a>
+        <a href="https://github.com/aiocean/clik-releases" target="_blank">GitHub</a>
+        <a href="#install" class="btn btn-primary">Download</a>
+      </div>
     </nav>
 
     <section class="hero">
-        <div class="hero-badge">
-            <span>Now available for macOS</span>
-        </div>
-        <h1>Screenshot.<br><span>Annotate. AI.</span></h1>
-        <p class="hero-subtitle">
-            The minimal screenshot tool designed for modern AI-assisted workflows.
-            Capture, annotate, and send to AI in seconds.
-        </p>
-        <div class="hero-actions">
-            <a href="#install" class="btn btn-gradient">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                    <polyline points="7,10 12,15 17,10"/>
-                    <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-                Download for Mac
-            </a>
-            <a href="https://github.com/aiocean/clik-releases" target="_blank" class="btn btn-secondary">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                </svg>
-                View on GitHub
-            </a>
-        </div>
-        <div class="hero-image">
-            <img src="docs/screenshot/multiple-capture.webp" alt="Clik Screenshot Tool">
-        </div>
+      <div class="hero-badge">
+        <span>Now available for macOS</span>
+      </div>
+      <h1>Screenshot.<br /><span>Annotate. AI.</span></h1>
+      <p class="hero-subtitle">
+        The minimal screenshot tool designed for modern AI-assisted workflows. Capture, annotate,
+        and send to AI in seconds.
+      </p>
+      <div class="hero-actions">
+        <a href="#install" class="btn btn-gradient">
+          <svg
+            width="18"
+            height="18"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="7,10 12,15 17,10" />
+            <line x1="12" y1="15" x2="12" y2="3" />
+          </svg>
+          Download for Mac
+        </a>
+        <a
+          href="https://github.com/aiocean/clik-releases"
+          target="_blank"
+          class="btn btn-secondary"
+        >
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
+            <path
+              d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"
+            />
+          </svg>
+          View on GitHub
+        </a>
+      </div>
+      <div class="hero-image">
+        <img src="docs/screenshot/multiple-capture.webp" alt="Clik Screenshot Tool" />
+      </div>
     </section>
 
     <!-- Tools showcase -->
     <section class="tools-showcase">
-        <p class="tools-label">5 essential tools for AI-assisted workflows</p>
-        <div class="tools-grid">
-            <div class="tool-item">
-                <div class="tool-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                    </svg>
-                </div>
-                <span class="tool-name">Box</span>
-                <kbd>B</kbd>
-            </div>
-            <div class="tool-item">
-                <div class="tool-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <line x1="5" y1="12" x2="19" y2="12"/>
-                        <polyline points="12 5 19 12 12 19"/>
-                    </svg>
-                </div>
-                <span class="tool-name">Arrow</span>
-                <kbd>A</kbd>
-            </div>
-            <div class="tool-item">
-                <div class="tool-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polyline points="4 7 4 4 20 4 20 7"/>
-                        <line x1="9" y1="20" x2="15" y2="20"/>
-                        <line x1="12" y1="4" x2="12" y2="20"/>
-                    </svg>
-                </div>
-                <span class="tool-name">Text</span>
-                <kbd>T</kbd>
-            </div>
-            <div class="tool-item">
-                <div class="tool-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="M8 12h8"/>
-                    </svg>
-                </div>
-                <span class="tool-name">Blur</span>
-                <kbd>U</kbd>
-            </div>
-            <div class="tool-item">
-                <div class="tool-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"/>
-                        <text x="12" y="16" text-anchor="middle" font-size="12" font-weight="600" fill="currentColor" stroke="none">1</text>
-                    </svg>
-                </div>
-                <span class="tool-name">Counter</span>
-                <kbd>C</kbd>
-            </div>
+      <p class="tools-label">7 annotation tools with keyboard shortcuts</p>
+      <div class="tools-grid">
+        <div class="tool-item">
+          <div class="tool-icon">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M3 3l7.07 16.97 2.51-7.39 7.39-2.51L3 3z" />
+              <path d="M13 13l6 6" />
+            </svg>
+          </div>
+          <span class="tool-name">Select</span>
+          <kbd>V</kbd>
         </div>
+        <div class="tool-item">
+          <div class="tool-icon">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <polyline points="12 5 19 12 12 19" />
+            </svg>
+          </div>
+          <span class="tool-name">Arrow</span>
+          <kbd>A</kbd>
+        </div>
+        <div class="tool-item">
+          <div class="tool-icon">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <line x1="5" y1="12" x2="19" y2="12" />
+              <line x1="5" y1="8" x2="5" y2="16" />
+              <line x1="19" y1="8" x2="19" y2="16" />
+            </svg>
+          </div>
+          <span class="tool-name">Line</span>
+          <kbd>M</kbd>
+        </div>
+        <div class="tool-item">
+          <div class="tool-icon">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+            </svg>
+          </div>
+          <span class="tool-name">Box</span>
+          <kbd>B</kbd>
+        </div>
+        <div class="tool-item">
+          <div class="tool-icon">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polyline points="4 7 4 4 20 4 20 7" />
+              <line x1="9" y1="20" x2="15" y2="20" />
+              <line x1="12" y1="4" x2="12" y2="20" />
+            </svg>
+          </div>
+          <span class="tool-name">Text</span>
+          <kbd>T</kbd>
+        </div>
+        <div class="tool-item">
+          <div class="tool-icon">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M12 19l7-7 3 3-7 7-3-3z" />
+              <path d="M18 13l-1.5-7.5L2 2l3.5 14.5L13 18l5-5z" />
+              <path d="M2 2l7.586 7.586" />
+            </svg>
+          </div>
+          <span class="tool-name">Draw</span>
+          <kbd>D</kbd>
+        </div>
+        <div class="tool-item">
+          <div class="tool-icon">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M9 11l-6 6v3h9l3-3" />
+              <path d="M22 12l-4.5 4.5L14 13l4.5-4.5L22 12z" />
+            </svg>
+          </div>
+          <span class="tool-name">Highlight</span>
+          <kbd>H</kbd>
+        </div>
+      </div>
     </section>
 
     <section class="features" id="features">
-        <div class="section-header reveal">
-            <div class="section-label">Features</div>
-            <h2 class="section-title">Everything you need,<br>nothing you don't</h2>
-            <p class="section-desc">
-                Built for speed and simplicity. Capture what matters and get back to work.
-            </p>
+      <div class="section-header reveal">
+        <div class="section-label">Features</div>
+        <h2 class="section-title">Everything you need,<br />nothing you don't</h2>
+        <p class="section-desc">
+          Built for speed and simplicity. Capture what matters and get back to work.
+        </p>
+      </div>
+
+      <div class="features-grid">
+        <div class="feature-card large reveal">
+          <div class="feature-icon">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <rect x="3" y="3" width="18" height="18" rx="2" ry="2" />
+              <circle cx="8.5" cy="8.5" r="1.5" />
+              <polyline points="21,15 16,10 5,21" />
+            </svg>
+          </div>
+          <h3 class="feature-title">Multiple Capture Modes</h3>
+          <p class="feature-desc">
+            Capture full screen, windows, or custom regions. Stack multiple captures in a single
+            session for comprehensive documentation.
+          </p>
+          <div class="feature-image-wrapper">
+            <img
+              src="docs/screenshot/multiple-capture.webp"
+              alt="Multiple Capture"
+              class="feature-image"
+            />
+          </div>
         </div>
 
-        <div class="features-grid">
-            <div class="feature-card large reveal">
-                <div class="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
-                        <circle cx="8.5" cy="8.5" r="1.5"/>
-                        <polyline points="21,15 16,10 5,21"/>
-                    </svg>
-                </div>
-                <h3 class="feature-title">Multiple Capture Modes</h3>
-                <p class="feature-desc">
-                    Capture full screen, windows, or custom regions. Stack multiple captures in a single session for comprehensive documentation.
-                </p>
-                <div class="feature-image-wrapper">
-                    <img src="docs/screenshot/multiple-capture.webp" alt="Multiple Capture" class="feature-image">
-                </div>
-            </div>
-
-            <div class="feature-card reveal">
-                <div class="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 20h9"/>
-                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
-                    </svg>
-                </div>
-                <h3 class="feature-title">Annotation Tools</h3>
-                <p class="feature-desc">
-                    Draw, highlight, and mark up your screenshots with precision tools.
-                </p>
-                <div class="feature-image-wrapper">
-                    <img src="docs/screenshot/anotation.webp" alt="Annotation Tools" class="feature-image">
-                </div>
-            </div>
-
-            <div class="feature-card reveal">
-                <div class="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
-                        <polyline points="14,2 14,8 20,8"/>
-                        <line x1="16" y1="13" x2="8" y2="13"/>
-                        <line x1="16" y1="17" x2="8" y2="17"/>
-                    </svg>
-                </div>
-                <h3 class="feature-title">Quick Notes</h3>
-                <p class="feature-desc">
-                    Add context with inline notes and text annotations directly on your captures.
-                </p>
-                <div class="feature-image-wrapper">
-                    <img src="docs/screenshot/note.webp" alt="Quick Notes" class="feature-image">
-                </div>
-            </div>
-
-            <div class="feature-card reveal">
-                <div class="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
-                    </svg>
-                </div>
-                <h3 class="feature-title">Clean & Minimal</h3>
-                <p class="feature-desc">
-                    No clutter. No bloat. Just the essential tools you need, beautifully designed.
-                </p>
-                <div class="feature-image-wrapper">
-                    <img src="docs/screenshot/simplecity.webp" alt="Clean Interface" class="feature-image">
-                </div>
-            </div>
-
-            <div class="feature-card large reveal">
-                <div class="feature-icon">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/>
-                        <polyline points="22,6 12,13 2,6"/>
-                    </svg>
-                </div>
-                <h3 class="feature-title">Advanced Tools</h3>
-                <p class="feature-desc">
-                    Freewriting, highlighting, and more advanced tools for detailed annotations. Perfect for explaining complex UI flows or documenting bugs.
-                </p>
-                <div class="feature-image-wrapper">
-                    <img src="docs/screenshot/advanced-tool-freewriting-highlight.webp" alt="Advanced Tools" class="feature-image">
-                </div>
-            </div>
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M12 20h9" />
+              <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+            </svg>
+          </div>
+          <h3 class="feature-title">Annotation Tools</h3>
+          <p class="feature-desc">
+            Draw, highlight, and mark up your screenshots with precision tools.
+          </p>
+          <div class="feature-image-wrapper">
+            <img
+              src="docs/screenshot/anotation.webp"
+              alt="Annotation Tools"
+              class="feature-image"
+            />
+          </div>
         </div>
+
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14,2 14,8 20,8" />
+              <line x1="16" y1="13" x2="8" y2="13" />
+              <line x1="16" y1="17" x2="8" y2="17" />
+            </svg>
+          </div>
+          <h3 class="feature-title">Quick Notes</h3>
+          <p class="feature-desc">
+            Add context with inline notes and text annotations directly on your captures.
+          </p>
+          <div class="feature-image-wrapper">
+            <img src="docs/screenshot/note.webp" alt="Quick Notes" class="feature-image" />
+          </div>
+        </div>
+
+        <div class="feature-card reveal">
+          <div class="feature-icon">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <polygon
+                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"
+              />
+            </svg>
+          </div>
+          <h3 class="feature-title">Clean & Minimal</h3>
+          <p class="feature-desc">
+            No clutter. No bloat. Just the essential tools you need, beautifully designed.
+          </p>
+          <div class="feature-image-wrapper">
+            <img
+              src="docs/screenshot/simplecity.webp"
+              alt="Clean Interface"
+              class="feature-image"
+            />
+          </div>
+        </div>
+
+        <div class="feature-card large reveal">
+          <div class="feature-icon">
+            <svg
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"
+              />
+              <polyline points="22,6 12,13 2,6" />
+            </svg>
+          </div>
+          <h3 class="feature-title">Advanced Tools</h3>
+          <p class="feature-desc">
+            Freewriting, highlighting, and more advanced tools for detailed annotations. Perfect for
+            explaining complex UI flows or documenting bugs.
+          </p>
+          <div class="feature-image-wrapper">
+            <img
+              src="docs/screenshot/advanced-tool-freewriting-highlight.webp"
+              alt="Advanced Tools"
+              class="feature-image"
+            />
+          </div>
+        </div>
+      </div>
     </section>
 
     <section class="pricing" id="pricing">
-        <div class="section-header reveal">
-            <div class="section-label">Pricing</div>
-            <h2 class="section-title">Choose your plan</h2>
-            <p class="section-desc">
-                Start free with all features. Upgrade when you need cloud storage or team collaboration.
-            </p>
+      <div class="section-header reveal">
+        <div class="section-label">Pricing</div>
+        <h2 class="section-title">Choose your plan</h2>
+        <p class="section-desc">
+          Start free with all features. Upgrade when you need cloud storage or team collaboration.
+        </p>
+      </div>
+
+      <div class="pricing-grid">
+        <!-- Free Plan -->
+        <div class="pricing-card featured reveal">
+          <div class="pricing-badge">Current</div>
+          <h3 class="pricing-name">Free</h3>
+          <div class="pricing-price">$0</div>
+          <div class="pricing-period">Forever free</div>
+          <ul class="pricing-features">
+            <li>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path
+                  d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"
+                />
+              </svg>
+              All capture modes
+            </li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path
+                  d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"
+                />
+              </svg>
+              Full annotation tools
+            </li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path
+                  d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"
+                />
+              </svg>
+              Quick notes & text
+            </li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path
+                  d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"
+                />
+              </svg>
+              Instant copy to clipboard
+            </li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path
+                  d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"
+                />
+              </svg>
+              Local storage
+            </li>
+          </ul>
+          <a href="#install" class="pricing-btn pricing-btn-primary">Download Now</a>
         </div>
 
-        <div class="pricing-grid">
-            <!-- Free Plan -->
-            <div class="pricing-card featured reveal">
-                <div class="pricing-badge">Current</div>
-                <h3 class="pricing-name">Free</h3>
-                <div class="pricing-price">$0</div>
-                <div class="pricing-period">Forever free</div>
-                <ul class="pricing-features">
-                    <li>
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"/></svg>
-                        All capture modes
-                    </li>
-                    <li>
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"/></svg>
-                        Full annotation tools
-                    </li>
-                    <li>
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"/></svg>
-                        Quick notes & text
-                    </li>
-                    <li>
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"/></svg>
-                        Instant copy to clipboard
-                    </li>
-                    <li>
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"/></svg>
-                        Local storage
-                    </li>
-                </ul>
-                <a href="#install" class="pricing-btn pricing-btn-primary">Download Now</a>
-            </div>
-
-            <!-- Cloud Plan -->
-            <div class="pricing-card coming-soon reveal">
-                <div class="pricing-badge">Coming Soon</div>
-                <h3 class="pricing-name">Cloud</h3>
-                <div class="pricing-price">TBD</div>
-                <div class="pricing-period">Per month</div>
-                <ul class="pricing-features">
-                    <li>
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"/></svg>
-                        Everything in Free
-                    </li>
-                    <li>
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"/></svg>
-                        Cloud upload & storage
-                    </li>
-                    <li>
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"/></svg>
-                        Shareable links
-                    </li>
-                    <li>
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"/></svg>
-                        Sync across devices
-                    </li>
-                </ul>
-                <button class="pricing-btn pricing-btn-disabled" disabled>Coming Soon</button>
-            </div>
-
-            <!-- Enterprise Plan -->
-            <div class="pricing-card coming-soon reveal">
-                <div class="pricing-badge">Coming Soon</div>
-                <h3 class="pricing-name">Enterprise</h3>
-                <div class="pricing-price">TBD</div>
-                <div class="pricing-period">Per month</div>
-                <ul class="pricing-features">
-                    <li>
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"/></svg>
-                        Everything in Cloud
-                    </li>
-                    <li>
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"/></svg>
-                        Internal image sharing
-                    </li>
-                    <li>
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"/></svg>
-                        Shared team vault
-                    </li>
-                    <li>
-                        <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"/></svg>
-                        Priority support
-                    </li>
-                </ul>
-                <button class="pricing-btn pricing-btn-disabled" disabled>Coming Soon</button>
-            </div>
+        <!-- Cloud Plan -->
+        <div class="pricing-card coming-soon reveal">
+          <div class="pricing-badge">Coming Soon</div>
+          <h3 class="pricing-name">Cloud</h3>
+          <div class="pricing-price">TBD</div>
+          <div class="pricing-period">Per month</div>
+          <ul class="pricing-features">
+            <li>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path
+                  d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"
+                />
+              </svg>
+              Everything in Free
+            </li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path
+                  d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"
+                />
+              </svg>
+              Cloud upload & storage
+            </li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path
+                  d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"
+                />
+              </svg>
+              Shareable links
+            </li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path
+                  d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"
+                />
+              </svg>
+              Sync across devices
+            </li>
+          </ul>
+          <button class="pricing-btn pricing-btn-disabled" disabled>Coming Soon</button>
         </div>
+
+        <!-- Enterprise Plan -->
+        <div class="pricing-card coming-soon reveal">
+          <div class="pricing-badge">Coming Soon</div>
+          <h3 class="pricing-name">Enterprise</h3>
+          <div class="pricing-price">TBD</div>
+          <div class="pricing-period">Per month</div>
+          <ul class="pricing-features">
+            <li>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path
+                  d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"
+                />
+              </svg>
+              Everything in Cloud
+            </li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path
+                  d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"
+                />
+              </svg>
+              Internal image sharing
+            </li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path
+                  d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"
+                />
+              </svg>
+              Shared team vault
+            </li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor">
+                <path
+                  d="M12.207 4.793a1 1 0 0 1 0 1.414l-5 5a1 1 0 0 1-1.414 0l-2-2a1 1 0 0 1 1.414-1.414L6.5 9.086l4.293-4.293a1 1 0 0 1 1.414 0z"
+                />
+              </svg>
+              Priority support
+            </li>
+          </ul>
+          <button class="pricing-btn pricing-btn-disabled" disabled>Coming Soon</button>
+        </div>
+      </div>
     </section>
 
     <section class="install" id="install">
-        <div class="install-content">
-            <div class="section-header">
-                <div class="section-label">Install</div>
-                <h2 class="section-title">Get started in seconds</h2>
-                <p class="section-desc">
-                    Download and install Clik on your Mac with a single command.
-                </p>
-            </div>
-
-            <!-- Tabs for architecture selection -->
-            <div class="install-tabs reveal">
-                <div class="tabs-header">
-                    <button class="tab-btn active" data-tab="apple-silicon">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-                        </svg>
-                        <span>Apple Silicon</span>
-                        <span class="tab-subtitle">M1/M2/M3/M4</span>
-                    </button>
-                    <button class="tab-btn" data-tab="intel">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
-                        </svg>
-                        <span>Intel</span>
-                        <span class="tab-subtitle">x86_64</span>
-                    </button>
-                </div>
-
-                <div class="tabs-content">
-                    <!-- Apple Silicon tab -->
-                    <div class="tab-panel active" id="tab-apple-silicon">
-                        <div class="install-steps">
-                            <div class="step">
-                                <span class="step-number">1</span>
-                                <div class="step-content">
-                                    <div class="step-title">Open Terminal</div>
-                                    <div class="step-desc">Press <kbd>Cmd</kbd> + <kbd>Space</kbd>, type "Terminal", press Enter</div>
-                                </div>
-                            </div>
-                            <div class="step">
-                                <span class="step-number">2</span>
-                                <div class="step-content">
-                                    <div class="step-title">Run this command</div>
-                                    <div class="code-block">
-                                        <div class="code-header">
-                                            <span class="code-label">Terminal</span>
-                                            <button class="copy-btn" onclick="copyCode(this)">
-                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                                                </svg>
-                                                <span>Copy</span>
-                                            </button>
-                                        </div>
-                                        <pre><code>curl -L https://github.com/aiocean/clik-releases/releases/download/v0.11.0/clik_0.11.0_aarch64.dmg -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="step">
-                                <span class="step-number">3</span>
-                                <div class="step-content">
-                                    <div class="step-title">Install</div>
-                                    <div class="step-desc">Drag <strong>Clik.app</strong> to your <strong>Applications</strong> folder</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Intel tab -->
-                    <div class="tab-panel" id="tab-intel">
-                        <div class="install-steps">
-                            <div class="step">
-                                <span class="step-number">1</span>
-                                <div class="step-content">
-                                    <div class="step-title">Open Terminal</div>
-                                    <div class="step-desc">Press <kbd>Cmd</kbd> + <kbd>Space</kbd>, type "Terminal", press Enter</div>
-                                </div>
-                            </div>
-                            <div class="step">
-                                <span class="step-number">2</span>
-                                <div class="step-content">
-                                    <div class="step-title">Run this command</div>
-                                    <div class="code-block">
-                                        <div class="code-header">
-                                            <span class="code-label">Terminal</span>
-                                            <button class="copy-btn" onclick="copyCode(this)">
-                                                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                                                </svg>
-                                                <span>Copy</span>
-                                            </button>
-                                        </div>
-                                        <pre><code>curl -L https://github.com/aiocean/clik-releases/releases/download/v0.11.0/clik_0.11.0_x86_64.dmg -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg</code></pre>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="step">
-                                <span class="step-number">3</span>
-                                <div class="step-content">
-                                    <div class="step-title">Install</div>
-                                    <div class="step-desc">Drag <strong>Clik.app</strong> to your <strong>Applications</strong> folder</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- First run instructions -->
-            <div class="install-firstrun reveal">
-                <div class="firstrun-header">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="10"/>
-                        <path d="M12 16v-4M12 8h.01"/>
-                    </svg>
-                    <span>First time running?</span>
-                </div>
-                <p>Since Clik is ad-hoc signed, macOS may block it on first run. To fix this:</p>
-                <div class="firstrun-options">
-                    <div class="firstrun-option">
-                        <strong>Option 1:</strong> Right-click on Clik.app and select <strong>"Open"</strong>
-                    </div>
-                    <div class="firstrun-option">
-                        <strong>Option 2:</strong> Run this command in Terminal:
-                        <div class="code-block code-block-small">
-                            <button class="copy-btn copy-btn-small" onclick="copyCode(this)">
-                                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
-                                    <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
-                                </svg>
-                            </button>
-                            <code>xattr -cr /Applications/Clik.app</code>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <div class="install-content-wide">
+        <div class="section-header">
+          <div class="section-label">Install</div>
+          <h2 class="section-title">Get Clik in 3 steps</h2>
+          <p class="section-desc">Takes less than a minute. No account required.</p>
         </div>
+
+        <!-- Architecture selector -->
+        <div class="arch-selector reveal">
+          <span class="arch-label">Select your Mac:</span>
+          <div class="arch-toggle">
+            <button class="arch-btn active" data-arch="aarch64" onclick="selectArch('aarch64')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                <path
+                  d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"
+                />
+              </svg>
+              Apple Silicon
+              <span class="arch-hint">M1, M2, M3, M4</span>
+            </button>
+            <button class="arch-btn" data-arch="x86_64" onclick="selectArch('x86_64')">
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+              >
+                <rect x="4" y="4" width="16" height="16" rx="2" />
+                <path d="M9 9h6v6H9z" />
+              </svg>
+              Intel
+              <span class="arch-hint">2020 or older</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Steps -->
+        <div class="install-steps-wizard reveal">
+          <!-- Step 1: Open Terminal -->
+          <div class="wizard-step">
+            <div class="step-badge">1</div>
+            <div class="step-content">
+              <h3 class="step-title">Open Terminal</h3>
+              <p class="step-desc">
+                Press <kbd>⌘</kbd> <kbd>Space</kbd>, type <strong>Terminal</strong>, press
+                <kbd>Enter</kbd>
+              </p>
+              <div class="step-visual">
+                <div class="spotlight-mock">
+                  <div class="terminal-app-icon">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+                      <rect width="32" height="32" rx="7" fill="#000" />
+                      <path
+                        d="M8 22L14 16L8 10"
+                        stroke="#fff"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                      />
+                      <line
+                        x1="16"
+                        y1="22"
+                        x2="24"
+                        y2="22"
+                        stroke="#fff"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
+                    </svg>
+                  </div>
+                  <div class="spotlight-input">Terminal</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Step 2: Copy & Paste -->
+          <div class="wizard-step">
+            <div class="step-badge">2</div>
+            <div class="step-content">
+              <h3 class="step-title">Copy & paste this command</h3>
+              <p class="step-desc">
+                Click the button below, then paste in Terminal with <kbd>⌘</kbd> <kbd>V</kbd>
+              </p>
+              <div class="terminal-window">
+                <div class="terminal-header">
+                  <span class="terminal-dot"></span>
+                  <span class="terminal-dot"></span>
+                  <span class="terminal-dot"></span>
+                  <span class="terminal-title">Terminal</span>
+                </div>
+                <div class="terminal-body">
+                  <code id="terminal-cmd"
+                    >curl -L
+                    <span id="curl-url"
+                      >https://github.com/aiocean/clik-releases/releases/download/v0.11.0/clik_0.11.0_aarch64.dmg</span
+                    >
+                    -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg</code
+                  >
+                </div>
+              </div>
+              <button class="copy-cmd-btn" onclick="copyTerminalCmd()">
+                <svg
+                  width="16"
+                  height="16"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="2"
+                >
+                  <rect x="9" y="9" width="13" height="13" rx="2" ry="2" />
+                  <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1" />
+                </svg>
+                Copy command
+              </button>
+            </div>
+          </div>
+
+          <!-- Step 3: Install -->
+          <div class="wizard-step">
+            <div class="step-badge">3</div>
+            <div class="step-content">
+              <h3 class="step-title">Drag to Applications</h3>
+              <p class="step-desc">
+                A window will open. Drag <strong>Clik</strong> to
+                <strong>Applications</strong> folder.
+              </p>
+              <div class="step-visual">
+                <div class="dmg-mock">
+                  <div class="dmg-icons-row">
+                    <div class="dmg-icon app-icon">
+                      <img
+                        src="images/app-logo.png"
+                        alt="Clik"
+                        style="width: 100%; height: 100%; object-fit: cover; border-radius: 10px"
+                      />
+                    </div>
+                    <div class="dmg-arrow">→</div>
+                    <div class="dmg-icon folder-icon">
+                      <svg
+                        width="32"
+                        height="32"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="1.5"
+                      >
+                        <path
+                          d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"
+                        />
+                      </svg>
+                    </div>
+                  </div>
+                  <div class="dmg-labels">
+                    <span>Clik</span>
+                    <span></span>
+                    <span>Applications</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Done message -->
+        <div class="install-done reveal">
+          <svg
+            width="20"
+            height="20"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+          >
+            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+            <polyline points="22 4 12 14.01 9 11.01" />
+          </svg>
+          <span>That's it! Launch Clik from Applications and start capturing.</span>
+        </div>
+      </div>
     </section>
 
     <section class="cta">
-        <h2 class="reveal">Ready to capture<br>smarter?</h2>
-        <p class="reveal">Join developers and designers who've streamlined their AI workflow.</p>
-        <a href="#install" class="btn btn-primary reveal">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="7,10 12,15 17,10"/>
-                <line x1="12" y1="15" x2="12" y2="3"/>
-            </svg>
-            Download Clik
-        </a>
+      <h2 class="reveal">Ready to capture<br />smarter?</h2>
+      <p class="reveal">Join developers and designers who've streamlined their AI workflow.</p>
+      <a href="#install" class="btn btn-primary reveal">
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+          <polyline points="7,10 12,15 17,10" />
+          <line x1="12" y1="15" x2="12" y2="3" />
+        </svg>
+        Download Clik
+      </a>
     </section>
 
     <footer>
-        <div class="footer-content">
-            <a href="#" class="logo">
-                <div class="logo-icon">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/>
-                        <circle cx="12" cy="13" r="4"/>
-                    </svg>
-                </div>
-                Clik
-            </a>
-            <div class="footer-links">
-                <a href="https://github.com/aiocean/clik-releases" target="_blank">GitHub</a>
-                <a href="https://github.com/aiocean/clik-releases/releases" target="_blank">Releases</a>
-                <a href="https://github.com/aiocean/clik-releases/issues" target="_blank">Issues</a>
-            </div>
-            <div class="footer-copy">
-                Made with care by <a href="https://github.com/aiocean" target="_blank">aiocean</a>
-            </div>
+      <div class="footer-content">
+        <a href="#" class="logo">
+          <div class="logo-icon">
+            <img src="images/app-logo.png" alt="Clik" />
+          </div>
+          Clik
+        </a>
+        <div class="footer-links">
+          <a href="https://github.com/aiocean/clik-releases" target="_blank">GitHub</a>
+          <a href="https://github.com/aiocean/clik-releases/releases" target="_blank">Releases</a>
+          <a href="https://github.com/aiocean/clik-releases/issues" target="_blank">Issues</a>
         </div>
+        <div class="footer-copy">
+          Made with care by <a href="https://github.com/aiocean" target="_blank">aiocean</a>
+        </div>
+      </div>
     </footer>
 
     <script>
-        // Copy code functionality
-        function copyCode(btn) {
-            const codeBlock = btn.closest('.code-block') || btn.closest('.code-block-small');
-            const codeEl = codeBlock.querySelector('code');
-            let code = codeEl.textContent;
-            code = code.split('\n').filter(line => !line.trim().startsWith('#')).join('\n').trim();
+      // Download URLs
+      const DOWNLOAD_URLS = {
+        aarch64:
+          "https://github.com/aiocean/clik-releases/releases/download/v0.11.0/clik_0.11.0_aarch64.dmg",
+        x86_64:
+          "https://github.com/aiocean/clik-releases/releases/download/v0.11.0/clik_0.11.0_x86_64.dmg",
+      };
 
-            navigator.clipboard.writeText(code).then(() => {
-                const spanEl = btn.querySelector('span');
-                if (spanEl) {
-                    spanEl.textContent = 'Copied!';
-                    setTimeout(() => spanEl.textContent = 'Copy', 2000);
-                } else {
-                    btn.style.color = 'var(--accent)';
-                    setTimeout(() => btn.style.color = '', 2000);
-                }
-            });
+      // Architecture toggle
+      function selectArch(arch) {
+        document.querySelectorAll(".arch-btn").forEach((btn) => {
+          btn.classList.toggle("active", btn.dataset.arch === arch);
+        });
+        document.getElementById("curl-url").textContent = DOWNLOAD_URLS[arch];
+      }
+
+      // Copy terminal command
+      function copyTerminalCmd() {
+        const code = document
+          .getElementById("terminal-cmd")
+          .textContent.replace(/\s+/g, " ")
+          .trim();
+        navigator.clipboard.writeText(code).then(() => {
+          const btn = document.querySelector(".copy-cmd-btn");
+          btn.style.background = "#22c55e";
+          btn.lastChild.textContent = " Copied!";
+          setTimeout(() => {
+            btn.style.background = "";
+            btn.lastChild.textContent = " Copy command";
+          }, 2000);
+        });
+      }
+
+      // Copy code functionality (legacy)
+      function copyCode(btn) {
+        const codeBlock = btn.closest(".code-block") || btn.closest(".code-block-small");
+        const codeEl = codeBlock.querySelector("code");
+        let code = codeEl.textContent;
+        code = code
+          .split("\n")
+          .filter((line) => !line.trim().startsWith("#"))
+          .join("\n")
+          .trim();
+
+        navigator.clipboard.writeText(code).then(() => {
+          const spanEl = btn.querySelector("span");
+          if (spanEl) {
+            spanEl.textContent = "Copied!";
+            setTimeout(() => (spanEl.textContent = "Copy"), 2000);
+          } else {
+            btn.style.color = "var(--accent)";
+            setTimeout(() => (btn.style.color = ""), 2000);
+          }
+        });
+      }
+
+      // Tab switching (legacy)
+      document.querySelectorAll(".tab-btn").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const tabId = btn.dataset.tab;
+          document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+          btn.classList.add("active");
+          document.querySelectorAll(".tab-panel").forEach((p) => p.classList.remove("active"));
+          const panel = document.getElementById("tab-" + tabId);
+          if (panel) panel.classList.add("active");
+        });
+      });
+
+      // Scroll reveal
+      const reveals = document.querySelectorAll(".reveal");
+      const revealOnScroll = () => {
+        reveals.forEach((el) => {
+          const rect = el.getBoundingClientRect();
+          if (rect.top < window.innerHeight - 100) {
+            el.classList.add("visible");
+          }
+        });
+      };
+      window.addEventListener("scroll", revealOnScroll);
+      revealOnScroll();
+
+      // Nav scroll effect
+      const nav = document.querySelector("nav");
+      window.addEventListener("scroll", () => {
+        if (window.scrollY > 50) {
+          nav.classList.add("scrolled");
+        } else {
+          nav.classList.remove("scrolled");
         }
+      });
 
-        // Tab switching
-        document.querySelectorAll('.tab-btn').forEach(btn => {
-            btn.addEventListener('click', () => {
-                const tabId = btn.dataset.tab;
-                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                btn.classList.add('active');
-                document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
-                document.getElementById('tab-' + tabId).classList.add('active');
-            });
+      // Smooth scroll for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute("href"));
+          if (target) {
+            target.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
         });
+      });
 
-        // Scroll reveal
-        const reveals = document.querySelectorAll('.reveal');
-        const revealOnScroll = () => {
-            reveals.forEach(el => {
-                const rect = el.getBoundingClientRect();
-                if (rect.top < window.innerHeight - 100) {
-                    el.classList.add('visible');
-                }
-            });
-        };
-        window.addEventListener('scroll', revealOnScroll);
-        revealOnScroll();
+      // Lightbox functionality
+      const lightbox = document.getElementById("lightbox");
+      const lightboxImg = document.getElementById("lightbox-img");
+      const lightboxCaption = document.getElementById("lightbox-caption");
+      const featureImages = document.querySelectorAll(".feature-image");
+      let currentImageIndex = 0;
+      const imageList = [];
 
-        // Nav scroll effect
-        const nav = document.querySelector('nav');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                nav.classList.add('scrolled');
-            } else {
-                nav.classList.remove('scrolled');
-            }
-        });
+      featureImages.forEach((img, index) => {
+        imageList.push({ src: img.src, alt: img.alt });
+        img.addEventListener("click", () => openLightbox(index));
+      });
 
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-                }
-            });
-        });
+      function openLightbox(index) {
+        currentImageIndex = index;
+        lightboxImg.src = imageList[index].src;
+        lightboxCaption.textContent = imageList[index].alt;
+        lightbox.classList.add("active");
+        document.body.style.overflow = "hidden";
+      }
 
-        // Lightbox functionality
-        const lightbox = document.getElementById('lightbox');
-        const lightboxImg = document.getElementById('lightbox-img');
-        const lightboxCaption = document.getElementById('lightbox-caption');
-        const featureImages = document.querySelectorAll('.feature-image');
-        let currentImageIndex = 0;
-        const imageList = [];
+      function closeLightbox() {
+        lightbox.classList.remove("active");
+        document.body.style.overflow = "";
+      }
 
-        featureImages.forEach((img, index) => {
-            imageList.push({ src: img.src, alt: img.alt });
-            img.addEventListener('click', () => openLightbox(index));
-        });
+      function navigateLightbox(direction) {
+        currentImageIndex = (currentImageIndex + direction + imageList.length) % imageList.length;
+        lightboxImg.src = imageList[currentImageIndex].src;
+        lightboxCaption.textContent = imageList[currentImageIndex].alt;
+      }
 
-        function openLightbox(index) {
-            currentImageIndex = index;
-            lightboxImg.src = imageList[index].src;
-            lightboxCaption.textContent = imageList[index].alt;
-            lightbox.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
+      // Close lightbox on backdrop click
+      lightbox.addEventListener("click", (e) => {
+        if (e.target === lightbox) closeLightbox();
+      });
 
-        function closeLightbox() {
-            lightbox.classList.remove('active');
-            document.body.style.overflow = '';
-        }
-
-        function navigateLightbox(direction) {
-            currentImageIndex = (currentImageIndex + direction + imageList.length) % imageList.length;
-            lightboxImg.src = imageList[currentImageIndex].src;
-            lightboxCaption.textContent = imageList[currentImageIndex].alt;
-        }
-
-        // Close lightbox on backdrop click
-        lightbox.addEventListener('click', (e) => {
-            if (e.target === lightbox) closeLightbox();
-        });
-
-        // Keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            if (!lightbox.classList.contains('active')) return;
-            if (e.key === 'Escape') closeLightbox();
-            if (e.key === 'ArrowLeft') navigateLightbox(-1);
-            if (e.key === 'ArrowRight') navigateLightbox(1);
-        });
+      // Keyboard navigation
+      document.addEventListener("keydown", (e) => {
+        if (!lightbox.classList.contains("active")) return;
+        if (e.key === "Escape") closeLightbox();
+        if (e.key === "ArrowLeft") navigateLightbox(-1);
+        if (e.key === "ArrowRight") navigateLightbox(1);
+      });
     </script>
-</body>
+  </body>
 </html>
