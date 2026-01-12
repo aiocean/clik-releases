@@ -6,12 +6,12 @@ Minimal screenshot tool for AI-assisted workflows. Capture, annotate, send to AI
 
 **Apple Silicon (M1/M2/M3):**
 ```bash
-curl -L https://github.com/aiocean/clik-releases/releases/download/v0.13.0/clik_0.13.0_aarch64.dmg -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg
+curl -L https://github.com/aiocean/clik-releases/releases/download/v0.13.1/clik_0.13.1_aarch64.dmg -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg
 ```
 
 **Intel:**
 ```bash
-curl -L https://github.com/aiocean/clik-releases/releases/download/v0.13.0/clik_0.13.0_x86_64.dmg -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg
+curl -L https://github.com/aiocean/clik-releases/releases/download/v0.13.1/clik_0.13.1_x86_64.dmg -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg
 ```
 
 After downloading, open the DMG and drag Clik to Applications.
