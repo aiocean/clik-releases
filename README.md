@@ -4,14 +4,10 @@ Minimal screenshot tool for AI-assisted workflows. Capture, annotate, send to AI
 
 ## Install
 
-**Apple Silicon (M1/M2/M3):**
-```bash
-curl -L https://github.com/aiocean/clik-releases/releases/download/v0.14.0/clik_0.14.0_aarch64.dmg -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg
-```
+**Requires Apple Silicon (M1/M2/M3/M4):**
 
-**Intel:**
 ```bash
-curl -L https://github.com/aiocean/clik-releases/releases/download/v0.14.0/clik_0.14.0_x86_64.dmg -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg
+curl -L https://github.com/aiocean/clik-releases/releases/download/v0.16.12/clik_0.16.12_aarch64.dmg -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg
 ```
 
 After downloading, open the DMG and drag Clik to Applications.
@@ -21,16 +17,21 @@ After downloading, open the DMG and drag Clik to Applications.
 ## Features
 
 ### Simple & Clean
+
 ![Simplicity](docs/screenshot/simplecity.webp)
 
 ### Multiple Capture
+
 ![Multiple Capture](docs/screenshot/multiple-capture.webp)
 
 ### Annotation Tools
+
 ![Annotation](docs/screenshot/anotation.webp)
 
 ### Notes
+
 ![Note](docs/screenshot/note.webp)
 
 ### Advanced Tools - Freewriting & Highlight
+
 ![Advanced Tools](docs/screenshot/advanced-tool-freewriting-highlight.webp)

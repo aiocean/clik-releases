@@ -694,31 +694,6 @@
         margin: 0 auto;
       }
 
-      /* Architecture selector */
-      .arch-selector {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 0.75rem;
-        margin: 2.5rem 0;
-      }
-
-      .arch-label {
-        font-size: 0.875rem;
-        color: var(--text-secondary);
-      }
-
-      .arch-hint {
-        font-size: 0.6875rem;
-        color: var(--text-muted);
-        font-weight: 400;
-        margin-left: 0.25rem;
-      }
-
-      .arch-btn.active .arch-hint {
-        color: var(--text-secondary);
-      }
-
       /* Install wizard steps */
       .install-steps-wizard {
         display: flex;
@@ -895,42 +870,6 @@
         border-radius: 20px;
         padding: 2rem;
         margin-top: 2.5rem;
-      }
-
-      /* Architecture toggle */
-      .arch-toggle {
-        display: inline-flex;
-        background: var(--bg-tertiary);
-        border-radius: 10px;
-        padding: 4px;
-        gap: 4px;
-        margin-bottom: 1.5rem;
-      }
-
-      .arch-btn {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.625rem 1rem;
-        background: transparent;
-        border: none;
-        border-radius: 8px;
-        font-family: var(--font-display);
-        font-size: 0.8125rem;
-        font-weight: 500;
-        color: var(--text-muted);
-        cursor: pointer;
-        transition: all 0.2s ease;
-      }
-
-      .arch-btn:hover {
-        color: var(--text-secondary);
-      }
-
-      .arch-btn.active {
-        background: var(--bg-primary);
-        color: var(--text-primary);
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
       }
 
       /* Download button */
@@ -2300,36 +2239,10 @@
           <p class="section-desc">Takes less than a minute. No account required.</p>
         </div>
 
-        <!-- Architecture selector -->
-        <div class="arch-selector reveal">
-          <span class="arch-label">Select your Mac:</span>
-          <div class="arch-toggle">
-            <button class="arch-btn active" data-arch="aarch64" onclick="selectArch('aarch64')">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
-                <path
-                  d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.81-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"
-                />
-              </svg>
-              Apple Silicon
-              <span class="arch-hint">M1, M2, M3, M4</span>
-            </button>
-            <button class="arch-btn" data-arch="x86_64" onclick="selectArch('x86_64')">
-              <svg
-                width="16"
-                height="16"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-              >
-                <rect x="4" y="4" width="16" height="16" rx="2" />
-                <path d="M9 9h6v6H9z" />
-              </svg>
-              Intel
-              <span class="arch-hint">2020 or older</span>
-            </button>
-          </div>
-        </div>
+        <!-- Requirement note -->
+        <p class="section-desc reveal" style="margin-top: 1.5rem; font-size: 0.875rem">
+          <strong>Requires Apple Silicon</strong> (M1, M2, M3, M4)
+        </p>
 
         <!-- Steps -->
         <div class="install-steps-wizard reveal">
@@ -2389,9 +2302,7 @@
                 <div class="terminal-body">
                   <code id="terminal-cmd"
                     >curl -L
-                    <span id="curl-url"
-                      >https://github.com/aiocean/clik-releases/releases/download/v0.14.0/clik_0.14.0_aarch64.dmg</span
-                    >
+                    https://github.com/aiocean/clik-releases/releases/download/v0.16.12/clik_0.16.12_aarch64.dmg
                     -o ~/Downloads/Clik.dmg && open ~/Downloads/Clik.dmg</code
                   >
                 </div>
@@ -2519,22 +2430,6 @@
     </footer>
 
     <script>
-      // Download URLs
-      const DOWNLOAD_URLS = {
-        aarch64:
-          "https://github.com/aiocean/clik-releases/releases/download/v0.14.0/clik_0.14.0_aarch64.dmg",
-        x86_64:
-          "https://github.com/aiocean/clik-releases/releases/download/v0.14.0/clik_0.14.0_x86_64.dmg",
-      };
-
-      // Architecture toggle
-      function selectArch(arch) {
-        document.querySelectorAll(".arch-btn").forEach((btn) => {
-          btn.classList.toggle("active", btn.dataset.arch === arch);
-        });
-        document.getElementById("curl-url").textContent = DOWNLOAD_URLS[arch];
-      }
-
       // Copy terminal command
       function copyTerminalCmd() {
         const code = document
