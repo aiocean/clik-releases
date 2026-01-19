@@ -2599,9 +2599,9 @@
         lightboxCaption.textContent = imageList[currentImageIndex].alt;
       }
 
-      // Close lightbox on backdrop click
+      // Close lightbox on backdrop or image click
       lightbox.addEventListener("click", (e) => {
-        if (e.target === lightbox) closeLightbox();
+        if (e.target === lightbox || e.target === lightboxImg) closeLightbox();
       });
 
       // Keyboard navigation
