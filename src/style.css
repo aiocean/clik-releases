@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+/* Tailwind v4 theme config */
+@theme {
+  --color-primary: #0f2134;
+  --color-secondary: #475569;
+  --color-background-light: #f6f7f8;
+  --color-background-dark: #13191f;
+  --color-surface: #ffffff;
+
+  --font-sans: "Space Grotesk", sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --shadow-soft: 0 4px 20px -2px rgba(15, 33, 52, 0.05);
+  --shadow-glow: 0 0 20px rgba(15, 33, 52, 0.15);
+
+  --animate-marquee: marquee 60s linear infinite;
+  --animate-pulse-slow: pulse 3s ease-in-out infinite;
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(0);
+    }
+    100% {
+      transform: translateX(-50%);
+    }
+  }
+}
+
+body {
+  font-family: "Space Grotesk", sans-serif;
+}
+
+button,
+input,
+select,
+textarea,
+kbd,
+code {
+  font-family: inherit;
+}
+
+kbd {
+  font-family: "JetBrains Mono", monospace;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Hover pause marquee */
+.group:hover .animate-marquee {
+  animation-play-state: paused;
+}
+
+/* Center node */
+.center-node {
+  height: 6rem;
+  width: 6rem;
+  transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.center-node.hidden-for-expand {
+  opacity: 0;
+  transform: scale(0.5);
+  pointer-events: none;
+}
+
+/* Floating card states */
+.floating-card {
+  transition: all 0.6s cubic-bezier(0.32, 0.72, 0, 1);
+  transform-origin: center center;
+}
+.floating-card:not(.expanding):not(.hidden-card):hover {
+  transform: scale(1.05) rotate(0deg) !important;
+  z-index: 40;
+}
+.floating-card.hidden-card {
+  opacity: 0;
+  transform: scale(0.8);
+  pointer-events: none;
+}
+.floating-card.expanding {
+  z-index: 50;
+  border-radius: 1rem;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  cursor: zoom-out;
+}
+
+/* Default rotations */
+.floating-card:not(.expanding):not(.hidden-card)[data-card="blue"] {
+  transform: rotate(-6deg);
+}
+.floating-card:not(.expanding):not(.hidden-card)[data-card="green"] {
+  transform: rotate(3deg);
+}
+.floating-card:not(.expanding):not(.hidden-card)[data-card="purple"] {
+  transform: rotate(12deg);
+}
+.floating-card:not(.expanding):not(.hidden-card)[data-card="orange"] {
+  transform: rotate(-12deg);
+}
