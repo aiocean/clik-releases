@@ -1,8 +1,9 @@
 import tailwindcss from "@tailwindcss/vite";
 import { defineConfig } from "vite";
+import annotator from "vite-plugin-ai-annotator";
 
 export default defineConfig({
-  plugins: [tailwindcss()],
+  plugins: [tailwindcss(), annotator({ port: 7318, autoSetupMcp: true })],
   base: "/clik-releases/",
   build: {
     outDir: ".",
