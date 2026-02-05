@@ -3,6 +3,7 @@ import { defineConfig } from "vite";
 
 export default defineConfig({
   plugins: [tailwindcss()],
+  base: "/clik-releases/",
   build: {
     outDir: ".",
     emptyOutDir: false,
