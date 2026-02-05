@@ -7,6 +7,7 @@
   --color-background-light: #f6f7f8;
   --color-background-dark: #13191f;
   --color-surface: #ffffff;
+  --color-demo-bg: #1a1a2e;
 
   --font-sans: "Space Grotesk", sans-serif;
   --font-display: "Space Grotesk", sans-serif;
@@ -62,45 +63,160 @@ kbd {
 .center-node {
   height: 6rem;
   width: 6rem;
-  transition: all 0.5s cubic-bezier(0.25, 0.1, 0.25, 1);
-}
-.center-node.hidden-for-expand {
-  opacity: 0;
-  transform: scale(0.5);
-  pointer-events: none;
 }
 
-/* Floating card states */
-.floating-card {
-  transition: all 0.6s cubic-bezier(0.32, 0.72, 0, 1);
-  transform-origin: center center;
+/* Floating cards - default rotations */
+.floating-card[data-card="blue"] {
+  --card-rotation: -6deg;
 }
-.floating-card:not(.expanding):not(.hidden-card):hover {
-  transform: scale(1.05) rotate(0deg) !important;
+.floating-card[data-card="green"] {
+  --card-rotation: 3deg;
+}
+.floating-card[data-card="purple"] {
+  --card-rotation: 12deg;
+}
+.floating-card[data-card="orange"] {
+  --card-rotation: -12deg;
+}
+
+.floating-card {
+  transform: rotate(var(--card-rotation, 0deg));
+  transform-origin: center center;
+  transition: transform 0.3s ease;
+}
+
+.floating-card:hover {
+  transform: scale(1.05) rotate(0deg);
   z-index: 40;
 }
-.floating-card.hidden-card {
-  opacity: 0;
-  transform: scale(0.8);
-  pointer-events: none;
-}
-.floating-card.expanding {
+
+/* Expanded card styling (transform handled by JS) */
+.floating-card.expanded {
   z-index: 50;
   border-radius: 1rem;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   cursor: zoom-out;
 }
 
-/* Default rotations */
-.floating-card:not(.expanding):not(.hidden-card)[data-card="blue"] {
-  transform: rotate(-6deg);
+/* Workflow Demo Skeleton Styles */
+.workflow-demo {
+  position: relative;
+  background-color: #1a1a2e;
+  aspect-ratio: 4 / 3;
+  min-height: 400px;
 }
-.floating-card:not(.expanding):not(.hidden-card)[data-card="green"] {
-  transform: rotate(3deg);
+
+.skeleton-box {
+  background: linear-gradient(135deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.02) 100%);
+  border: 1px solid rgba(255,255,255,0.08);
+  position: relative;
+  overflow: hidden;
 }
-.floating-card:not(.expanding):not(.hidden-card)[data-card="purple"] {
-  transform: rotate(12deg);
+
+.skeleton-line {
+  background: rgba(255,255,255,0.08);
+  border-radius: 4px;
 }
-.floating-card:not(.expanding):not(.hidden-card)[data-card="orange"] {
-  transform: rotate(-12deg);
+
+/* Step dot active state */
+.step-dot.active {
+  background: #f97316;
+  transform: scale(1.3);
+}
+
+/* Scene transitions */
+.scene.active {
+  opacity: 1;
+}
+
+/* Hotkey animation */
+.hotkey-hint.show {
+  opacity: 1;
+  animation: hotkey-pop 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes hotkey-pop {
+  0% { transform: scale(0.8); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Selection box expanded */
+.selection-box.expanded {
+  width: 70% !important;
+  height: 50% !important;
+}
+
+/* Crosshair animation */
+.crosshair.show {
+  opacity: 1;
+}
+
+.crosshair.move {
+  animation: crosshair-move 0.8s ease-out forwards;
+}
+
+@keyframes crosshair-move {
+  0% { transform: translate(0, 0); }
+  100% { transform: translate(200px, 120px); }
+}
+
+/* Capture flash */
+.capture-flash.flash {
+  animation: flash-effect 0.3s ease-out;
+}
+
+@keyframes flash-effect {
+  0% { opacity: 0; }
+  30% { opacity: 0.8; }
+  100% { opacity: 0; }
+}
+
+/* Capture result reveal */
+.capture-result.show {
+  opacity: 1 !important;
+  transform: scale(1) !important;
+}
+
+/* Tool icons stagger animation */
+.tool-icon.show {
+  opacity: 1;
+  animation: tool-pop 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes tool-pop {
+  0% { transform: scale(0); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+/* Annotation marker animation */
+.annotation-marker.show {
+  opacity: 1 !important;
+  transform: scale(1) !important;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+/* AI message animation */
+.ai-message.show {
+  opacity: 1;
+  animation: message-slide 0.4s ease-out;
+}
+
+@keyframes message-slide {
+  0% { transform: translateY(10px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+/* Upload bar animation */
+.upload-bar.complete {
+  width: 100% !important;
+}
+
+/* Typing dots bounce */
+.typing-dots .animate-bounce {
+  animation: bounce-dot 1s ease-in-out infinite;
+}
+
+@keyframes bounce-dot {
+  0%, 60%, 100% { transform: translateY(0); }
+  30% { transform: translateY(-4px); }
 }

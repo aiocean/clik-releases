@@ -18,8 +18,35 @@
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
         rel="stylesheet" />
 
-  <script type="module" crossorigin src="/clik-releases/assets/index-BVwnvM-x.js"></script>
-  <link rel="stylesheet" crossorigin href="/clik-releases/assets/index-BM2rUf4S.css">
+  <style>
+    /* Workflow Demo Styles - Static wireframe look */
+    .skeleton-box {
+      background: rgba(255,255,255,0.03);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    .skeleton-line {
+      background: rgba(255,255,255,0.08);
+      border-radius: 4px;
+    }
+    .step-dot.active { background: #f97316 !important; transform: scale(1.3); }
+    .scene.active { opacity: 1 !important; }
+    .hotkey-hint.show { opacity: 1 !important; animation: pop 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+    .selection-box.expanded { width: 70% !important; height: 50% !important; }
+    .crosshair.show { opacity: 1 !important; }
+    .crosshair.move { animation: crosshair-move 0.8s ease-out forwards; }
+    @keyframes crosshair-move { 0% { transform: translate(0,0); } 100% { transform: translate(200px,120px); } }
+    .capture-flash.flash { animation: flash 0.3s ease-out; }
+    @keyframes flash { 0% { opacity: 0; } 30% { opacity: 0.8; } 100% { opacity: 0; } }
+    .capture-result.show { opacity: 1 !important; transform: scale(1) !important; }
+    .tool-icon.show { opacity: 1 !important; animation: pop 0.3s cubic-bezier(0.34,1.56,0.64,1); }
+    @keyframes pop { 0% { transform: scale(0); } 100% { transform: scale(1); } }
+    .annotation-marker.show { opacity: 1 !important; transform: scale(1) !important; transition: all 0.4s cubic-bezier(0.34,1.56,0.64,1); }
+    .ai-message.show { opacity: 1 !important; animation: slide 0.4s ease-out; }
+    @keyframes slide { 0% { transform: translateY(10px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+    .upload-bar.complete { width: 100% !important; }
+  </style>
+  <script type="module" crossorigin src="/assets/index-DM6pH30K.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-PdM8yM96.css">
 </head>
 
 <body
@@ -29,9 +56,7 @@
     <nav class="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-md">
         <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
             <div class="flex items-center gap-2 cursor-pointer">
-                <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-primary text-white shadow-md">
-                    <span class="material-symbols-outlined text-[20px]">screenshot_region</span>
-                </div>
+                <img src="/assets/logo-f7RbLSmD-f7RbLSmD.png" alt="Clik" class="h-8 w-8 rounded-lg shadow-md">
                 <span class="text-lg font-bold tracking-tight text-primary">Clik</span>
             </div>
 
@@ -96,97 +121,282 @@
 
                         <div class="mt-6 flex items-center gap-4 text-sm text-secondary">
                             <div class="flex -space-x-2">
-                                <div
-                                    class="h-8 w-8 rounded-full border-2 border-white bg-gradient-to-br from-blue-400 to-blue-600">
-                                </div>
-                                <div
-                                    class="h-8 w-8 rounded-full border-2 border-white bg-gradient-to-br from-green-400 to-green-600">
-                                </div>
-                                <div
-                                    class="h-8 w-8 rounded-full border-2 border-white bg-gradient-to-br from-purple-400 to-purple-600">
-                                </div>
+                                <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBERISGBUYLxoaL2NCOEJjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY//CABEIADAAMAMBIgACEQEDEQH/xAAbAAACAwEBAQAAAAAAAAAAAAAGBwIEBQMAAf/aAAgBAQAAAAB1epfLcIKJbYrJby8ShREPJ+WMw8sXPwfhpXZXcfN4noOwP//EABYBAQEBAAAAAAAAAAAAAAAAAAIBAP/aAAoCAhADEAAAACtqYy6Zoyv/xAAqEAACAgEDAgQHAQEAAAAAAAABAgMEAAUREgYhEzEycQcVIkFRgZFTYf/aAAgBAQABPwDDsBuTsMsavp1bfx7kKe7ZV1TT7r8Kt2CV/Pgrjf8AmEYRmoX4NMoyW7DbRoPIebH7AZ1R8QZ4EZ7FhY+fogjYE5d6i1zWS4jleCL8ITyP7x47VCytgzzRTg8lfc750j8bLtApU1+M2q3+6etc03rLQNZ02W/R1KOSCLYS7gqU9wc+LPVV2ThBpcEslKDu0/H6C+I0tu0JJnaWRz3ZzlDQLs8DuhCwg7s3LbYDNd02w1NLcrw8TGrhQ3dR+P8AmBSzbLmlXoNIglFSxYM8y+HIHQCNl/u+4OWupfmQl+Y1mnZ12UiYgR+y5A3BFcDup75ojrPXXw1SwNvS/l7HNfmeCrKlqpFAkrgBYo+BbI6RlsJ4ThUkPbsSQMoRdO1KaR24IH7d2lj7t+zg06sZd47TOg+wTvkKRvBMgbsxPEHK5ZakM0EzQS7bOwbbyyppdi9MLF2Yzgejmd/3iW4dO1mZ+Wxjj2IABPc5V0WDV5nmmvcvuxJJye2JU4z14oGI9QTiWwRtUd423DA74ULuEB7u2wAOIsVGgp2CqiZXuOupyXPCWUs25V/I5LaEmnJKicBx+lQRxz//xAAZEQEBAQEBAQAAAAAAAAAAAAABAAIhEBH/2gAIAQIBAT8AdfIX0bWght8tcv/EABkRAAMBAQEAAAAAAAAAAAAAAAABAhEiEP/aAAgBAwEBPwCZ0aXjHKwmGykkR0R0f//Z" alt="" class="h-8 w-8 rounded-full border-2 border-white object-cover">
+                                <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBERISGBUYLxoaL2NCOEJjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY//CABEIADAAMAMBIgACEQEDEQH/xAAaAAADAAMBAAAAAAAAAAAAAAAEBQcBAgYD/9oACAEBAAAAAI50g+6tSYZZWMWRehFQZy5NqTQ2M/VCYfHc4z53Pucp3//EABgBAQEBAQEAAAAAAAAAAAAAAAMEAQAC/9oACgICEAMQAAAANwsebRmpc0n8Jvf/xAAqEAACAQQBAgUEAwEAAAAAAAABAgMABAUREhNBBhQhIjFCUWFxMpGi0f/aAAgBAQABPwDHkLevJ8lfgEVfXktzjVt7c7gOuY7A0sSD5AFPDE6kaBHer+Bbe3HTBA5elNy6jPokd6tU6dxOhbj6aJqzdh0rSN9tJIByPwu68NYaytrf2WyF9fzZdsazGCx17aMJbNC2vR1XTL+jWXgWC8vcazcnh9Vb79xUa7sLhj8gijsSXDhSdivDsHnc5bxlypLciR21VpgMna3NvdyZRlCyDSRO55/vbVlsJkMlkXu7TIvGo9pgkd+H+WFeMLObH589SUFnjUs+yddqSIx4ydjrizDiRUILTSxgnXH0rDO2PzdtJLpQfxV/mZb2GHH26uACrNcKxCrWKy8ti/k5UeTrM2rgMWHcgGvHN0t5m0CadkQLTWc8eGeaXkA8o1y70k4gnaTiD7QAK6rT3iSzMTs62O1QZ0W1qbLIWokiP1r9QqHxGbpYMbh7A8idKv8A2r51gzLMri4aJhyY/DMPnX4rM56PKWChEEZB2yfamXixFe4rxO+IO9V5yXpBCFIHfXrVj4gvsbbTwWnl16oKmbp+/X4NEacfqkRm9V/s1//EABoRAAIDAQEAAAAAAAAAAAAAAAABAhEhMSL/2gAIAQIBAT8AkWQeD4zeiflFDgOCdM//xAAeEQACAgICAwAAAAAAAAAAAAAAAgERAyISEyExQf/aAAgBAwEBPwDGq1sdqxrRnXk3gr1JQsbMc5qiMgmZkiYj6f/Z" alt="" class="h-8 w-8 rounded-full border-2 border-white object-cover">
+                                <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBERISGBUYLxoaL2NCOEJjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY//CABEIADAAMAMBIgACEQEDEQH/xAAaAAACAwEBAAAAAAAAAAAAAAADBgQFBwEA/9oACAEBAAAAALM5RNKon9d5x4WMsr6GhMp31Jx6PTzUePutvkelJsJ39//EABgBAAMBAQAAAAAAAAAAAAAAAAABAwIE/9oACgICEAMQAAAA5L3lh4pc5xMqY//EAC0QAAICAgEBBwMDBQAAAAAAAAIDAQQFEQASBhMhIjFBURRSYTI0cYOhsdHh/9oACAEBAAE/AFZK3ZxyLVi2CjtL7yIAvEfif41yh2jyZGRA9ZJE+mN66Tj7uW+09Wv0hevAGy8p9Wtco5V1q4EnTOxUlvQoiLY7n04B4+rjXHl1ToPN8b52YdJqfbdDBIbJxXTvcSGuHXq4ayCWMKwYgEFW9SmB+J5OUNxqbUp93IlK1qD2gvaeJ7D4bNwt+W6JaA6hce3Iw9Ps9iG1qZsmsLRMC9ZT/wA5ctAaCUTBM5jyLKOouVMlJgSkrVEJGZkTHpifedct37q7BPJhd6UyYTP28wcG51RiRNZyyDL88VZzzr6UygKKdecyYEjPxMTHKNrKWYsVspeokgIkDEWQZHv/ABy1RDJ5VTRyr0ur+cOjy7DeunmYrk+oT09XeBvoHfifMlTTkgh8aFCigYgY3Pjrh07KkEbTVIpDYiuNeb2LmMbcy18xvrC2rWgI2wEL17eMxEczlVlTJV7Svp1Vw0HRVYJbn8yPhzAVCvFbs3UpAl6ATKdFIdMa/triRKW94C4YKhmJ3OojlTBHmMa0qM92mWeUfT04lT5CxRfjjK0apAdeO9+kzzIw3snknVTorspMRIlsiDgS1yczbz7EVvo01KwHEwKl63/Ec7PlrHKS4BjpXESOvTk/SQP7ZM/0452fp5i9bmphT7hERHfOL9MDvlLF1sNWIUQbXF+tzJ2Rf6jnaXBDlXyZ1ldf3RvfMP2cHFz35LHridB+Z5jxJGxKfGR5ZvypZF8c/8QAGhEBAAMBAQEAAAAAAAAAAAAAAQACESEDE//aAAgBAgEBPwBAYeQGy1y3Cb0myxnZ1n0chbCf/8QAGhEAAwEAAwAAAAAAAAAAAAAAAAECERAxUf/aAAgBAwEBPwAdMlNdmGC84Uoc6z//2Q==" alt="" class="h-8 w-8 rounded-full border-2 border-white object-cover">
                             </div>
                             <p>Trusted by developers & designers</p>
                         </div>
                     </div>
 
-                    <!-- Right Visual - Floating Cards -->
-                    <div id="hero-visual"
-                        class="relative h-[400px] w-full lg:h-[600px] flex items-center justify-center">
-                        <!-- Dot grid background -->
-                        <div
-                            class="absolute inset-0 bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px] [mask-image:radial-gradient(ellipse_50%_50%_at_50%_50%,#000_70%,transparent_100%)]">
-                        </div>
+                    <!-- Right Visual - Animated Workflow Demo -->
+                    <div id="hero-visual" class="relative w-full flex items-center justify-center">
+                        <div class="workflow-demo w-full max-w-2xl rounded-xl shadow-2xl border border-gray-200 overflow-hidden" style="background:#1a1a2e;aspect-ratio:4/3;min-height:400px;position:relative">
+                            <!-- Step indicators -->
+                            <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex gap-2 z-20">
+                                <div class="step-dot w-2 h-2 rounded-full bg-white/30 transition-all duration-300" data-step="0"></div>
+                                <div class="step-dot w-2 h-2 rounded-full bg-white/30 transition-all duration-300" data-step="1"></div>
+                                <div class="step-dot w-2 h-2 rounded-full bg-white/30 transition-all duration-300" data-step="2"></div>
+                                <div class="step-dot w-2 h-2 rounded-full bg-white/30 transition-all duration-300" data-step="3"></div>
+                                <div class="step-dot w-2 h-2 rounded-full bg-white/30 transition-all duration-300" data-step="4"></div>
+                            </div>
 
-                        <!-- Center Node -->
-                        <div id="center-node"
-                            class="center-node relative z-30 rounded-2xl border border-gray-100 bg-white shadow-glow flex items-center justify-center hover:scale-105">
-                            <span
-                                class="material-symbols-outlined text-5xl text-primary animate-pulse-slow">auto_awesome</span>
-                        </div>
+                            <!-- Step label -->
+                            <div class="absolute top-4 left-4 z-20">
+                                <span id="step-label" class="text-xs font-mono font-medium text-white/60 uppercase tracking-wider"></span>
+                            </div>
 
-                        <!-- Floating Cards -->
-                        <div class="floating-card absolute w-40 sm:w-48 rounded-lg bg-white p-3 shadow-soft border border-gray-100 cursor-pointer z-20 top-1/4 left-0 lg:left-10"
-                            data-card="blue" data-icon="code" data-color="blue">
-                            <div
-                                class="card-image h-20 sm:h-24 w-full rounded bg-gradient-to-br from-blue-100 to-blue-50 mb-2 flex items-center justify-center">
-                                <span class="material-symbols-outlined text-3xl text-blue-500">code</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-xs text-blue-500">code</span>
-                                <div class="h-2 flex-grow rounded-full bg-blue-100"></div>
+                            <!-- Scene container -->
+                            <div id="scene-container" class="relative w-full h-full">
+
+                                <!-- Scene 0: Desktop with hotkey -->
+                                <div class="scene absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-500" data-scene="0">
+                                    <div class="relative w-[85%] h-[75%]">
+                                        <!-- Skeleton desktop -->
+                                        <div class="skeleton-box w-full h-full rounded-lg">
+                                            <!-- Menu bar -->
+                                            <div class="h-6 bg-white/5 flex items-center px-3 gap-1.5 rounded-t-lg">
+                                                <div class="w-2.5 h-2.5 rounded-full bg-red-400/60"></div>
+                                                <div class="w-2.5 h-2.5 rounded-full bg-yellow-400/60"></div>
+                                                <div class="w-2.5 h-2.5 rounded-full bg-green-400/60"></div>
+                                            </div>
+                                            <!-- Content skeleton - CONSISTENT layout -->
+                                            <div class="p-4 space-y-3">
+                                                <div class="skeleton-line w-3/4 h-4"></div>
+                                                <div class="skeleton-line w-full h-3"></div>
+                                                <div class="skeleton-line w-5/6 h-3"></div>
+                                                <!-- Three image boxes - this is what gets captured -->
+                                                <div class="mt-4 flex gap-3">
+                                                    <div class="skeleton-box w-16 h-16 rounded flex items-center justify-center">
+                                                        <div class="w-6 h-6 border border-white/20 rounded"></div>
+                                                    </div>
+                                                    <div class="skeleton-box w-16 h-16 rounded flex items-center justify-center">
+                                                        <div class="w-6 h-6 border border-white/20 rounded-full"></div>
+                                                    </div>
+                                                    <div class="skeleton-box w-16 h-16 rounded flex items-center justify-center">
+                                                        <div class="w-6 h-4 border border-white/20 rounded-sm"></div>
+                                                    </div>
+                                                </div>
+                                                <!-- Button row -->
+                                                <div class="flex gap-2 mt-3">
+                                                    <div class="skeleton-line w-16 h-6 rounded"></div>
+                                                    <div class="skeleton-line w-20 h-6 rounded"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Hotkey hint -->
+                                        <div class="hotkey-hint absolute bottom-6 right-6 flex items-center gap-2 bg-white/10 backdrop-blur-sm rounded-lg px-3 py-2" style="opacity:0;transform:scale(0.9);transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1)">
+                                            <kbd class="px-2 py-1 text-xs font-mono bg-white/20 rounded text-white/90">⌘</kbd>
+                                            <kbd class="px-2 py-1 text-xs font-mono bg-white/20 rounded text-white/90">⇧</kbd>
+                                            <kbd class="px-2 py-1 text-xs font-mono bg-white/20 rounded text-white/90">4</kbd>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Scene 1: Selection overlay - SAME content, selection covers bottom portion -->
+                                <div class="scene absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-500" data-scene="1">
+                                    <div class="relative w-[85%] h-[75%]">
+                                        <!-- Skeleton desktop (dimmed) - SAME as Scene 0 -->
+                                        <div class="skeleton-box w-full h-full rounded-lg opacity-40">
+                                            <div class="h-6 bg-white/5 flex items-center px-3 gap-1.5 rounded-t-lg">
+                                                <div class="w-2.5 h-2.5 rounded-full bg-red-400/40"></div>
+                                                <div class="w-2.5 h-2.5 rounded-full bg-yellow-400/40"></div>
+                                                <div class="w-2.5 h-2.5 rounded-full bg-green-400/40"></div>
+                                            </div>
+                                            <div class="p-4 space-y-3">
+                                                <div class="skeleton-line w-3/4 h-4"></div>
+                                                <div class="skeleton-line w-full h-3"></div>
+                                                <div class="skeleton-line w-5/6 h-3"></div>
+                                                <!-- Same three image boxes -->
+                                                <div class="mt-4 flex gap-3">
+                                                    <div class="skeleton-box w-16 h-16 rounded flex items-center justify-center">
+                                                        <div class="w-6 h-6 border border-white/20 rounded"></div>
+                                                    </div>
+                                                    <div class="skeleton-box w-16 h-16 rounded flex items-center justify-center">
+                                                        <div class="w-6 h-6 border border-white/20 rounded-full"></div>
+                                                    </div>
+                                                    <div class="skeleton-box w-16 h-16 rounded flex items-center justify-center">
+                                                        <div class="w-6 h-4 border border-white/20 rounded-sm"></div>
+                                                    </div>
+                                                </div>
+                                                <!-- Button row -->
+                                                <div class="flex gap-2 mt-3">
+                                                    <div class="skeleton-line w-16 h-6 rounded"></div>
+                                                    <div class="skeleton-line w-20 h-6 rounded"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Selection box - starts at top-left, expands to bottom-right -->
+                                        <div class="selection-box absolute top-[25%] left-[5%] w-0 h-0 border-2 border-orange-400 bg-orange-400/10 rounded transition-all duration-900 ease-out"></div>
+                                        <!-- Crosshair cursor - starts at same position, moves to bottom-right of selection -->
+                                        <div class="crosshair absolute top-[25%] left-[5%]" style="opacity:0;transition:opacity 0.2s">
+                                            <div class="w-5 h-5 relative">
+                                                <div class="absolute top-1/2 left-0 w-full h-px bg-white/90 -translate-y-1/2"></div>
+                                                <div class="absolute left-1/2 top-0 h-full w-px bg-white/90 -translate-x-1/2"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Scene 2: Capture flash - shows the CAPTURED content (3 boxes + buttons) -->
+                                <div class="scene absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-500" data-scene="2">
+                                    <div class="relative w-[85%] h-[75%]">
+                                        <!-- Captured region - SAME content as what was selected -->
+                                        <div class="capture-result skeleton-box w-[65%] h-[50%] rounded-lg mx-auto mt-[12%]" style="opacity:0;transform:scale(0.95);transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1)">
+                                            <div class="p-4">
+                                                <!-- Same three image boxes -->
+                                                <div class="flex gap-3">
+                                                    <div class="skeleton-box w-16 h-16 rounded flex items-center justify-center">
+                                                        <div class="w-6 h-6 border border-white/30 rounded"></div>
+                                                    </div>
+                                                    <div class="skeleton-box w-16 h-16 rounded flex items-center justify-center">
+                                                        <div class="w-6 h-6 border border-white/30 rounded-full"></div>
+                                                    </div>
+                                                    <div class="skeleton-box w-16 h-16 rounded flex items-center justify-center">
+                                                        <div class="w-6 h-4 border border-white/30 rounded-sm"></div>
+                                                    </div>
+                                                </div>
+                                                <!-- Same button row -->
+                                                <div class="flex gap-2 mt-3">
+                                                    <div class="skeleton-line w-16 h-6 rounded"></div>
+                                                    <div class="skeleton-line w-20 h-6 rounded"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- Flash overlay -->
+                                        <div class="capture-flash absolute inset-0 bg-white rounded-lg opacity-0"></div>
+                                    </div>
+                                </div>
+
+                                <!-- Scene 3: Annotate - Editor with captured content and markers -->
+                                <div class="scene absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-500" data-scene="3">
+                                    <div class="relative w-[85%] h-[75%]">
+                                        <!-- Editor window -->
+                                        <div class="skeleton-box w-full h-full rounded-lg">
+                                            <!-- Toolbar -->
+                                            <div class="h-10 bg-white/5 flex items-center justify-center gap-2 px-3 rounded-t-lg border-b border-white/5">
+                                                <div class="tool-icon w-7 h-7 rounded bg-white/10 flex items-center justify-center" style="opacity:0;transform:scale(0);transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1)">
+                                                    <div class="w-4 h-4 border border-white/50 rounded-sm"></div>
+                                                </div>
+                                                <div class="tool-icon w-7 h-7 rounded bg-white/10 flex items-center justify-center" style="opacity:0;transform:scale(0);transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1)">
+                                                    <div class="w-4 h-0.5 bg-white/50 rotate-[-35deg]"></div>
+                                                </div>
+                                                <div class="tool-icon w-7 h-7 rounded bg-white/10 flex items-center justify-center" style="opacity:0;transform:scale(0);transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1)">
+                                                    <span class="text-white/50 text-xs font-bold">T</span>
+                                                </div>
+                                                <div class="tool-icon w-7 h-7 rounded bg-orange-500 flex items-center justify-center" style="opacity:0;transform:scale(0);transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1)">
+                                                    <span class="text-white text-xs font-bold">1</span>
+                                                </div>
+                                            </div>
+                                            <!-- Canvas with captured screenshot + annotations -->
+                                            <div class="p-5">
+                                                <!-- Text content skeleton with marker inline -->
+                                                <div class="space-y-2 mb-4">
+                                                    <div class="skeleton-line w-3/4 h-4 rounded"></div>
+                                                    <div class="flex items-center gap-3">
+                                                        <div class="skeleton-line flex-1 h-3 rounded"></div>
+                                                        <!-- Marker 1 -->
+                                                        <div class="annotation-marker w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center text-white text-xs font-bold shadow-lg shadow-orange-500/30" style="opacity:0;transform:scale(0);transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1)">1</div>
+                                                    </div>
+                                                    <div class="skeleton-line w-5/6 h-3 rounded"></div>
+                                                </div>
+                                                <!-- Three image boxes -->
+                                                <div class="flex gap-3 mb-4 items-start">
+                                                    <div class="skeleton-box w-14 h-14 rounded flex items-center justify-center">
+                                                        <div class="w-5 h-5 border border-white/30 rounded"></div>
+                                                    </div>
+                                                    <div class="flex flex-col items-center gap-1">
+                                                        <div class="skeleton-box w-14 h-14 rounded flex items-center justify-center">
+                                                            <div class="w-5 h-5 border border-white/30 rounded-full"></div>
+                                                        </div>
+                                                        <!-- Marker 2 below box -->
+                                                        <div class="annotation-marker w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center text-white text-xs font-bold shadow-lg shadow-orange-500/30" style="opacity:0;transform:scale(0);transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1)">2</div>
+                                                    </div>
+                                                    <div class="skeleton-box w-14 h-14 rounded flex items-center justify-center">
+                                                        <div class="w-5 h-4 border border-white/30 rounded-sm"></div>
+                                                    </div>
+                                                </div>
+                                                <!-- Button row with marker -->
+                                                <div class="flex gap-2 items-center">
+                                                    <div class="skeleton-line w-14 h-5 rounded"></div>
+                                                    <div class="skeleton-line w-18 h-5 rounded"></div>
+                                                    <!-- Marker 3 -->
+                                                    <div class="annotation-marker w-6 h-6 rounded-full bg-orange-500 flex items-center justify-center text-white text-xs font-bold shadow-lg shadow-orange-500/30" style="opacity:0;transform:scale(0);transition:all 0.4s cubic-bezier(0.34,1.56,0.64,1)">3</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Scene 4: Send to AI - SAME annotated content as thumbnail -->
+                                <div class="scene absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-500" data-scene="4">
+                                    <div class="relative w-[85%] h-[75%] flex gap-3">
+                                        <!-- Screenshot thumbnail - shows SAME annotated content -->
+                                        <div class="w-1/3 h-full">
+                                            <div class="skeleton-box w-full h-[70%] rounded-lg relative p-2 border border-white/10">
+                                                <!-- Mini version of the 3 boxes with markers -->
+                                                <div class="flex gap-1.5 mt-2">
+                                                    <div class="skeleton-box w-8 h-8 rounded flex items-center justify-center relative">
+                                                        <div class="w-3 h-3 border border-white/20 rounded"></div>
+                                                        <div class="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-orange-500 flex items-center justify-center text-white text-[6px] font-bold">1</div>
+                                                    </div>
+                                                    <div class="skeleton-box w-8 h-8 rounded flex items-center justify-center relative">
+                                                        <div class="w-3 h-3 border border-white/20 rounded-full"></div>
+                                                        <div class="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-orange-500 flex items-center justify-center text-white text-[6px] font-bold">2</div>
+                                                    </div>
+                                                    <div class="skeleton-box w-8 h-8 rounded flex items-center justify-center relative">
+                                                        <div class="w-3 h-2 border border-white/20 rounded-sm"></div>
+                                                        <div class="absolute -top-1 -right-1 w-3 h-3 rounded-full bg-orange-500 flex items-center justify-center text-white text-[6px] font-bold">3</div>
+                                                    </div>
+                                                </div>
+                                                <!-- Mini buttons -->
+                                                <div class="flex gap-1 mt-2">
+                                                    <div class="skeleton-line w-6 h-2 rounded"></div>
+                                                    <div class="skeleton-line w-8 h-2 rounded"></div>
+                                                </div>
+                                                <!-- Success checkmark -->
+                                                <div class="upload-success absolute bottom-2 right-2 w-5 h-5 rounded-full bg-green-500 flex items-center justify-center" style="opacity:0;transform:scale(0);transition:all 0.3s cubic-bezier(0.34,1.56,0.64,1)">
+                                                    <svg class="w-3 h-3 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                                </div>
+                                            </div>
+                                            <!-- Upload progress -->
+                                            <div class="upload-progress mt-2 h-1.5 bg-white/10 rounded-full overflow-hidden">
+                                                <div class="upload-bar h-full bg-gradient-to-r from-orange-500 to-orange-400 w-0 transition-all duration-800 ease-out rounded-full"></div>
+                                            </div>
+                                            <div class="upload-label text-center mt-1.5 text-[10px] text-white/40 font-medium" style="opacity:0;transition:opacity 0.3s">Uploaded to AI</div>
+                                        </div>
+                                        <!-- AI Chat -->
+                                        <div class="flex-1 skeleton-box rounded-lg border border-white/10">
+                                            <div class="h-8 bg-white/5 flex items-center px-3 gap-2 rounded-t-lg border-b border-white/5">
+                                                <div class="w-4 h-4 rounded-full bg-gradient-to-br from-purple-400 to-blue-400"></div>
+                                                <div class="text-white/50 text-[10px] font-medium">Claude</div>
+                                            </div>
+                                            <div class="p-3 space-y-2.5">
+                                                <!-- User message with image -->
+                                                <div class="ai-message flex justify-end" style="opacity:0;transform:translateY(10px);transition:all 0.4s ease-out">
+                                                    <div class="bg-orange-500/30 rounded-lg px-3 py-2 max-w-[80%] border border-orange-500/20">
+                                                        <div class="text-white/90 text-xs font-medium">Fix issue at marker 1</div>
+                                                    </div>
+                                                </div>
+                                                <!-- AI response - completed -->
+                                                <div class="ai-message flex justify-start" style="opacity:0;transform:translateY(10px);transition:all 0.4s ease-out">
+                                                    <div class="bg-white/10 rounded-lg px-3 py-2 max-w-[85%] border border-white/5">
+                                                        <div class="text-white/80 text-xs leading-relaxed">I see the issue at marker 1. The icon needs a 2px border radius to match your design system.</div>
+                                                    </div>
+                                                </div>
+                                                <!-- Success indicator -->
+                                                <div class="ai-success flex items-center gap-1.5 mt-1" style="opacity:0;transition:opacity 0.4s">
+                                                    <div class="w-3 h-3 rounded-full bg-green-500/20 flex items-center justify-center">
+                                                        <svg class="w-2 h-2 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+                                                    </div>
+                                                    <span class="text-green-400/80 text-[9px] font-medium">AI understood your screenshot</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
                         </div>
-
-                        <div class="floating-card absolute w-40 sm:w-48 rounded-lg bg-white p-3 shadow-soft border border-gray-100 cursor-pointer z-20 bottom-1/4 right-0 lg:right-10"
-                            data-card="green" data-icon="bug_report" data-color="green">
-                            <div
-                                class="card-image h-20 sm:h-24 w-full rounded bg-gradient-to-br from-green-100 to-green-50 mb-2 flex items-center justify-center">
-                                <span class="material-symbols-outlined text-3xl text-green-500">bug_report</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-xs text-green-500">bug_report</span>
-                                <div class="h-2 flex-grow rounded-full bg-green-100"></div>
-                            </div>
-                        </div>
-
-                        <div class="floating-card absolute w-40 sm:w-48 rounded-lg bg-white p-3 shadow-soft border border-gray-100 cursor-pointer z-20 top-10 right-10 lg:right-32"
-                            data-card="purple" data-icon="design_services" data-color="purple">
-                            <div
-                                class="card-image h-20 sm:h-24 w-full rounded bg-gradient-to-br from-purple-100 to-purple-50 mb-2 flex items-center justify-center">
-                                <span class="material-symbols-outlined text-3xl text-purple-500">design_services</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-xs text-purple-500">design_services</span>
-                                <div class="h-2 flex-grow rounded-full bg-purple-100"></div>
-                            </div>
-                        </div>
-
-                        <div class="floating-card absolute w-40 sm:w-48 rounded-lg bg-white p-3 shadow-soft border border-gray-100 cursor-pointer z-20 bottom-10 left-10 lg:left-32"
-                            data-card="orange" data-icon="dashboard" data-color="orange">
-                            <div
-                                class="card-image h-20 sm:h-24 w-full rounded bg-gradient-to-br from-orange-100 to-orange-50 mb-2 flex items-center justify-center">
-                                <span class="material-symbols-outlined text-3xl text-orange-500">dashboard</span>
-                            </div>
-                            <div class="flex items-center gap-2">
-                                <span class="material-symbols-outlined text-xs text-orange-500">dashboard</span>
-                                <div class="h-2 flex-grow rounded-full bg-orange-100"></div>
-                            </div>
-                        </div>
-
-                        <!-- Connecting Lines -->
-                        <svg id="connecting-lines"
-                            class="absolute inset-0 h-full w-full pointer-events-none opacity-20 transition-opacity duration-500"
-                            xmlns="http://www.w3.org/2000/svg">
-                            <line x1="20%" y1="30%" x2="50%" y2="50%" stroke="#0f2134" stroke-width="1"
-                                stroke-dasharray="4 4" />
-                            <line x1="80%" y1="70%" x2="50%" y2="50%" stroke="#0f2134" stroke-width="1"
-                                stroke-dasharray="4 4" />
-                            <line x1="70%" y1="20%" x2="50%" y2="50%" stroke="#0f2134" stroke-width="1"
-                                stroke-dasharray="4 4" />
-                            <line x1="30%" y1="80%" x2="50%" y2="50%" stroke="#0f2134" stroke-width="1"
-                                stroke-dasharray="4 4" />
-                        </svg>
                     </div>
                 </div>
             </div>
@@ -438,183 +648,6 @@
             </div>
         </section>
 
-        <!-- MCP Integration Section -->
-        <section id="workflow" class="bg-white py-24 sm:py-32 overflow-hidden relative">
-            <!-- Background decorative elements -->
-            <div class="absolute top-0 left-0 w-full h-full overflow-hidden opacity-30 pointer-events-none">
-                <div class="absolute top-[10%] left-[5%] w-96 h-96 rounded-full bg-blue-50 blur-[100px]"></div>
-                <div class="absolute bottom-[10%] right-[5%] w-96 h-96 rounded-full bg-purple-50 blur-[100px]"></div>
-                <svg class="absolute w-full h-full" xmlns="http://www.w3.org/2000/svg">
-                    <defs>
-                        <pattern id="grid-pattern" width="24" height="24" patternUnits="userSpaceOnUse">
-                            <circle cx="1" cy="1" r="1" fill="#0f2134" opacity="0.1" />
-                        </pattern>
-                    </defs>
-                    <rect width="100%" height="100%" fill="url(#grid-pattern)" />
-                </svg>
-            </div>
-
-            <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 relative z-10">
-                <!-- Header -->
-                <div class="mx-auto max-w-2xl text-center mb-20">
-                    <div
-                        class="inline-flex items-center gap-2 rounded-full border border-purple-100 bg-purple-50 px-3 py-1 text-xs font-medium text-purple-700 mb-6">
-                        <span class="flex h-2 w-2 rounded-full bg-purple-500 animate-pulse"></span>
-                        AI Integration Live
-                    </div>
-                    <h2 class="text-3xl font-bold tracking-tight text-primary sm:text-4xl">
-                        Your screen is now an API.
-                    </h2>
-                    <p class="mt-4 text-lg text-secondary">
-                        Don't just capture pixels. Send visual context directly to Claude, Gemini, or ChatGPT for
-                        instant analysis.
-                    </p>
-                </div>
-
-                <!-- Main Feature: Context Menu Workflow -->
-                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 items-center mb-24">
-                    <!-- Left: Interactive Menu Visual -->
-                    <div class="order-2 lg:order-1 relative">
-                        <!-- Decorative background glow -->
-                        <div
-                            class="absolute -inset-4 bg-gradient-to-r from-blue-200/50 to-purple-200/50 rounded-3xl blur-xl opacity-70">
-                        </div>
-
-                        <!-- Canvas Container -->
-                        <div
-                            class="relative rounded-2xl border border-gray-200 bg-white shadow-2xl overflow-hidden h-[500px] flex items-center justify-center bg-[radial-gradient(#e5e7eb_1px,transparent_1px)] [background-size:16px_16px]">
-
-                            <!-- The Screenshot Card (Simulating a selection) -->
-                            <div
-                                class="relative w-72 h-56 bg-white rounded-lg shadow-lg border-2 border-blue-500 transform -translate-x-12 -translate-y-8 -rotate-2 overflow-hidden transition-transform duration-500 hover:rotate-0 hover:-translate-y-12">
-                                <div
-                                    class="w-full h-full bg-gradient-to-br from-slate-100 to-slate-200 flex items-center justify-center">
-                                    <span class="material-symbols-outlined text-5xl text-slate-300">image</span>
-                                </div>
-                                <!-- Selection Handles -->
-                                <div
-                                    class="absolute top-0 left-0 w-3 h-3 bg-white border-2 border-blue-500 rounded-full -translate-x-1.5 -translate-y-1.5">
-                                </div>
-                                <div
-                                    class="absolute top-0 right-0 w-3 h-3 bg-white border-2 border-blue-500 rounded-full translate-x-1.5 -translate-y-1.5">
-                                </div>
-                                <div
-                                    class="absolute bottom-0 left-0 w-3 h-3 bg-white border-2 border-blue-500 rounded-full -translate-x-1.5 translate-y-1.5">
-                                </div>
-                                <div
-                                    class="absolute bottom-0 right-0 w-3 h-3 bg-white border-2 border-blue-500 rounded-full translate-x-1.5 translate-y-1.5">
-                                </div>
-
-                                <div
-                                    class="absolute bottom-3 right-3 bg-black/70 text-white text-[10px] font-mono px-1.5 py-0.5 rounded backdrop-blur-sm">
-                                    840 x 520
-                                </div>
-                            </div>
-
-                            <!-- The Context Menu -->
-                            <div
-                                class="absolute top-1/2 left-1/2 transform -translate-y-1/2 translate-x-4 w-52 bg-white rounded-xl shadow-[0_10px_40px_-10px_rgba(0,0,0,0.15)] border border-gray-100 p-1.5 flex flex-col">
-
-                                <button
-                                    class="flex items-center gap-3 w-full px-3 py-2 text-left text-sm text-primary hover:bg-gray-50 rounded-lg transition-colors group">
-                                    <span
-                                        class="material-symbols-outlined text-[18px] text-gray-400 group-hover:text-primary">link</span>
-                                    <span class="font-medium">Copy link</span>
-                                    <span class="ml-auto text-[10px] text-gray-400">⌘L</span>
-                                </button>
-
-                                <div class="h-px bg-gray-100 my-1 mx-1"></div>
-
-                                <div class="px-3 py-1 text-[10px] font-bold text-gray-400 uppercase tracking-wider">Ask
-                                    AI</div>
-
-                                <button
-                                    class="flex items-center gap-3 w-full px-3 py-2 text-left text-sm text-primary hover:bg-gray-50 rounded-lg transition-colors group">
-                                    <span
-                                        class="material-symbols-outlined text-[18px] text-gray-400 group-hover:text-green-500">smart_toy</span>
-                                    <span class="font-medium">ChatGPT</span>
-                                </button>
-
-                                <button
-                                    class="flex items-center gap-3 w-full px-3 py-2 text-left text-sm text-primary hover:bg-gray-50 rounded-lg transition-colors group">
-                                    <span
-                                        class="material-symbols-outlined text-[18px] text-gray-400 group-hover:text-orange-500">psychology</span>
-                                    <span class="font-medium">Claude</span>
-                                </button>
-
-                                <button
-                                    class="flex items-center gap-3 w-full px-3 py-2 text-left text-sm text-primary bg-blue-50 rounded-lg transition-colors relative overflow-hidden">
-                                    <div class="absolute left-0 top-0 bottom-0 w-1 bg-blue-500"></div>
-                                    <span class="material-symbols-outlined text-[18px] text-blue-500">sparkle</span>
-                                    <span class="font-medium">Gemini</span>
-                                    <span class="ml-auto w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span>
-                                </button>
-                            </div>
-
-                            <!-- Cursor -->
-                            <div class="absolute top-1/2 left-1/2 translate-x-32 translate-y-16 pointer-events-none">
-                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                    xmlns="http://www.w3.org/2000/svg" class="drop-shadow-md">
-                                    <path
-                                        d="M5.65376 12.3673H5.46026L5.31717 12.4976L0.500002 16.8829L0.500002 1.19841L11.7841 12.3673H5.65376Z"
-                                        fill="black" stroke="white" />
-                                </svg>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <!-- Right: Text Content -->
-                    <div class="order-1 lg:order-2">
-                        <div class="inline-flex items-center gap-2 mb-4">
-                            <span class="h-8 w-8 flex items-center justify-center rounded-lg bg-blue-100 text-blue-600">
-                                <span class="material-symbols-outlined text-lg">extension</span>
-                            </span>
-                            <span class="font-bold text-primary">Context Menu Power-up</span>
-                        </div>
-
-                        <h3 class="text-3xl font-bold text-primary mb-6">Right-click to Reason</h3>
-
-                        <div class="space-y-6 text-lg text-secondary">
-                            <p>
-                                Clik adds a new layer to your workflow. Capture any region, annotate with numbered
-                                markers, and send visual context to your favorite LLM.
-                            </p>
-                            <ul class="space-y-4 mt-6">
-                                <li class="flex items-start gap-3">
-                                    <span
-                                        class="flex-shrink-0 w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600 mt-0.5">
-                                        <span class="material-symbols-outlined text-sm">check</span>
-                                    </span>
-                                    <span><strong class="text-primary">Universal:</strong> Works over any
-                                        application—Figma, VS Code, Browser, or Terminal.</span>
-                                </li>
-                                <li class="flex items-start gap-3">
-                                    <span
-                                        class="flex-shrink-0 w-6 h-6 rounded-full bg-green-100 flex items-center justify-center text-green-600 mt-0.5">
-                                        <span class="material-symbols-outlined text-sm">check</span>
-                                    </span>
-                                    <span><strong class="text-primary">Multi-Modal:</strong> Automatically formats
-                                        images for Gemini 1.5, GPT-4o, or Claude 3.</span>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div class="mt-8 flex gap-4">
-                            <a href="#download"
-                                class="rounded-lg bg-primary px-6 py-3 text-sm font-bold text-white shadow-lg shadow-primary/20 hover:bg-primary/90 transition-all">
-                                Try It Now
-                            </a>
-                            <a href="https://github.com/aiocean/clik" target="_blank"
-                                class="rounded-lg border border-gray-200 bg-white px-6 py-3 text-sm font-bold text-primary hover:bg-gray-50 transition-all">
-                                View Documentation
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
-
         <!-- App Preview Section -->
         <section class="bg-background-light py-24 overflow-hidden">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -625,114 +658,16 @@
                 </div>
 
                 <div class="relative mx-auto max-w-5xl">
-                    <!-- Mock Browser Window -->
-                    <div
-                        class="relative rounded-xl bg-white shadow-2xl border border-gray-200 overflow-hidden ring-1 ring-black/5">
-                        <!-- Browser Toolbar -->
-                        <div class="bg-white border-b border-gray-100 px-4 py-4 flex items-center justify-between">
-                            <div class="flex gap-2">
-                                <div class="w-3 h-3 rounded-full bg-[#ff5f57] border border-[#e0443e]"></div>
-                                <div class="w-3 h-3 rounded-full bg-[#febc2e] border border-[#d89e24]"></div>
-                                <div class="w-3 h-3 rounded-full bg-[#28c840] border border-[#1aab29]"></div>
-                            </div>
-                        </div>
-
-                        <!-- App Body -->
-                        <div class="flex h-[500px] bg-white">
-                            <!-- Sidebar -->
-                            <div
-                                class="w-64 bg-[#fbfbfb] border-r border-gray-100 flex-shrink-0 p-4 hidden md:flex flex-col">
-                                <div class="mb-2">
-                                    <div class="text-[11px] font-bold text-gray-400 uppercase tracking-wider mb-3 px-3">
-                                        Library</div>
-                                    <div class="space-y-1">
-                                        <button
-                                            class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg bg-white text-primary shadow-sm ring-1 ring-black/5">
-                                            <span
-                                                class="material-symbols-outlined text-[20px] text-primary">grid_view</span>
-                                            All Screenshots
-                                        </button>
-                                        <button
-                                            class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-secondary hover:bg-gray-200/50">
-                                            <span
-                                                class="material-symbols-outlined text-[20px] text-gray-400">star</span>
-                                            Favorites
-                                        </button>
-                                        <button
-                                            class="w-full flex items-center gap-3 px-3 py-2 text-sm font-medium rounded-lg text-secondary hover:bg-gray-200/50">
-                                            <span
-                                                class="material-symbols-outlined text-[20px] text-gray-400">delete</span>
-                                            Trash
-                                        </button>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Main Grid Area -->
-                            <div class="flex-1 bg-white p-8 overflow-y-auto no-scrollbar">
-                                <div class="flex items-center justify-between mb-8">
-                                    <h3 class="text-xl font-bold text-primary">All Screenshots</h3>
-                                    <div
-                                        class="h-8 w-64 bg-gray-50 rounded-lg border border-gray-100 flex items-center px-3 text-gray-400">
-                                        <span class="material-symbols-outlined text-[18px] mr-2">search</span>
-                                        <span class="text-sm">Search collection...</span>
-                                    </div>
-                                </div>
-
-                                <!-- Screenshots Grid -->
-                                <div class="grid grid-cols-2 lg:grid-cols-3 gap-6">
-                                    <div
-                                        class="group relative aspect-[4/3] bg-gradient-to-br from-blue-50 to-blue-100 rounded-xl overflow-hidden border border-gray-100 cursor-pointer shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
-                                        <div
-                                            class="absolute bottom-3 left-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <span
-                                                class="text-[10px] font-medium text-white bg-white/20 backdrop-blur-md px-2 py-0.5 rounded-full border border-white/10">#ui-design</span>
-                                        </div>
-                                    </div>
-                                    <div
-                                        class="group relative aspect-[4/3] bg-gradient-to-br from-green-50 to-green-100 rounded-xl overflow-hidden border border-gray-100 cursor-pointer shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
-                                        <div
-                                            class="absolute bottom-3 left-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <span
-                                                class="text-[10px] font-medium text-white bg-white/20 backdrop-blur-md px-2 py-0.5 rounded-full border border-white/10">#code</span>
-                                        </div>
-                                    </div>
-                                    <div
-                                        class="group relative aspect-[4/3] bg-gradient-to-br from-purple-50 to-purple-100 rounded-xl overflow-hidden border border-gray-100 cursor-pointer shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
-                                        <div
-                                            class="absolute bottom-3 left-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <span
-                                                class="text-[10px] font-medium text-white bg-white/20 backdrop-blur-md px-2 py-0.5 rounded-full border border-white/10">#dashboard</span>
-                                        </div>
-                                    </div>
-                                    <div
-                                        class="group relative aspect-[4/3] bg-gradient-to-br from-orange-50 to-orange-100 rounded-xl overflow-hidden border border-gray-100 cursor-pointer shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
-                                        <div
-                                            class="absolute bottom-3 left-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <span
-                                                class="text-[10px] font-medium text-white bg-white/20 backdrop-blur-md px-2 py-0.5 rounded-full border border-white/10">#creative</span>
-                                        </div>
-                                    </div>
-                                    <div
-                                        class="group relative aspect-[4/3] bg-gradient-to-br from-pink-50 to-pink-100 rounded-xl overflow-hidden border border-gray-100 cursor-pointer shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
-                                        <div
-                                            class="absolute bottom-3 left-3 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <span
-                                                class="text-[10px] font-medium text-white bg-white/20 backdrop-blur-md px-2 py-0.5 rounded-full border border-white/10">#mobile</span>
-                                        </div>
-                                    </div>
-
-                                    <!-- Add New Button -->
-                                    <div
-                                        class="group relative aspect-[4/3] rounded-xl border-2 border-dashed border-gray-200 flex flex-col items-center justify-center text-gray-400 hover:text-primary hover:border-primary/30 hover:bg-gray-50 transition-all cursor-pointer">
-                                        <div
-                                            class="h-10 w-10 rounded-full bg-gray-100 flex items-center justify-center mb-2 group-hover:bg-white group-hover:shadow-sm transition-all">
-                                            <span class="material-symbols-outlined text-xl">add</span>
-                                        </div>
-                                        <span class="text-sm font-medium">New Capture</span>
-                                    </div>
-                                </div>
-                            </div>
+                    <div class="relative rounded-xl shadow-2xl border border-gray-200 overflow-hidden ring-1 ring-black/5">
+                        <div class="aspect-video">
+                            <iframe
+                                class="w-full h-full"
+                                src="https://www.youtube.com/embed/nXcVBcT4j-c"
+                                title="Clik Demo"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen>
+                            </iframe>
                         </div>
                     </div>
                 </div>
@@ -742,6 +677,11 @@
         <!-- Download Section -->
         <section id="download" class="bg-white py-24 border-t border-gray-200">
             <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+                <div class="mb-12 text-center">
+                    <h2 class="text-3xl font-bold tracking-tight text-primary sm:text-4xl">Get Clik</h2>
+                    <p class="mt-4 text-lg text-secondary">Install in seconds with a single command.</p>
+                </div>
+
                 <!-- Apple Silicon Warning -->
                 <div class="mb-10 rounded-xl bg-gray-50 border border-gray-200 p-4 flex items-center gap-3 w-fit">
                     <span class="material-symbols-outlined text-gray-500">cookie</span>
@@ -772,14 +712,12 @@
                         </div>
 
                         <!-- Terminal Mock -->
-                        <div class="pl-14">
+                        <div
+                            class="w-full max-w-md bg-white rounded-lg border border-gray-200 p-3 flex items-center shadow-sm">
                             <div
-                                class="w-full max-w-md bg-white rounded-lg border border-gray-200 p-3 flex items-center shadow-sm">
-                                <div
-                                    class="w-6 h-6 bg-black text-white rounded flex items-center justify-center mr-3 font-mono text-xs">
-                                    _&gt;</div>
-                                <span class="font-medium text-primary">Terminal</span>
-                            </div>
+                                class="w-6 h-6 bg-black text-white rounded flex items-center justify-center mr-3 font-mono text-xs">
+                                _&gt;</div>
+                            <span class="font-medium text-primary">Terminal</span>
                         </div>
                     </div>
 
@@ -802,33 +740,15 @@
                         </div>
 
                         <!-- Code Block -->
-                        <div class="pl-0 sm:pl-14">
-                            <div class="w-full rounded-xl bg-[#282c34] overflow-hidden shadow-lg">
-                                <div class="bg-[#21252b] px-4 py-2 flex items-center gap-2">
-                                    <div class="flex gap-1.5">
-                                        <div class="w-3 h-3 rounded-full bg-[#ff5f57]"></div>
-                                        <div class="w-3 h-3 rounded-full bg-[#febc2e]"></div>
-                                        <div class="w-3 h-3 rounded-full bg-[#28c840]"></div>
-                                    </div>
-                                    <div class="flex-1 text-center text-xs text-gray-400 font-mono">Terminal</div>
-                                </div>
-                                <div class="p-6 overflow-x-auto">
-                                    <code id="install-command"
-                                        class="font-mono text-sm text-[#abb2bf] whitespace-nowrap">curl -L https://github.com/aiocean/clik-releases/releases/download/v0.16.25/clik_0.16.25_aarch64.dmg -o ~/Downloads/clik.dmg && open ~/Downloads/clik.dmg</code>
-                                </div>
-                                <div class="px-6 pb-6 pt-2">
-                                    <div class="h-1.5 w-full bg-gray-700 rounded-full overflow-hidden">
-                                        <div class="h-full w-1/2 bg-gray-500 rounded-full"></div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button id="copy-btn"
-                                class="mt-4 flex items-center gap-2 px-5 py-2.5 bg-[#171717] hover:bg-black text-white rounded-lg font-medium text-sm transition-all active:scale-95">
-                                <span class="material-symbols-outlined text-[18px]">content_copy</span>
-                                Copy command
-                            </button>
+                        <div class="rounded-lg bg-gray-100 border border-gray-200 p-4 overflow-x-auto">
+                            <code id="install-command"
+                                class="font-mono text-sm text-gray-700 whitespace-pre break-all sm:whitespace-nowrap">curl -L https://github.com/aioceanreleases/download/v0.16.25/clik_0.16.25_aarch64.dmg -o ~/Downloads/clik.dmg && open ~/Downloads/clik.dmg</code>
                         </div>
+                        <button id="copy-btn"
+                            class="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-gray-900 hover:bg-black text-white rounded-lg text-sm font-medium transition-colors">
+                            <span class="material-symbols-outlined text-[18px]">content_copy</span>
+                            Copy command
+                        </button>
                     </div>
 
                     <!-- Step 3 -->
@@ -845,28 +765,20 @@
                         </div>
 
                         <!-- Drag Visual -->
-                        <div class="pl-0 sm:pl-14">
-                            <div
-                                class="w-full bg-gray-100/80 rounded-xl p-8 sm:p-12 flex items-center justify-center gap-4 sm:gap-8 border border-gray-100">
-                                <div class="flex flex-col items-center gap-2">
-                                    <div
-                                        class="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-orange-400 to-red-500 rounded-2xl shadow-lg flex items-center justify-center text-white border border-white/20">
-                                        <span
-                                            class="material-symbols-outlined text-4xl sm:text-5xl drop-shadow-md">screenshot_region</span>
-                                    </div>
-                                    <span class="text-sm font-medium text-primary">Clik</span>
+                        <div
+                            class="w-full bg-gray-100/80 rounded-xl p-8 sm:p-12 flex items-center justify-center gap-4 sm:gap-8 border border-gray-100">
+                            <div class="flex flex-col items-center gap-2">
+                                <img src="/assets/logo-f7RbLSmD-f7RbLSmD.png" alt="Clik" class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl shadow-lg">
+                                <span class="text-sm font-medium text-primary">Clik</span>
+                            </div>
+                            <span class="material-symbols-outlined text-gray-400 text-2xl">arrow_forward</span>
+                            <div class="flex flex-col items-center gap-2">
+                                <div
+                                    class="w-16 h-16 sm:w-20 sm:h-20 bg-blue-500 rounded-2xl shadow-lg flex items-center justify-center text-white border border-white/20">
+                                    <span
+                                        class="material-symbols-outlined text-4xl sm:text-5xl drop-shadow-md">folder</span>
                                 </div>
-
-                                <span class="material-symbols-outlined text-gray-400 text-2xl">arrow_forward</span>
-
-                                <div class="flex flex-col items-center gap-2">
-                                    <div
-                                        class="w-16 h-16 sm:w-20 sm:h-20 bg-blue-500 rounded-2xl shadow-lg flex items-center justify-center text-white border border-white/20">
-                                        <span
-                                            class="material-symbols-outlined text-4xl sm:text-5xl drop-shadow-md">folder</span>
-                                    </div>
-                                    <span class="text-sm font-medium text-primary">Applications</span>
-                                </div>
+                                <span class="text-sm font-medium text-primary">Applications</span>
                             </div>
                         </div>
                     </div>
@@ -895,7 +807,7 @@
                     <!-- Original 10 cards -->
                     <div class="flex-none w-80 rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="h-12 w-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600"></div>
+                            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBERISGBUYLxoaL2NCOEJjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY//CABEIADAAMAMBIgACEQEDEQH/xAAaAAADAQEBAQAAAAAAAAAAAAAFBgcEAwEC/9oACAEBAAAAAIR0btOvKht9I2ARsvpVAxp6BzN2UHKAHh6sqPLxQr78FDfP/8QAFwEBAQEBAAAAAAAAAAAAAAAAAwIEAP/aAAoCAhADEAAAADsG0hCSih0Gi5v/xAApEAACAQQBBAEEAgMAAAAAAAABAgMABAURBhIhQWETFSIxcUJRUpGh/9oACAEBAAE/ABQ9De6xnDWnt0lvzLAWGxEB99TcPjib5IetgPD1HibWO3BiZnf+SMO4rOQLa4VyyhS/YezSDdcDx0FxlpbydOuOzQMq/wBuToVCLQzlbmWMuTrROhV1h7Qt8piZWA7MrEUIFOSCxsOvfRIPBBHY1zm0SHDQaJ2ZKjUEdzo1wCCOTA3btvrS8QLo62SKbDKY+tmb4x9xj7dJrIK9/wBdujOEgCkIrlNk+x6qyc2vJsibgyJaW9kZmUvt99tAH91f8hyuRgS2urySWBH6kVtdq62Hn/lcYydxaZKOITmO3klVpF8Ej8VcX8t3alLZ44oejbyE96TKfSTePeEOkhDLP+h+DWYy9ze3l3PDK6i4JDgeV8Cu4Puvkf8Azb/dcKQXPMcZBMDJE8vS6HuCCDT4zL4Ca5Fiq3Fmd6hkbRC/0D5rJ4/kOfguboxi3tIwdKx7n0AKxvAbeNx9Uu5n8gRHQrnXG8PisVayYoF5S+nIUmsLx67zMm49RQA6aVq4dgcZgCGjQvKT98rd2qW6sJIx1yI3oisleQvbi2t4+iIfk60T+hRjdj2Vde6FsH2D3r//xAAbEQABBQEBAAAAAAAAAAAAAAACAAEREiEDEP/aAAgBAgEBPwAyq0qer7K5lYUW+C0J38vkL//EABoRAAMBAQEBAAAAAAAAAAAAAAABEQISEDH/2gAIAQMBAT8ASrhxk2uXDKj819Oox7SRXaf/2Q==" alt="" class="h-12 w-12 rounded-full object-cover">
                             <div>
                                 <p class="font-bold text-primary">Alex M.</p>
                                 <p class="text-sm text-secondary">Product Designer</p>
@@ -906,7 +818,7 @@
                     </div>
                     <div class="flex-none w-80 rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="h-12 w-12 rounded-full bg-gradient-to-br from-green-400 to-green-600"></div>
+                            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBERISGBUYLxoaL2NCOEJjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY//CABEIADAAMAMBIgACEQEDEQH/xAAaAAACAwEBAAAAAAAAAAAAAAADBwQFBgIB/9oACAEBAAAAAF5O0Bsj3PY2TJWQOXFTLAk71ljVo5mgm2Ysra2lCxkGc3//xAAXAQADAQAAAAAAAAAAAAAAAAABAgMA/9oACgICEAMQAAAAkaMhyNQLhTEf/8QALhAAAgEEAAQFAgYDAAAAAAAAAQIDAAQFEQYSEyEUIjFBUWGRFUJiccHRIzKB/9oACAEBAAE/AINxp4mVmdAezA9wTWNwt5e3mgwZdHbliemtWmIwwkCXBkuSfzkaq8wtpMksEcfRYrpZFNS44W98slyC3TPTYHsD29alteW454pGRidbI7H6E1bQQzwByVNp1USXZ8w37qP6rgbH4/H8M5eWaQr12KIXjPMEq2suldMGLK4b/Rhr/o/qspfLFCsit5o9cw+R6GslAMjZ88KsZAu4+XX2O6tYmtIGM4c9tGEHsCffdY3IwrfxxzoiJvlJ12Qem9VjrDG2lpbp+IxP4iBVkIl7j9Sj96z+HjtLV7yOdpgCT5/Urvsd1kr9nlmVt+UMrVwzd88U8T7lEKEge5qa9VYnupZkkVH5WjCaNPjjcXy3GLt+mAAEWVt8re9cMYrIDARxXBRJkLJ1QoYBf2NZ2eGOFLFn6jSsI9/O+xNcR4uWOZ3Cgc7sCR7qprg1beC/kS5Kos+lR2OgG+D9D6VxXiprDJNDHCyW8yD2rHO1vM0aSPIh78uu26yuTurLGN05JEeV1RAG9WJo8PXAuBHIJGubYrtj+Y/P3FX9ha5JCrcqSgEMpOiD/Iq44VmSVYrewvbhF8xaBQw3UNzZPbpjMj4tZY13ElxB5k+q14ZUkXkcE/pFcX3jY6PGTRW6TXKXaSxdY+XmU70RXGmek4ewFzkpLQeKkiWKPkBYCQ/xUHFuSx8f+WZp3clhzv8Ac1Nxdl8nAEiuX2y7eGIlQoqwyD2lk4vrlzKJEkt4wGJQ8wJ8x+Ruv//EABkRAQEAAwEAAAAAAAAAAAAAAAEAAhAREv/aAAgBAgEBPwALhMWLZEXnmv/EABoRAAIDAQEAAAAAAAAAAAAAAAABAhAREkH/2gAIAQMBAT8A9MqD1kjaUzo//9k=" alt="" class="h-12 w-12 rounded-full object-cover">
                             <div>
                                 <p class="font-bold text-primary">Sarah K.</p>
                                 <p class="text-sm text-secondary">Frontend Developer</p>
@@ -917,7 +829,7 @@
                     </div>
                     <div class="flex-none w-80 rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="h-12 w-12 rounded-full bg-gradient-to-br from-purple-400 to-purple-600"></div>
+                            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBERISGBUYLxoaL2NCOEJjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY//CABEIADAAMAMBIgACEQEDEQH/xAAbAAACAgMBAAAAAAAAAAAAAAAGBwMFAAQIAf/aAAgBAQAAAAByV6t3D6Eg59Oku4C61QRuAeuS65/Yym1HMxUZrVIy1WIDyjcOf//EABcBAAMBAAAAAAAAAAAAAAAAAAABAgP/2gAKAgIQAxAAAACKVEqltWFZgP8A/8QALxAAAgEDAgQEBQQDAAAAAAAAAQIDBAURAAYSEyExByJBYRQVM1JxECVRoXKCkf/aAAgBAQABPwAjt+dXvclq25HHJc6nlcw4RVUszaufi5UfEyPRW+FKcMPrEs5GtjeI9FdLnJbquL4aeYYhcHKNpz3/AEbCjJIA1uqWXdvifS0kk0hpZJREFJ6ImrjsXbcNAKeGiGFGS/H5jrclrWzXAT0MpVFfIw2Sh1sfep3NQiOqEaVkS4cqfqe+lOrxUrS2yaYgkopYAasLx1fiTb+NsNJMwB/1OrxQRW7blwaGqqJ+bWICSvUjPmAOt626lpqPjpJJJIpQCrO2QNeHtU0TuiqARIrqc9jqlq1mTI1f6WSpt8nA7BeEq6jsQdXdJbHeqK70cWJaaXnIp7ONW2utG4tqTzWyr4RKSZYag8bQP9oB1uWrzBDZ4OqROzM59TnW3ap6G9q4zwMOo1Z6rjjBzq4zwUtvnmqWKwohLEKW/odTrfld+7NDLAY5Y/KUf7T1GtmQzUFpraimiM6NUKJEBAMZyAvfvnW6KWBZ1q0TDTyuQvqmOhBH+WdRPMlVFyw3NT7ep1titLwIJDiT1BGD/wA1udPmFRHb5GCUqJz5XeIMhIPQZPQHP89wTjtrce3abcJ+IPPWZ6p0c06R9l9ydfKoaTb0EMSyRRwU0cr5qlAkJcHzH24c51VWhLpZkJWcu9ZMvMiQTkAe4IJGR31bNkR0pSsd55g1LKzJLTleEjoPX+tUDRUM1C0QMUk4bmxOvCwYY64JJwR2H51//8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEBESQf/aAAgBAgEBPwATTpkRmDXtf//EABsRAAICAwEAAAAAAAAAAAAAAAABAhEQEhNB/9oACAEDAQE/AErHBpXiJNrXCnR18Nj/2Q==" alt="" class="h-12 w-12 rounded-full object-cover">
                             <div>
                                 <p class="font-bold text-primary">Jordan P.</p>
                                 <p class="text-sm text-secondary">Product Manager</p>
@@ -928,7 +840,7 @@
                     </div>
                     <div class="flex-none w-80 rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="h-12 w-12 rounded-full bg-gradient-to-br from-orange-400 to-orange-600"></div>
+                            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBERISGBUYLxoaL2NCOEJjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY//CABEIADAAMAMBIgACEQEDEQH/xAAZAAADAQEBAAAAAAAAAAAAAAAEBgcFAQj/2gAIAQEAAAAAppikWwrzsZHVmo7fcBBD3KxhDpYVQ2147zsr3d1W22UxjVc//8QAFgEAAwAAAAAAAAAAAAAAAAAAAAEC/9oACgICEAMQAAAABUkybqBUg//EACoQAAEDBAECBQQDAAAAAAAAAAECAwQABQYREhQhBxMxMlEVQVJxFjRC/9oACAEBAAE/ALfjzTrAUUiv4wz+Iq/3ux2SUYaG3Jkoe5DPoj9mselWjIFeU0ksyNb8pZB3+jSsYa4nikbrIrGxHZQ8E9yeCqs/9VP6qZKRChuyXN8UD0FScGttwmvyXpMwecsrKedX2zN4vPYftkx3Q7lJVsprwxzhd8Dtrmu83Wk823D7imsxiq6RyTG7rbG+H2VVredVDbO6y6XlK33mIMm3iMHWi0ytBC1oI7nf30d1b7/mEif06o0J0KBUeQI4VklsvVxuLCekipW4DtTbx49vkH0rwnxucxnbkh/QZiRuRUn02usiOra+df5NY5JUqAAs+o7V4iSZTWMDpHjHWl1BU/z4hCaj3URIK+oZIfABK0rCvOH5bFRbs7NvqnGEoUWmCFBZPBAPzXhfpWLv3RSwt2fKcV2GhxSeCavQBjL3VobQI4ShBKh2SEmsms5vlgctiJKYkl0AoWpHMbB3ois8YyHF7wLXcJHJjgCy+y3xQ6K+rS3I5itrU3HUdrQg+8/Kj968GM4hxsfbxyWsIltOrMf4cSaye7tC1vAEglPrurFkMCFKYSgqK1dyKRdor8/qHgClKeKBv2146Xm23GHCtkds9VHV1BXTCNepqG8Y7qHErKVoIUlQPcGl5SudD5POqU5rShvtX//EABcRAQEBAQAAAAAAAAAAAAAAAAEAEBH/2gAIAQIBAT8AuzndCS//xAAXEQADAQAAAAAAAAAAAAAAAAAAARAR/9oACAEDAQE/ADIjBxuf/9k=" alt="" class="h-12 w-12 rounded-full object-cover">
                             <div>
                                 <p class="font-bold text-primary">Minh T.</p>
                                 <p class="text-sm text-secondary">Full-Stack Engineer</p>
@@ -939,7 +851,7 @@
                     </div>
                     <div class="flex-none w-80 rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="h-12 w-12 rounded-full bg-gradient-to-br from-pink-400 to-pink-600"></div>
+                            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBERISGBUYLxoaL2NCOEJjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY//CABEIADAAMAMBIgACEQEDEQH/xAAaAAADAQEBAQAAAAAAAAAAAAAEBQYHAAID/9oACAEBAAAAAKcXNeUrtyihH0mzsIUR2OLY5k05xO+tE+XqwyDQTQ6IN1//xAAZAQEBAAMBAAAAAAAAAAAAAAACAwABBAX/2gAKAgIQAxAAAADze7pkhN00ERTJL//EAC4QAAIBBAECBAQGAwAAAAAAAAECAwAEBREGEhMhMVFhFCIyQQcVcYGRsUJj0f/aAAgBAQABPwAyVeXiWdrLcS77cSlm1V7l81yqdjjbItBCdo3Trp/U1Pn+YYiItezXUcRATuKwIGquuT5WUjvZe7ZWGxqRqkvO8S0s88nu3jRkrNchgzFzJgls5YiZxGZu96GrTMWmPvzbLDKIYtqhB0oA9ql5VZzMbD4aWb5NvtAVArkXF4YOOx39uQm5pXVP9fygVYYfFvgYZGiO3RSx3Rkr8t6+SzSSHoDTkqxqX4VcoXvZdJGw2p8iR9qmkw2VvI7yAS2qMehnKlQG/o1mbyNuONYxK7JCsmpD5MGI0B/FY68Kcah2fIAU0tZDLXNjnb7olPQZTtSN1KsZu3u9PIsiLuEID/IP3q5hKQJIrXcauNdmYjR/QVynHx4vjOHVUZJLm3aSUE+bbrD39s9oLG5idholSjaO6j5Jl5pUiSRGd2CqOgeJNR4pcXcxw3axTSJbiWWTo+t/EnX76H7VmOIW3JII8tg8iLSeaMNNC+yhb+xXE/w8Bv4583dm8eI7SBPprPYLHciKRXUMbRxsQCD5J7EVe8UPGriRb+WWNQ3yTCElWHs1W3FsRxpka0g7k6r1NcSgM+/b0qWSDPWcqdxUvLc9tyv+Da3r3FYXBXEEptjKieJZA52GHqtXLPi8fIQ/dkI6URY9IG9T5bFY/OWk96cTZus1xAgab7BFpJlORa2fRjmiLdDDYJUj/tf/xAAdEQACAQUBAQAAAAAAAAAAAAABAgADBBESITFB/9oACAECAQE/AKaFjPOYhcLLf7GHYynEuF1XkD7DaUFdsk+T/8QAGREBAAMBAQAAAAAAAAAAAAAAAQACEQMh/9oACAEDAQE/AL3KkATdhRWd3ycnazTZyvtsYUa+TohP/9k=" alt="" class="h-12 w-12 rounded-full object-cover">
                             <div>
                                 <p class="font-bold text-primary">Emily R.</p>
                                 <p class="text-sm text-secondary">UX Researcher</p>
@@ -950,7 +862,7 @@
                     </div>
                     <div class="flex-none w-80 rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="h-12 w-12 rounded-full bg-gradient-to-br from-teal-400 to-teal-600"></div>
+                            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBERISGBUYLxoaL2NCOEJjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY//CABEIADAAMAMBIgACEQEDEQH/xAAbAAACAwADAAAAAAAAAAAAAAAGBwEEBQADCP/aAAgBAQAAAAA7gK3yWKYcuD88uUBxHNZhXKHPPJ41u0dElsfMDdHcANzXXtf/xAAXAQEBAQEAAAAAAAAAAAAAAAADAAQC/9oACgICEAMQAAAAoND56DQ4c3CsH//EACsQAAIBBAAFAgUFAAAAAAAAAAECAwAEBREGEhMhMRBBBxQyYaEjUXKx4f/aAAgBAQABPwBRU08VtA80zqkaDbMx7AVP8QjNeNDi7VXjU66sp81juJ+rGDewhB7ungUNEAg7Brl9PiTLNHwuOm2lM6h64cuIIpwbiZI1Pu3gmlysEVzHjHAMxUNy9gOU1ipFkxsIVuYxjkb7EVr044x1xkuGJ4rbuyESlNbLgVPFHDbxGWbsz70TvWvtWNyuImks3BaSXppE79IqCdeNnzWMRUsEIXl5yX9FFONKSewFcUJaT8X33yBDxCcleTwf31WAWO6xECmMdWJ1cbH0VbcjW0RiIKcg5SPSLKNeMyWMJbk8u4/AFcd3GQtrJYZ7tjLL3MUfZVWsjiXtb4dMHUkUcyn+X+g1DkYsRwu80jfrqhVF93k8AVw51ocJZQyHciRrzighPcd64PZWtb8DXWikP58VnsKc5ktLN3kiUAa3rbHf9VNMLC4urG9hBmx6m35j36ifUDWAIz3E8U84YWFoxuGUDe9d6wonnBvAQLe5gVoR7kEg0JNZiS2XuI49tX//xAAZEQADAQEBAAAAAAAAAAAAAAAAAQIREDH/2gAIAQIBAT8AHdb2kJYuVDqsH6f/xAAYEQADAQEAAAAAAAAAAAAAAAAAAQIREP/aAAgBAwEBPwAUTg+QxvXyaUzoj//Z" alt="" class="h-12 w-12 rounded-full object-cover">
                             <div>
                                 <p class="font-bold text-primary">David L.</p>
                                 <p class="text-sm text-secondary">DevOps Engineer</p>
@@ -961,7 +873,7 @@
                     </div>
                     <div class="flex-none w-80 rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="h-12 w-12 rounded-full bg-gradient-to-br from-indigo-400 to-indigo-600"></div>
+                            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBERISGBUYLxoaL2NCOEJjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY//CABEIADAAMAMBIgACEQEDEQH/xAAaAAEAAgMBAAAAAAAAAAAAAAAGAwcBBAUC/9oACAEBAAAAAOhAWhWY2Qm2Pc9+esH4WCzPNYqhs9pS10fiR2EgLj+i9h//xAAXAQEBAQEAAAAAAAAAAAAAAAACAQME/9oACgICEAMQAAAA5uhWEa6SAq15f//EACoQAAIBBAEDAgUFAAAAAAAAAAECAwAEBRESBiExE1EUIkJxgTIzYZGh/9oACAEBAAE/ACNCri4jtYjLK2kFXnW0CyGO1h56Otuax/W8VxepbXVuIi50GVtihphsUwGqnZkhZl1se9dQzymcAOx925Vjek7WTFfG3alpJ15AewrN4qPGzrwLFC3YnvqukcibzF+hJ+7btwP2or5q62YvAIrqKcPcyyIzCHXAtUsEknwEcFzxtyoDIR2I1XUDPJBdu5HpxswUa7jRrpHIm3yMb7PpyjTihplDDwRWUkdLJhH+pvlB9qycYMLowUrz7geBWAz0V/hhavLHFd2y8QZBsMB4IrPXxkjaxicSOX3Iy10ooW9VZAvFjok/TRAVQB2FXERkib5S3EE6FZ+yNqQjeDvZHvViTHeSp9JGqSx1Pv1OzvyNdOYW5uLwl0Jj381cDEio29gDX2qwgLYy6fjskgfgeR/orqjB/GTRiNSFCBqnwD2d+yFdEKrf2KxPTTXULTFBtCCNjyKxGJis42i9MEEB9fmszAIpFlJ7aCD+a//EABsRAAIBBQAAAAAAAAAAAAAAAAABQQIQERIh/9oACAECAQE/AGxWkRI6ZMmvD//EABoRAAMBAQEBAAAAAAAAAAAAAAABAhEhEEH/2gAIAQMBAT8AmdGs8S4UMmvhiwddP//Z" alt="" class="h-12 w-12 rounded-full object-cover">
                             <div>
                                 <p class="font-bold text-primary">Lisa W.</p>
                                 <p class="text-sm text-secondary">Tech Lead</p>
@@ -972,7 +884,7 @@
                     </div>
                     <div class="flex-none w-80 rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="h-12 w-12 rounded-full bg-gradient-to-br from-red-400 to-red-600"></div>
+                            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBERISGBUYLxoaL2NCOEJjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY//CABEIADAAMAMBIgACEQEDEQH/xAAbAAABBQEBAAAAAAAAAAAAAAAEAAIDBQYBB//aAAgBAQAAAAASMdEPZB1AWCiu9x5Aa+EnQYW06rgyfMj3lX6l13//xAAaAQACAwEBAAAAAAAAAAAAAAACBAEDBQAG/9oACgICEAMQAAAAzvT2og1EWZgtCxZncX//xAAqEAACAQMDAwQABwAAAAAAAAABAgMABAUGESESMUETFCJhFkJRUnGB4f/aAAgBAQABPwAtTyAVLdJEOpyFH2ajvFdgAG57cUJOaDU7bUuzsxY7Ig6mNYDA/iC3nv76YxxGQpCgOwFXuGvMPItpdW3XAx3jmoXBSdAZHkiKnZiO2361G5qU0wJx1yU5c7LWh7Wa4wXQ8qxsl23otwSo81qbEwX+nngmJ+ADB/IIqUrFciJnBCMVLDjg+ajDKelu44NS1DMVkMIUsZSAoH7qwizYPVEsF51QwyczKrH4bDcE7eKzOs4szaPaYhzNDv0NMPzfQrJWvt5oVYlAF+W/dmqI9ao57sgJ/mpTxWOx097LJPFIE9vs+/3WH1PiMpmt8pj4Yr526fcREhn8VfaWt9NX8UtoxNjOXkCHgoe5rP6PjyNgtzBzIvJp7S5swnrQuqkcMRwalrSqh4LtD5NR6bil1VFboD1GZX/retQxrctaxMoKqGq0AChfTBX7qaaKW/eL4lII9mX7b/BX/8QAGBEAAwEBAAAAAAAAAAAAAAAAAAECEBH/2gAIAQIBAT8AQoRU8JGULHJ//8QAHBEAAgMBAAMAAAAAAAAAAAAAAAIBAxEEEjJB/9oACAEDAQE/AGbI0bqb4VW+cF0aphz+xc2KNGTBXZKSf//Z" alt="" class="h-12 w-12 rounded-full object-cover">
                             <div>
                                 <p class="font-bold text-primary">Carlos G.</p>
                                 <p class="text-sm text-secondary">iOS Developer</p>
@@ -983,7 +895,7 @@
                     </div>
                     <div class="flex-none w-80 rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="h-12 w-12 rounded-full bg-gradient-to-br from-amber-400 to-amber-600"></div>
+                            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBERISGBUYLxoaL2NCOEJjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY//CABEIADAAMAMBIgACEQEDEQH/xAAbAAACAwEBAQAAAAAAAAAAAAAGBwMEBQIBCP/aAAgBAQAAAABp9hsxFDWFr1Ic2yoA6ipSsJVlvok78j5+3yJduwGDNBgrIs//xAAYAQADAQEAAAAAAAAAAAAAAAACAwQAAf/aAAoCAhADEAAAAOrBxL3UVumLIofN/8QALhAAAgIBAgQFAwMFAAAAAAAAAQIDBAUABhESITEHEyJBURQjYSQyQjNSgZHB/9oACAEBAAE/AJecWwo5R09tULNekr2ZiERl9Tay/i/WgvmPH1vMSMlXL93/ACNYzxVgtcsdnyoW7eZ/HWQuR3Yq8odSShJKnprHOBRk7n1HWGvvappZuOqOfk63/lZIsdTxVaQGS3KwIU+2sJtzH0McsCwK5I+5Iw6sdbj2tjrVNkgh+nlA4rJF8/nWydzmgbWHyHHlj6p+PkabfMcV14K0foLafbUktciR4UiDjrxPbW8Eji8QcZWrIVCsOUdxx1Vs7riyAjEc7ea3IiWHHKT/AIGocVnrkptvKpQcWkeWQ/b+QBx6EalxhoboS7L94csYkH95b0njrLbdsQ3merTnUdyFQkaoV88XsRZGVJYX/phZP2dffp11ujKrBvgSHjJHTsEaisWr2Qjb6iWBeT7dh5fQurFeSpa54Z0sDhxlm5yeJ9uh1ns7YW81OFl5U5JJH9ywPEDVPJvbpRTcwKyIHB4dwRrO5ypiakzyT8rBeKQq3F31clNueadzxaRi/wDvW2NzWqMoqzQrZh/ir9xrLbgu5ECGtUSqgHUgddNIzWmZiSSxJJOthZL6vbMcJJLVWMJ/5rc2biu1hQqdUHrnnHQzOe5OpAqEoOI4/OtvRGTJ9R27amrfomKjizLq2przyLy9VJ4nXhvnTi9wLA7AxXB5bA/Ptr//xAAbEQACAwADAAAAAAAAAAAAAAAAAQIRIRATQf/aAAgBAgEBPwC8OxDY0X6QtreJ4xH/xAAbEQACAgMBAAAAAAAAAAAAAAAAAQIRAxIxIf/aAAgBAwEBPwCnY8Rq+EOmplaUhKiHqJqz/9k=" alt="" class="h-12 w-12 rounded-full object-cover">
                             <div>
                                 <p class="font-bold text-primary">Nina S.</p>
                                 <p class="text-sm text-secondary">QA Engineer</p>
@@ -994,7 +906,7 @@
                     </div>
                     <div class="flex-none w-80 rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="h-12 w-12 rounded-full bg-gradient-to-br from-cyan-400 to-cyan-600"></div>
+                            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBERISGBUYLxoaL2NCOEJjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY//CABEIADAAMAMBIgACEQEDEQH/xAAbAAACAwEBAQAAAAAAAAAAAAAFBwACBgEECP/aAAgBAQAAAABmSdksERetck7nEWyGhWg9UnGCZXuPwvmfTKUK3CaYh9B//8QAGAEAAwEBAAAAAAAAAAAAAAAAAQIDBAD/2gAKAgIQAxAAAAAhHeYMNGjPJ+Y9/8QALBAAAgEEAQMCBgEFAAAAAAAAAQIDAAQFEQYSITETQQcQFCIjUUIyM2Ficf/aAAgBAQABPwCt11ADZOv+0O42O4Py1XTXLsnLheL39/APyxIOn/BJA3ScoyFy7Pd3Lyn/AGNcF5dPBnbfHzTg21y4iCEeD7GumtD5c9cJwjK7haUNF0aHtsjRrE8au75+tAPTDAOf1XEcJbZHMK1xZiFcfL+HSaMnSOzE/IrRu4B/MVnMlaWmDu5pul09MqEP8yewFYXkFphYRCEicsfu6tmsHy+xxt5M+3uGnb3OvTH6FWmWt7yNHiOw/gUtp0Q+tOCAPKDzULhEAJrmWV+puRZeuVgg0XRPLMR5q6eIBGTalxvpqO6ZXGjoga3Xwuvre6hjlcoXlTQDH+mQedUxB2rdwexBpGd2FTv1ZN5priMOk7Eg92Y+Na/Xar5z9SgZAhRR9o8D30K4p8Pb7lONvshE5igg2kJI/uvXA8omFzYt7mBBMH0C690YVHOskImU7VgCK//EABsRAAIBBQAAAAAAAAAAAAAAAAARAQIQEiAh/9oACAECAQE/ADK8N90pln//xAAaEQABBQEAAAAAAAAAAAAAAAAAAQIQERIh/9oACAEDAQE/ADEILnPChIc2j//Z" alt="" class="h-12 w-12 rounded-full object-cover">
                             <div>
                                 <p class="font-bold text-primary">Ryan H.</p>
                                 <p class="text-sm text-secondary">Startup Founder</p>
@@ -1006,7 +918,7 @@
                     <!-- Duplicate for seamless loop -->
                     <div class="flex-none w-80 rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="h-12 w-12 rounded-full bg-gradient-to-br from-blue-400 to-blue-600"></div>
+                            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBERISGBUYLxoaL2NCOEJjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY//CABEIADAAMAMBIgACEQEDEQH/xAAaAAADAQEBAQAAAAAAAAAAAAAFBgcEAwEC/9oACAEBAAAAAIR0btOvKht9I2ARsvpVAxp6BzN2UHKAHh6sqPLxQr78FDfP/8QAFwEBAQEBAAAAAAAAAAAAAAAAAwIEAP/aAAoCAhADEAAAADsG0hCSih0Gi5v/xAApEAACAQQBBAEEAgMAAAAAAAABAgMABAURBhIhQWETFSIxcUJRUpGh/9oACAEBAAE/ABQ9De6xnDWnt0lvzLAWGxEB99TcPjib5IetgPD1HibWO3BiZnf+SMO4rOQLa4VyyhS/YezSDdcDx0FxlpbydOuOzQMq/wBuToVCLQzlbmWMuTrROhV1h7Qt8piZWA7MrEUIFOSCxsOvfRIPBBHY1zm0SHDQaJ2ZKjUEdzo1wCCOTA3btvrS8QLo62SKbDKY+tmb4x9xj7dJrIK9/wBdujOEgCkIrlNk+x6qyc2vJsibgyJaW9kZmUvt99tAH91f8hyuRgS2urySWBH6kVtdq62Hn/lcYydxaZKOITmO3klVpF8Ej8VcX8t3alLZ44oejbyE96TKfSTePeEOkhDLP+h+DWYy9ze3l3PDK6i4JDgeV8Cu4Puvkf8Azb/dcKQXPMcZBMDJE8vS6HuCCDT4zL4Ca5Fiq3Fmd6hkbRC/0D5rJ4/kOfguboxi3tIwdKx7n0AKxvAbeNx9Uu5n8gRHQrnXG8PisVayYoF5S+nIUmsLx67zMm49RQA6aVq4dgcZgCGjQvKT98rd2qW6sJIx1yI3oisleQvbi2t4+iIfk60T+hRjdj2Vde6FsH2D3r//xAAbEQABBQEBAAAAAAAAAAAAAAACAAEREiEDEP/aAAgBAgEBPwAyq0qer7K5lYUW+C0J38vkL//EABoRAAMBAQEBAAAAAAAAAAAAAAABEQISEDH/2gAIAQMBAT8ASrhxk2uXDKj819Oox7SRXaf/2Q==" alt="" class="h-12 w-12 rounded-full object-cover">
                             <div>
                                 <p class="font-bold text-primary">Alex M.</p>
                                 <p class="text-sm text-secondary">Product Designer</p>
@@ -1017,7 +929,7 @@
                     </div>
                     <div class="flex-none w-80 rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="h-12 w-12 rounded-full bg-gradient-to-br from-green-400 to-green-600"></div>
+                            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBERISGBUYLxoaL2NCOEJjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY//CABEIADAAMAMBIgACEQEDEQH/xAAaAAACAwEBAAAAAAAAAAAAAAADBwQFBgIB/9oACAEBAAAAAF5O0Bsj3PY2TJWQOXFTLAk71ljVo5mgm2Ysra2lCxkGc3//xAAXAQADAQAAAAAAAAAAAAAAAAABAgMA/9oACgICEAMQAAAAkaMhyNQLhTEf/8QALhAAAgEEAAQFAgYDAAAAAAAAAQIDAAQFEQYSEyEUIjFBUWGRFUJiccHRIzKB/9oACAEBAAE/AINxp4mVmdAezA9wTWNwt5e3mgwZdHbliemtWmIwwkCXBkuSfzkaq8wtpMksEcfRYrpZFNS44W98slyC3TPTYHsD29alteW454pGRidbI7H6E1bQQzwByVNp1USXZ8w37qP6rgbH4/H8M5eWaQr12KIXjPMEq2suldMGLK4b/Rhr/o/qspfLFCsit5o9cw+R6GslAMjZ88KsZAu4+XX2O6tYmtIGM4c9tGEHsCffdY3IwrfxxzoiJvlJ12Qem9VjrDG2lpbp+IxP4iBVkIl7j9Sj96z+HjtLV7yOdpgCT5/Urvsd1kr9nlmVt+UMrVwzd88U8T7lEKEge5qa9VYnupZkkVH5WjCaNPjjcXy3GLt+mAAEWVt8re9cMYrIDARxXBRJkLJ1QoYBf2NZ2eGOFLFn6jSsI9/O+xNcR4uWOZ3Cgc7sCR7qprg1beC/kS5Kos+lR2OgG+D9D6VxXiprDJNDHCyW8yD2rHO1vM0aSPIh78uu26yuTurLGN05JEeV1RAG9WJo8PXAuBHIJGubYrtj+Y/P3FX9ha5JCrcqSgEMpOiD/Iq44VmSVYrewvbhF8xaBQw3UNzZPbpjMj4tZY13ElxB5k+q14ZUkXkcE/pFcX3jY6PGTRW6TXKXaSxdY+XmU70RXGmek4ewFzkpLQeKkiWKPkBYCQ/xUHFuSx8f+WZp3clhzv8Ac1Nxdl8nAEiuX2y7eGIlQoqwyD2lk4vrlzKJEkt4wGJQ8wJ8x+Ruv//EABkRAQEAAwEAAAAAAAAAAAAAAAEAAhAREv/aAAgBAgEBPwALhMWLZEXnmv/EABoRAAIDAQEAAAAAAAAAAAAAAAABAhAREkH/2gAIAQMBAT8A9MqD1kjaUzo//9k=" alt="" class="h-12 w-12 rounded-full object-cover">
                             <div>
                                 <p class="font-bold text-primary">Sarah K.</p>
                                 <p class="text-sm text-secondary">Frontend Developer</p>
@@ -1028,7 +940,7 @@
                     </div>
                     <div class="flex-none w-80 rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="h-12 w-12 rounded-full bg-gradient-to-br from-purple-400 to-purple-600"></div>
+                            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBERISGBUYLxoaL2NCOEJjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY//CABEIADAAMAMBIgACEQEDEQH/xAAbAAACAgMBAAAAAAAAAAAAAAAGBwMFAAQIAf/aAAgBAQAAAAByV6t3D6Eg59Oku4C61QRuAeuS65/Yym1HMxUZrVIy1WIDyjcOf//EABcBAAMBAAAAAAAAAAAAAAAAAAABAgP/2gAKAgIQAxAAAACKVEqltWFZgP8A/8QALxAAAgEDAgQEBQQDAAAAAAAAAQIDBAURAAYSEyExByJBYRQVM1JxECVRoXKCkf/aAAgBAQABPwAjt+dXvclq25HHJc6nlcw4RVUszaufi5UfEyPRW+FKcMPrEs5GtjeI9FdLnJbquL4aeYYhcHKNpz3/AEbCjJIA1uqWXdvifS0kk0hpZJREFJ6ImrjsXbcNAKeGiGFGS/H5jrclrWzXAT0MpVFfIw2Sh1sfep3NQiOqEaVkS4cqfqe+lOrxUrS2yaYgkopYAasLx1fiTb+NsNJMwB/1OrxQRW7blwaGqqJ+bWICSvUjPmAOt626lpqPjpJJJIpQCrO2QNeHtU0TuiqARIrqc9jqlq1mTI1f6WSpt8nA7BeEq6jsQdXdJbHeqK70cWJaaXnIp7ONW2utG4tqTzWyr4RKSZYag8bQP9oB1uWrzBDZ4OqROzM59TnW3ap6G9q4zwMOo1Z6rjjBzq4zwUtvnmqWKwohLEKW/odTrfld+7NDLAY5Y/KUf7T1GtmQzUFpraimiM6NUKJEBAMZyAvfvnW6KWBZ1q0TDTyuQvqmOhBH+WdRPMlVFyw3NT7ep1titLwIJDiT1BGD/wA1udPmFRHb5GCUqJz5XeIMhIPQZPQHP89wTjtrce3abcJ+IPPWZ6p0c06R9l9ydfKoaTb0EMSyRRwU0cr5qlAkJcHzH24c51VWhLpZkJWcu9ZMvMiQTkAe4IJGR31bNkR0pSsd55g1LKzJLTleEjoPX+tUDRUM1C0QMUk4bmxOvCwYY64JJwR2H51//8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEBESQf/aAAgBAgEBPwATTpkRmDXtf//EABsRAAICAwEAAAAAAAAAAAAAAAABAhEQEhNB/9oACAEDAQE/AErHBpXiJNrXCnR18Nj/2Q==" alt="" class="h-12 w-12 rounded-full object-cover">
                             <div>
                                 <p class="font-bold text-primary">Jordan P.</p>
                                 <p class="text-sm text-secondary">Product Manager</p>
@@ -1039,7 +951,7 @@
                     </div>
                     <div class="flex-none w-80 rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="h-12 w-12 rounded-full bg-gradient-to-br from-orange-400 to-orange-600"></div>
+                            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBERISGBUYLxoaL2NCOEJjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY//CABEIADAAMAMBIgACEQEDEQH/xAAZAAADAQEBAAAAAAAAAAAAAAAEBgcFAQj/2gAIAQEAAAAAppikWwrzsZHVmo7fcBBD3KxhDpYVQ2147zsr3d1W22UxjVc//8QAFgEAAwAAAAAAAAAAAAAAAAAAAAEC/9oACgICEAMQAAAABUkybqBUg//EACoQAAEDBAECBQQDAAAAAAAAAAECAwQABQYREhQhBxMxMlEVQVJxFjRC/9oACAEBAAE/ALfjzTrAUUiv4wz+Iq/3ux2SUYaG3Jkoe5DPoj9mselWjIFeU0ksyNb8pZB3+jSsYa4nikbrIrGxHZQ8E9yeCqs/9VP6qZKRChuyXN8UD0FScGttwmvyXpMwecsrKedX2zN4vPYftkx3Q7lJVsprwxzhd8Dtrmu83Wk823D7imsxiq6RyTG7rbG+H2VVredVDbO6y6XlK33mIMm3iMHWi0ytBC1oI7nf30d1b7/mEif06o0J0KBUeQI4VklsvVxuLCekipW4DtTbx49vkH0rwnxucxnbkh/QZiRuRUn02usiOra+df5NY5JUqAAs+o7V4iSZTWMDpHjHWl1BU/z4hCaj3URIK+oZIfABK0rCvOH5bFRbs7NvqnGEoUWmCFBZPBAPzXhfpWLv3RSwt2fKcV2GhxSeCavQBjL3VobQI4ShBKh2SEmsms5vlgctiJKYkl0AoWpHMbB3ois8YyHF7wLXcJHJjgCy+y3xQ6K+rS3I5itrU3HUdrQg+8/Kj968GM4hxsfbxyWsIltOrMf4cSaye7tC1vAEglPrurFkMCFKYSgqK1dyKRdor8/qHgClKeKBv2146Xm23GHCtkds9VHV1BXTCNepqG8Y7qHErKVoIUlQPcGl5SudD5POqU5rShvtX//EABcRAQEBAQAAAAAAAAAAAAAAAAEAEBH/2gAIAQIBAT8AuzndCS//xAAXEQADAQAAAAAAAAAAAAAAAAAAARAR/9oACAEDAQE/ADIjBxuf/9k=" alt="" class="h-12 w-12 rounded-full object-cover">
                             <div>
                                 <p class="font-bold text-primary">Minh T.</p>
                                 <p class="text-sm text-secondary">Full-Stack Engineer</p>
@@ -1050,7 +962,7 @@
                     </div>
                     <div class="flex-none w-80 rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="h-12 w-12 rounded-full bg-gradient-to-br from-pink-400 to-pink-600"></div>
+                            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBERISGBUYLxoaL2NCOEJjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY//CABEIADAAMAMBIgACEQEDEQH/xAAaAAADAQEBAQAAAAAAAAAAAAAEBQYHAAID/9oACAEBAAAAAKcXNeUrtyihH0mzsIUR2OLY5k05xO+tE+XqwyDQTQ6IN1//xAAZAQEBAAMBAAAAAAAAAAAAAAACAwABBAX/2gAKAgIQAxAAAADze7pkhN00ERTJL//EAC4QAAIBBAECBAQGAwAAAAAAAAECAwAEBREGEhMhMVFhFCIyQQcVcYGRsUJj0f/aAAgBAQABPwAyVeXiWdrLcS77cSlm1V7l81yqdjjbItBCdo3Trp/U1Pn+YYiItezXUcRATuKwIGquuT5WUjvZe7ZWGxqRqkvO8S0s88nu3jRkrNchgzFzJgls5YiZxGZu96GrTMWmPvzbLDKIYtqhB0oA9ql5VZzMbD4aWb5NvtAVArkXF4YOOx39uQm5pXVP9fygVYYfFvgYZGiO3RSx3Rkr8t6+SzSSHoDTkqxqX4VcoXvZdJGw2p8iR9qmkw2VvI7yAS2qMehnKlQG/o1mbyNuONYxK7JCsmpD5MGI0B/FY68Kcah2fIAU0tZDLXNjnb7olPQZTtSN1KsZu3u9PIsiLuEID/IP3q5hKQJIrXcauNdmYjR/QVynHx4vjOHVUZJLm3aSUE+bbrD39s9oLG5idholSjaO6j5Jl5pUiSRGd2CqOgeJNR4pcXcxw3axTSJbiWWTo+t/EnX76H7VmOIW3JII8tg8iLSeaMNNC+yhb+xXE/w8Bv4583dm8eI7SBPprPYLHciKRXUMbRxsQCD5J7EVe8UPGriRb+WWNQ3yTCElWHs1W3FsRxpka0g7k6r1NcSgM+/b0qWSDPWcqdxUvLc9tyv+Da3r3FYXBXEEptjKieJZA52GHqtXLPi8fIQ/dkI6URY9IG9T5bFY/OWk96cTZus1xAgab7BFpJlORa2fRjmiLdDDYJUj/tf/xAAdEQACAQUBAQAAAAAAAAAAAAABAgADBBESITFB/9oACAECAQE/AKaFjPOYhcLLf7GHYynEuF1XkD7DaUFdsk+T/8QAGREBAAMBAQAAAAAAAAAAAAAAAQACEQMh/9oACAEDAQE/AL3KkATdhRWd3ycnazTZyvtsYUa+TohP/9k=" alt="" class="h-12 w-12 rounded-full object-cover">
                             <div>
                                 <p class="font-bold text-primary">Emily R.</p>
                                 <p class="text-sm text-secondary">UX Researcher</p>
@@ -1061,7 +973,7 @@
                     </div>
                     <div class="flex-none w-80 rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="h-12 w-12 rounded-full bg-gradient-to-br from-teal-400 to-teal-600"></div>
+                            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBERISGBUYLxoaL2NCOEJjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY//CABEIADAAMAMBIgACEQEDEQH/xAAbAAACAwADAAAAAAAAAAAAAAAGBwEEBQADCP/aAAgBAQAAAAA7gK3yWKYcuD88uUBxHNZhXKHPPJ41u0dElsfMDdHcANzXXtf/xAAXAQEBAQEAAAAAAAAAAAAAAAADAAQC/9oACgICEAMQAAAAoND56DQ4c3CsH//EACsQAAIBBAAFAgUFAAAAAAAAAAECAwAEBREGEhMhMRBBBxQyYaEjUXKx4f/aAAgBAQABPwBRU08VtA80zqkaDbMx7AVP8QjNeNDi7VXjU66sp81juJ+rGDewhB7ungUNEAg7Brl9PiTLNHwuOm2lM6h64cuIIpwbiZI1Pu3gmlysEVzHjHAMxUNy9gOU1ipFkxsIVuYxjkb7EVr044x1xkuGJ4rbuyESlNbLgVPFHDbxGWbsz70TvWvtWNyuImks3BaSXppE79IqCdeNnzWMRUsEIXl5yX9FFONKSewFcUJaT8X33yBDxCcleTwf31WAWO6xECmMdWJ1cbH0VbcjW0RiIKcg5SPSLKNeMyWMJbk8u4/AFcd3GQtrJYZ7tjLL3MUfZVWsjiXtb4dMHUkUcyn+X+g1DkYsRwu80jfrqhVF93k8AVw51ocJZQyHciRrzighPcd64PZWtb8DXWikP58VnsKc5ktLN3kiUAa3rbHf9VNMLC4urG9hBmx6m35j36ifUDWAIz3E8U84YWFoxuGUDe9d6wonnBvAQLe5gVoR7kEg0JNZiS2XuI49tX//xAAZEQADAQEBAAAAAAAAAAAAAAAAAQIREDH/2gAIAQIBAT8AHdb2kJYuVDqsH6f/xAAYEQADAQEAAAAAAAAAAAAAAAAAAQIREP/aAAgBAwEBPwAUTg+QxvXyaUzoj//Z" alt="" class="h-12 w-12 rounded-full object-cover">
                             <div>
                                 <p class="font-bold text-primary">David L.</p>
                                 <p class="text-sm text-secondary">DevOps Engineer</p>
@@ -1072,7 +984,7 @@
                     </div>
                     <div class="flex-none w-80 rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="h-12 w-12 rounded-full bg-gradient-to-br from-indigo-400 to-indigo-600"></div>
+                            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBERISGBUYLxoaL2NCOEJjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY//CABEIADAAMAMBIgACEQEDEQH/xAAaAAEAAgMBAAAAAAAAAAAAAAAGAwcBBAUC/9oACAEBAAAAAOhAWhWY2Qm2Pc9+esH4WCzPNYqhs9pS10fiR2EgLj+i9h//xAAXAQEBAQEAAAAAAAAAAAAAAAACAQME/9oACgICEAMQAAAA5uhWEa6SAq15f//EACoQAAIBBAEDAgUFAAAAAAAAAAECAwAEBRESBiExE1EUIkJxgTIzYZGh/9oACAEBAAE/ACNCri4jtYjLK2kFXnW0CyGO1h56Otuax/W8VxepbXVuIi50GVtihphsUwGqnZkhZl1se9dQzymcAOx925Vjek7WTFfG3alpJ15AewrN4qPGzrwLFC3YnvqukcibzF+hJ+7btwP2or5q62YvAIrqKcPcyyIzCHXAtUsEknwEcFzxtyoDIR2I1XUDPJBdu5HpxswUa7jRrpHIm3yMb7PpyjTihplDDwRWUkdLJhH+pvlB9qycYMLowUrz7geBWAz0V/hhavLHFd2y8QZBsMB4IrPXxkjaxicSOX3Iy10ooW9VZAvFjok/TRAVQB2FXERkib5S3EE6FZ+yNqQjeDvZHvViTHeSp9JGqSx1Pv1OzvyNdOYW5uLwl0Jj381cDEio29gDX2qwgLYy6fjskgfgeR/orqjB/GTRiNSFCBqnwD2d+yFdEKrf2KxPTTXULTFBtCCNjyKxGJis42i9MEEB9fmszAIpFlJ7aCD+a//EABsRAAIBBQAAAAAAAAAAAAAAAAABQQIQERIh/9oACAECAQE/AGxWkRI6ZMmvD//EABoRAAMBAQEBAAAAAAAAAAAAAAABAhEhEEH/2gAIAQMBAT8AmdGs8S4UMmvhiwddP//Z" alt="" class="h-12 w-12 rounded-full object-cover">
                             <div>
                                 <p class="font-bold text-primary">Lisa W.</p>
                                 <p class="text-sm text-secondary">Tech Lead</p>
@@ -1083,7 +995,7 @@
                     </div>
                     <div class="flex-none w-80 rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="h-12 w-12 rounded-full bg-gradient-to-br from-red-400 to-red-600"></div>
+                            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBERISGBUYLxoaL2NCOEJjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY//CABEIADAAMAMBIgACEQEDEQH/xAAbAAABBQEBAAAAAAAAAAAAAAAEAAIDBQYBB//aAAgBAQAAAAASMdEPZB1AWCiu9x5Aa+EnQYW06rgyfMj3lX6l13//xAAaAQACAwEBAAAAAAAAAAAAAAACBAEDBQAG/9oACgICEAMQAAAAzvT2og1EWZgtCxZncX//xAAqEAACAQMDAwQABwAAAAAAAAABAgMABAUGESESMUETFCJhFkJRUnGB4f/aAAgBAQABPwAtTyAVLdJEOpyFH2ajvFdgAG57cUJOaDU7bUuzsxY7Ig6mNYDA/iC3nv76YxxGQpCgOwFXuGvMPItpdW3XAx3jmoXBSdAZHkiKnZiO2361G5qU0wJx1yU5c7LWh7Wa4wXQ8qxsl23otwSo81qbEwX+nngmJ+ADB/IIqUrFciJnBCMVLDjg+ajDKelu44NS1DMVkMIUsZSAoH7qwizYPVEsF51QwyczKrH4bDcE7eKzOs4szaPaYhzNDv0NMPzfQrJWvt5oVYlAF+W/dmqI9ao57sgJ/mpTxWOx097LJPFIE9vs+/3WH1PiMpmt8pj4Yr526fcREhn8VfaWt9NX8UtoxNjOXkCHgoe5rP6PjyNgtzBzIvJp7S5swnrQuqkcMRwalrSqh4LtD5NR6bil1VFboD1GZX/retQxrctaxMoKqGq0AChfTBX7qaaKW/eL4lII9mX7b/BX/8QAGBEAAwEBAAAAAAAAAAAAAAAAAAECEBH/2gAIAQIBAT8AQoRU8JGULHJ//8QAHBEAAgMBAAMAAAAAAAAAAAAAAAIBAxEEEjJB/9oACAEDAQE/AGbI0bqb4VW+cF0aphz+xc2KNGTBXZKSf//Z" alt="" class="h-12 w-12 rounded-full object-cover">
                             <div>
                                 <p class="font-bold text-primary">Carlos G.</p>
                                 <p class="text-sm text-secondary">iOS Developer</p>
@@ -1094,7 +1006,7 @@
                     </div>
                     <div class="flex-none w-80 rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="h-12 w-12 rounded-full bg-gradient-to-br from-amber-400 to-amber-600"></div>
+                            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBERISGBUYLxoaL2NCOEJjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY//CABEIADAAMAMBIgACEQEDEQH/xAAbAAACAwEBAQAAAAAAAAAAAAAGBwMEBQIBCP/aAAgBAQAAAABp9hsxFDWFr1Ic2yoA6ipSsJVlvok78j5+3yJduwGDNBgrIs//xAAYAQADAQEAAAAAAAAAAAAAAAACAwQAAf/aAAoCAhADEAAAAOrBxL3UVumLIofN/8QALhAAAgIBAgQFAwMFAAAAAAAAAQIDBAUABhESITEHEyJBURQjYSQyQjNSgZHB/9oACAEBAAE/AJecWwo5R09tULNekr2ZiERl9Tay/i/WgvmPH1vMSMlXL93/ACNYzxVgtcsdnyoW7eZ/HWQuR3Yq8odSShJKnprHOBRk7n1HWGvvappZuOqOfk63/lZIsdTxVaQGS3KwIU+2sJtzH0McsCwK5I+5Iw6sdbj2tjrVNkgh+nlA4rJF8/nWydzmgbWHyHHlj6p+PkabfMcV14K0foLafbUktciR4UiDjrxPbW8Eji8QcZWrIVCsOUdxx1Vs7riyAjEc7ea3IiWHHKT/AIGocVnrkptvKpQcWkeWQ/b+QBx6EalxhoboS7L94csYkH95b0njrLbdsQ3merTnUdyFQkaoV88XsRZGVJYX/phZP2dffp11ujKrBvgSHjJHTsEaisWr2Qjb6iWBeT7dh5fQurFeSpa54Z0sDhxlm5yeJ9uh1ns7YW81OFl5U5JJH9ywPEDVPJvbpRTcwKyIHB4dwRrO5ypiakzyT8rBeKQq3F31clNueadzxaRi/wDvW2NzWqMoqzQrZh/ir9xrLbgu5ECGtUSqgHUgddNIzWmZiSSxJJOthZL6vbMcJJLVWMJ/5rc2biu1hQqdUHrnnHQzOe5OpAqEoOI4/OtvRGTJ9R27amrfomKjizLq2przyLy9VJ4nXhvnTi9wLA7AxXB5bA/Ptr//xAAbEQACAwADAAAAAAAAAAAAAAAAAQIRIRATQf/aAAgBAgEBPwC8OxDY0X6QtreJ4xH/xAAbEQACAgMBAAAAAAAAAAAAAAAAAQIRAxIxIf/aAAgBAwEBPwCnY8Rq+EOmplaUhKiHqJqz/9k=" alt="" class="h-12 w-12 rounded-full object-cover">
                             <div>
                                 <p class="font-bold text-primary">Nina S.</p>
                                 <p class="text-sm text-secondary">QA Engineer</p>
@@ -1105,7 +1017,7 @@
                     </div>
                     <div class="flex-none w-80 rounded-2xl bg-white p-8 shadow-sm border border-gray-100">
                         <div class="flex items-center gap-4 mb-4">
-                            <div class="h-12 w-12 rounded-full bg-gradient-to-br from-cyan-400 to-cyan-600"></div>
+                            <img src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEASABIAAD/2wCEAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDIBERISGBUYLxoaL2NCOEJjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY2NjY//CABEIADAAMAMBIgACEQEDEQH/xAAbAAACAwEBAQAAAAAAAAAAAAAFBwACBgEECP/aAAgBAQAAAABmSdksERetck7nEWyGhWg9UnGCZXuPwvmfTKUK3CaYh9B//8QAGAEAAwEBAAAAAAAAAAAAAAAAAQIDBAD/2gAKAgIQAxAAAAAhHeYMNGjPJ+Y9/8QALBAAAgEEAQMCBgEFAAAAAAAAAQIDAAQFEQYSITETQQcQFCIjUUIyM2Ficf/aAAgBAQABPwCt11ADZOv+0O42O4Py1XTXLsnLheL39/APyxIOn/BJA3ScoyFy7Pd3Lyn/AGNcF5dPBnbfHzTg21y4iCEeD7GumtD5c9cJwjK7haUNF0aHtsjRrE8au75+tAPTDAOf1XEcJbZHMK1xZiFcfL+HSaMnSOzE/IrRu4B/MVnMlaWmDu5pul09MqEP8yewFYXkFphYRCEicsfu6tmsHy+xxt5M+3uGnb3OvTH6FWmWt7yNHiOw/gUtp0Q+tOCAPKDzULhEAJrmWV+puRZeuVgg0XRPLMR5q6eIBGTalxvpqO6ZXGjoga3Xwuvre6hjlcoXlTQDH+mQedUxB2rdwexBpGd2FTv1ZN5priMOk7Eg92Y+Na/Xar5z9SgZAhRR9o8D30K4p8Pb7lONvshE5igg2kJI/uvXA8omFzYt7mBBMH0C690YVHOskImU7VgCK//EABsRAAIBBQAAAAAAAAAAAAAAAAARAQIQEiAh/9oACAECAQE/ADK8N90pln//xAAaEQABBQEAAAAAAAAAAAAAAAAAAQIQERIh/9oACAEDAQE/ADEILnPChIc2j//Z" alt="" class="h-12 w-12 rounded-full object-cover">
                             <div>
                                 <p class="font-bold text-primary">Ryan H.</p>
                                 <p class="text-sm text-secondary">Startup Founder</p>
@@ -1125,9 +1037,7 @@
         <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row justify-between items-center gap-8">
                 <div class="flex items-center gap-2">
-                    <div class="flex h-6 w-6 items-center justify-center rounded bg-primary text-white">
-                        <span class="material-symbols-outlined text-[14px]">screenshot_region</span>
-                    </div>
+                    <img src="/assets/logo-f7RbLSmD-f7RbLSmD.png" alt="Clik" class="h-6 w-6 rounded">
                     <span class="text-base font-bold text-primary">Clik</span>
                 </div>
 
