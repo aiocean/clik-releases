@@ -6,7 +6,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Clik - AI-First Screenshot Tool for macOS</title>
     <meta name="description"
-        content="Capture, annotate, send to AI. The minimal screenshot tool designed for modern AI-assisted workflows." />
+        content="macOS screenshot tool for AI workflows. Send to ChatGPT, Claude, Gemini or let coding agents capture via MCP." />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32" href="/assets/favicon-32x32-BdAIJu1p-BdAIJu1p-BdAIJu1p-BdAIJu1p-BdAIJu1p-BdAIJu1p.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/assets/favicon-16x16-BEVzZDN6-BEVzZDN6-BEVzZDN6-BEVzZDN6-BEVzZDN6-BEVzZDN6.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon-CSg0Izru-CSg0Izru-CSg0Izru-CSg0Izru-CSg0Izru-CSg0Izru.png">
+
+    <!-- Open Graph -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://clik.aiocean.io/">
+    <meta property="og:title" content="Clik - AI-First Screenshot Tool for macOS">
+    <meta property="og:description" content="macOS screenshot tool for AI workflows. Send to ChatGPT, Claude, Gemini or let coding agents capture via MCP.">
+    <meta property="og:image" content="https://clik.aiocean.io/images/og-image.png">
+    <meta property="og:site_name" content="Clik">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:url" content="https://clik.aiocean.io/">
+    <meta name="twitter:title" content="Clik - AI-First Screenshot Tool for macOS">
+    <meta name="twitter:description" content="macOS screenshot tool for AI workflows. Send to ChatGPT, Claude, Gemini or let coding agents capture via MCP.">
+    <meta name="twitter:image" content="https://clik.aiocean.io/images/og-image.png">
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -45,7 +65,7 @@
     @keyframes slide { 0% { transform: translateY(10px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
     .upload-bar.complete { width: 100% !important; }
   </style>
-  <script type="module" crossorigin src="/assets/index-C9j-e6Ej.js"></script>
+  <script type="module" crossorigin src="/assets/index-SjT99MCC.js"></script>
   <link rel="stylesheet" crossorigin href="/assets/index-PdM8yM96.css">
 </head>
 
@@ -56,7 +76,7 @@
     <nav class="sticky top-0 z-50 w-full border-b border-gray-200 bg-white/80 backdrop-blur-md">
         <div class="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
             <div class="flex items-center gap-2 cursor-pointer">
-                <img src="/assets/logo.png" alt="Clik" class="h-8">
+                <img src="/assets/logo-CiVTzuW7-CiVTzuW7-CiVTzuW7-CiVTzuW7-CiVTzuW7-CiVTzuW7-CiVTzuW7.png" alt="Clik" class="h-8">
                 <span class="text-lg font-bold tracking-tight text-primary">Clik</span>
             </div>
 
@@ -99,12 +119,11 @@
 
                         <h1
                             class="text-5xl font-bold tracking-tight text-primary sm:text-6xl lg:text-7xl leading-[1.1]">
-                            Your AI copilot for visual context.
+                            Screenshot tool built for AI workflows.
                         </h1>
 
                         <p class="text-lg text-secondary sm:text-xl max-w-lg leading-relaxed">
-                            Capture, annotate with numbered markers, and send screenshots directly to ChatGPT, Claude,
-                            or Gemini. Stop manually uploading.
+                            Capture, annotate, send to ChatGPT, Claude, Gemini. Or let coding agents capture via MCP.
                         </p>
 
                         <div class="mt-4 flex flex-col sm:flex-row gap-4">
@@ -112,10 +131,10 @@
                                 class="h-12 rounded-lg bg-primary px-8 text-base font-bold text-white shadow-lg shadow-primary/20 transition-all hover:bg-primary/90 hover:shadow-xl hover:-translate-y-0.5 active:translate-y-0 flex items-center justify-center">
                                 Download for Free
                             </a>
-                            <a href="https://github.com/aiocean/clik" target="_blank"
+                            <a href="#tutorial"
                                 class="flex h-12 items-center justify-center rounded-lg border border-gray-200 bg-white px-8 text-base font-bold text-primary transition-all hover:border-gray-300 hover:bg-gray-50 hover:shadow-sm">
                                 <span class="material-symbols-outlined mr-2 text-[20px]">play_circle</span>
-                                View on GitHub
+                                View Tutorial
                             </a>
                         </div>
 
@@ -422,50 +441,50 @@
                 <!-- Marquee Container -->
                 <div class="flex overflow-hidden">
                     <!-- First set of tools -->
-                    <div class="flex shrink-0 animate-marquee gap-6 whitespace-nowrap py-4 pr-6">
-                        <div class="flex items-center gap-3 pl-4 pr-3 py-3 rounded-full border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-orange-400 hover:shadow-md hover:scale-105 cursor-default select-none">
+                    <div class="flex shrink-0 animate-marquee whitespace-nowrap py-4 gap-6">
+                        <div class="flex items-center gap-3 pl-4 pr-3 py-3 ml-6 rounded-full border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-orange-400 hover:shadow-md hover:scale-105 cursor-default select-none">
                             <div class="flex h-8 w-8 items-center justify-center rounded-md bg-orange-50 text-orange-500">
                                 <span class="material-symbols-outlined text-[20px]">check_box_outline_blank</span>
                             </div>
                             <span class="font-medium text-primary">Box</span>
                             <span class="flex h-7 min-w-[1.75rem] px-1.5 items-center justify-center rounded border border-gray-100 bg-gray-50 text-xs font-bold text-gray-500 uppercase ml-1 shadow-sm">B</span>
                         </div>
-                        <div class="flex items-center gap-3 pl-4 pr-3 py-3 rounded-full border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-orange-400 hover:shadow-md hover:scale-105 cursor-default select-none">
+                        <div class="flex items-center gap-3 pl-4 pr-3 py-3 ml-6 rounded-full border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-orange-400 hover:shadow-md hover:scale-105 cursor-default select-none">
                             <div class="flex h-8 w-8 items-center justify-center rounded-md bg-orange-50 text-orange-500">
                                 <span class="material-symbols-outlined text-[20px]">arrow_right_alt</span>
                             </div>
                             <span class="font-medium text-primary">Arrow</span>
                             <span class="flex h-7 min-w-[1.75rem] px-1.5 items-center justify-center rounded border border-gray-100 bg-gray-50 text-xs font-bold text-gray-500 uppercase ml-1 shadow-sm">A</span>
                         </div>
-                        <div class="flex items-center gap-3 pl-4 pr-3 py-3 rounded-full border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-orange-400 hover:shadow-md hover:scale-105 cursor-default select-none">
+                        <div class="flex items-center gap-3 pl-4 pr-3 py-3 ml-6 rounded-full border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-orange-400 hover:shadow-md hover:scale-105 cursor-default select-none">
                             <div class="flex h-8 w-8 items-center justify-center rounded-md bg-orange-50 text-orange-500">
                                 <span class="material-symbols-outlined text-[20px]">text_fields</span>
                             </div>
                             <span class="font-medium text-primary">Text</span>
                             <span class="flex h-7 min-w-[1.75rem] px-1.5 items-center justify-center rounded border border-gray-100 bg-gray-50 text-xs font-bold text-gray-500 uppercase ml-1 shadow-sm">T</span>
                         </div>
-                        <div class="flex items-center gap-3 pl-4 pr-3 py-3 rounded-full border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-orange-400 hover:shadow-md hover:scale-105 cursor-default select-none">
+                        <div class="flex items-center gap-3 pl-4 pr-3 py-3 ml-6 rounded-full border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-orange-400 hover:shadow-md hover:scale-105 cursor-default select-none">
                             <div class="flex h-8 w-8 items-center justify-center rounded-md bg-orange-50 text-orange-500">
                                 <span class="material-symbols-outlined text-[20px]">blur_on</span>
                             </div>
                             <span class="font-medium text-primary">Blur</span>
                             <span class="flex h-7 min-w-[1.75rem] px-1.5 items-center justify-center rounded border border-gray-100 bg-gray-50 text-xs font-bold text-gray-500 uppercase ml-1 shadow-sm">U</span>
                         </div>
-                        <div class="flex items-center gap-3 pl-4 pr-3 py-3 rounded-full border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-orange-400 hover:shadow-md hover:scale-105 cursor-default select-none">
+                        <div class="flex items-center gap-3 pl-4 pr-3 py-3 ml-6 rounded-full border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-orange-400 hover:shadow-md hover:scale-105 cursor-default select-none">
                             <div class="flex h-8 w-8 items-center justify-center rounded-md bg-orange-50 text-orange-500">
                                 <span class="material-symbols-outlined text-[20px]">counter_1</span>
                             </div>
                             <span class="font-medium text-primary">Step Count</span>
                             <span class="flex h-7 min-w-[1.75rem] px-1.5 items-center justify-center rounded border border-gray-100 bg-gray-50 text-xs font-bold text-gray-500 uppercase ml-1 shadow-sm">1</span>
                         </div>
-                        <div class="flex items-center gap-3 pl-4 pr-3 py-3 rounded-full border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-orange-400 hover:shadow-md hover:scale-105 cursor-default select-none">
+                        <div class="flex items-center gap-3 pl-4 pr-3 py-3 ml-6 rounded-full border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-orange-400 hover:shadow-md hover:scale-105 cursor-default select-none">
                             <div class="flex h-8 w-8 items-center justify-center rounded-md bg-orange-50 text-orange-500">
                                 <span class="material-symbols-outlined text-[20px]">near_me</span>
                             </div>
                             <span class="font-medium text-primary">Select</span>
                             <span class="flex h-7 min-w-[1.75rem] px-1.5 items-center justify-center rounded border border-gray-100 bg-gray-50 text-xs font-bold text-gray-500 uppercase ml-1 shadow-sm">V</span>
                         </div>
-                        <div class="flex items-center gap-3 pl-4 pr-3 py-3 rounded-full border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-orange-400 hover:shadow-md hover:scale-105 cursor-default select-none">
+                        <div class="flex items-center gap-3 pl-4 pr-3 py-3 ml-6 rounded-full border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-orange-400 hover:shadow-md hover:scale-105 cursor-default select-none">
                             <div class="flex h-8 w-8 items-center justify-center rounded-md bg-orange-50 text-orange-500">
                                 <span class="material-symbols-outlined text-[20px]">edit</span>
                             </div>
@@ -474,50 +493,50 @@
                         </div>
                     </div>
                     <!-- Duplicate set for seamless loop -->
-                    <div class="flex shrink-0 animate-marquee gap-6 whitespace-nowrap py-4 pr-6" aria-hidden="true">
-                        <div class="flex items-center gap-3 pl-4 pr-3 py-3 rounded-full border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-orange-400 hover:shadow-md hover:scale-105 cursor-default select-none">
+                    <div class="flex shrink-0 animate-marquee whitespace-nowrap py-4 gap-6" aria-hidden="true">
+                        <div class="flex items-center gap-3 pl-4 pr-3 py-3 ml-6 rounded-full border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-orange-400 hover:shadow-md hover:scale-105 cursor-default select-none">
                             <div class="flex h-8 w-8 items-center justify-center rounded-md bg-orange-50 text-orange-500">
                                 <span class="material-symbols-outlined text-[20px]">check_box_outline_blank</span>
                             </div>
                             <span class="font-medium text-primary">Box</span>
                             <span class="flex h-7 min-w-[1.75rem] px-1.5 items-center justify-center rounded border border-gray-100 bg-gray-50 text-xs font-bold text-gray-500 uppercase ml-1 shadow-sm">B</span>
                         </div>
-                        <div class="flex items-center gap-3 pl-4 pr-3 py-3 rounded-full border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-orange-400 hover:shadow-md hover:scale-105 cursor-default select-none">
+                        <div class="flex items-center gap-3 pl-4 pr-3 py-3 ml-6 rounded-full border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-orange-400 hover:shadow-md hover:scale-105 cursor-default select-none">
                             <div class="flex h-8 w-8 items-center justify-center rounded-md bg-orange-50 text-orange-500">
                                 <span class="material-symbols-outlined text-[20px]">arrow_right_alt</span>
                             </div>
                             <span class="font-medium text-primary">Arrow</span>
                             <span class="flex h-7 min-w-[1.75rem] px-1.5 items-center justify-center rounded border border-gray-100 bg-gray-50 text-xs font-bold text-gray-500 uppercase ml-1 shadow-sm">A</span>
                         </div>
-                        <div class="flex items-center gap-3 pl-4 pr-3 py-3 rounded-full border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-orange-400 hover:shadow-md hover:scale-105 cursor-default select-none">
+                        <div class="flex items-center gap-3 pl-4 pr-3 py-3 ml-6 rounded-full border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-orange-400 hover:shadow-md hover:scale-105 cursor-default select-none">
                             <div class="flex h-8 w-8 items-center justify-center rounded-md bg-orange-50 text-orange-500">
                                 <span class="material-symbols-outlined text-[20px]">text_fields</span>
                             </div>
                             <span class="font-medium text-primary">Text</span>
                             <span class="flex h-7 min-w-[1.75rem] px-1.5 items-center justify-center rounded border border-gray-100 bg-gray-50 text-xs font-bold text-gray-500 uppercase ml-1 shadow-sm">T</span>
                         </div>
-                        <div class="flex items-center gap-3 pl-4 pr-3 py-3 rounded-full border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-orange-400 hover:shadow-md hover:scale-105 cursor-default select-none">
+                        <div class="flex items-center gap-3 pl-4 pr-3 py-3 ml-6 rounded-full border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-orange-400 hover:shadow-md hover:scale-105 cursor-default select-none">
                             <div class="flex h-8 w-8 items-center justify-center rounded-md bg-orange-50 text-orange-500">
                                 <span class="material-symbols-outlined text-[20px]">blur_on</span>
                             </div>
                             <span class="font-medium text-primary">Blur</span>
                             <span class="flex h-7 min-w-[1.75rem] px-1.5 items-center justify-center rounded border border-gray-100 bg-gray-50 text-xs font-bold text-gray-500 uppercase ml-1 shadow-sm">U</span>
                         </div>
-                        <div class="flex items-center gap-3 pl-4 pr-3 py-3 rounded-full border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-orange-400 hover:shadow-md hover:scale-105 cursor-default select-none">
+                        <div class="flex items-center gap-3 pl-4 pr-3 py-3 ml-6 rounded-full border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-orange-400 hover:shadow-md hover:scale-105 cursor-default select-none">
                             <div class="flex h-8 w-8 items-center justify-center rounded-md bg-orange-50 text-orange-500">
                                 <span class="material-symbols-outlined text-[20px]">counter_1</span>
                             </div>
                             <span class="font-medium text-primary">Step Count</span>
                             <span class="flex h-7 min-w-[1.75rem] px-1.5 items-center justify-center rounded border border-gray-100 bg-gray-50 text-xs font-bold text-gray-500 uppercase ml-1 shadow-sm">1</span>
                         </div>
-                        <div class="flex items-center gap-3 pl-4 pr-3 py-3 rounded-full border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-orange-400 hover:shadow-md hover:scale-105 cursor-default select-none">
+                        <div class="flex items-center gap-3 pl-4 pr-3 py-3 ml-6 rounded-full border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-orange-400 hover:shadow-md hover:scale-105 cursor-default select-none">
                             <div class="flex h-8 w-8 items-center justify-center rounded-md bg-orange-50 text-orange-500">
                                 <span class="material-symbols-outlined text-[20px]">near_me</span>
                             </div>
                             <span class="font-medium text-primary">Select</span>
                             <span class="flex h-7 min-w-[1.75rem] px-1.5 items-center justify-center rounded border border-gray-100 bg-gray-50 text-xs font-bold text-gray-500 uppercase ml-1 shadow-sm">V</span>
                         </div>
-                        <div class="flex items-center gap-3 pl-4 pr-3 py-3 rounded-full border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-orange-400 hover:shadow-md hover:scale-105 cursor-default select-none">
+                        <div class="flex items-center gap-3 pl-4 pr-3 py-3 ml-6 rounded-full border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:border-orange-400 hover:shadow-md hover:scale-105 cursor-default select-none">
                             <div class="flex h-8 w-8 items-center justify-center rounded-md bg-orange-50 text-orange-500">
                                 <span class="material-symbols-outlined text-[20px]">edit</span>
                             </div>
@@ -544,68 +563,63 @@
                 </div>
 
                 <div class="grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-                    <!-- Feature 1 -->
+                    <!-- Feature 1: Numbered markers for precise AI reference -->
                     <div
                         class="group relative rounded-xl border border-gray-200 bg-background-light p-6 transition-all hover:border-primary/20 hover:shadow-soft hover:-translate-y-1">
                         <div
                             class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-white border border-gray-200 shadow-sm text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300">
                             <span class="material-symbols-outlined">counter_1</span>
                         </div>
-                        <h3 class="text-lg font-bold text-primary">Numbered Markers</h3>
-                        <p class="mt-2 text-sm text-secondary leading-relaxed">Reference specific areas with AI: "Fix
-                            issue at marker 1, then check marker 2."</p>
+                        <h3 class="text-lg font-bold text-primary">Talk to AI in Numbers</h3>
+                        <p class="mt-2 text-sm text-secondary leading-relaxed">"Fix marker 1, then check marker 2." Auto-incrementing numbers let AI know exactly where you mean—no vague descriptions.</p>
                     </div>
 
-                    <!-- Feature 2 -->
+                    <!-- Feature 2: MCP - AI reads AND writes -->
                     <div
                         class="group relative rounded-xl border border-gray-200 bg-background-light p-6 transition-all hover:border-primary/20 hover:shadow-soft hover:-translate-y-1">
                         <div
                             class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-white border border-gray-200 shadow-sm text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300">
-                            <span class="material-symbols-outlined">share</span>
+                            <span class="material-symbols-outlined">sync_alt</span>
                         </div>
-                        <h3 class="text-lg font-bold text-primary">One-Click AI Share</h3>
-                        <p class="mt-2 text-sm text-secondary leading-relaxed">Direct integration with ChatGPT, Claude,
-                            and Gemini. Upload and open in one click.</p>
+                        <h3 class="text-lg font-bold text-primary">AI Annotates Back</h3>
+                        <p class="mt-2 text-sm text-secondary leading-relaxed">MCP goes both ways. AI reads your canvas, then adds its own annotations and images. True collaboration, not one-way viewing.</p>
                     </div>
 
-                    <!-- Feature 3 -->
+                    <!-- Feature 3: Pre-capture preserves hover states -->
                     <div
                         class="group relative rounded-xl border border-gray-200 bg-background-light p-6 transition-all hover:border-primary/20 hover:shadow-soft hover:-translate-y-1">
                         <div
                             class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-white border border-gray-200 shadow-sm text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300">
-                            <span class="material-symbols-outlined">bolt</span>
+                            <span class="material-symbols-outlined">photo_camera</span>
                         </div>
-                        <h3 class="text-lg font-bold text-primary">Native Performance</h3>
-                        <p class="mt-2 text-sm text-secondary leading-relaxed">Rust backend with &lt;50ms capture.
-                            Pre-capture preserves hover states.</p>
+                        <h3 class="text-lg font-bold text-primary">Hover States Don't Vanish</h3>
+                        <p class="mt-2 text-sm text-secondary leading-relaxed">Pre-capture freezes your screen before the selection UI appears. Tooltips, menus, dropdowns—all preserved.</p>
                     </div>
 
-                    <!-- Feature 4 -->
+                    <!-- Feature 4: Minimal tools, maximum clarity -->
                     <div
                         class="group relative rounded-xl border border-gray-200 bg-background-light p-6 transition-all hover:border-primary/20 hover:shadow-soft hover:-translate-y-1">
                         <div
                             class="mb-4 inline-flex h-12 w-12 items-center justify-center rounded-lg bg-white border border-gray-200 shadow-sm text-primary group-hover:bg-primary group-hover:text-white transition-colors duration-300">
-                            <span class="material-symbols-outlined">lock</span>
+                            <span class="material-symbols-outlined">filter_5</span>
                         </div>
-                        <h3 class="text-lg font-bold text-primary">Privacy First</h3>
-                        <p class="mt-2 text-sm text-secondary leading-relaxed">All processing happens locally on your
-                            Mac. Your screenshots never leave your machine.</p>
+                        <h3 class="text-lg font-bold text-primary">5 Tools. That's It.</h3>
+                        <p class="mt-2 text-sm text-secondary leading-relaxed">Box, Arrow, Text, Blur, Counter. No 16-tool toolbar to navigate. Just what you need for AI conversations.</p>
                     </div>
                 </div>
             </div>
         </section>
 
         <!-- App Preview Section -->
-        <section class="bg-background-light py-24 overflow-hidden">
+        <section id="tutorial" class="py-24 overflow-hidden" style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 50%, #1e293b 100%);">
             <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-                <div class="mb-16 max-w-2xl mx-auto text-center">
-                    <h2 class="text-3xl font-bold tracking-tight text-primary sm:text-4xl">Experience the difference
-                    </h2>
-                    <p class="mt-4 text-lg text-secondary">A clutter-free workspace designed for visual thinkers.</p>
+                <div class="mb-12 max-w-2xl mx-auto text-center">
+                    <h2 class="text-3xl font-bold tracking-tight sm:text-4xl" style="color: #fff;">See it in action</h2>
+                    <p class="mt-4 text-lg" style="color: #94a3b8;">Capture, annotate, share — in seconds.</p>
                 </div>
 
-                <div class="relative mx-auto max-w-5xl">
-                    <div class="relative rounded-xl shadow-2xl border border-gray-200 overflow-hidden ring-1 ring-black/5">
+                <div class="mx-auto max-w-4xl">
+                    <div class="rounded-2xl overflow-hidden" style="box-shadow: 0 25px 50px -12px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1);">
                         <div class="aspect-video">
                             <iframe
                                 class="w-full h-full"
@@ -618,6 +632,7 @@
                         </div>
                     </div>
                 </div>
+
             </div>
         </section>
 
@@ -689,7 +704,7 @@
                         <!-- Code Block -->
                         <div class="rounded-lg bg-gray-100 border border-gray-200 p-4 overflow-x-auto">
                             <code id="install-command"
-                                class="font-mono text-sm text-gray-700 whitespace-pre break-all sm:whitespace-nowrap">curl -L https://github.com/aioceanreleases/download/v0.16.25/clik_0.16.25_aarch64.dmg -o ~/Downloads/clik.dmg && open ~/Downloads/clik.dmg</code>
+                                class="font-mono text-sm text-gray-700 whitespace-pre break-all sm:whitespace-nowrap">curl -L https://github.com/aiocean/clik-releases/releases/download/v0.16.27/clik_0.16.27_aarch64.dmg -o ~/Downloads/clik.dmg && open ~/Downloads/clik.dmg</code>
                         </div>
                         <button id="copy-btn"
                             class="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-gray-900 hover:bg-black text-white rounded-lg text-sm font-medium transition-colors">
@@ -715,7 +730,7 @@
                         <div
                             class="w-full bg-gray-100/80 rounded-xl p-8 sm:p-12 flex items-center justify-center gap-4 sm:gap-8 border border-gray-100">
                             <div class="flex flex-col items-center gap-2">
-                                <img src="/assets/logo.png" alt="Clik" class="h-16 sm:h-20">
+                                <img src="/assets/logo-CiVTzuW7-CiVTzuW7-CiVTzuW7-CiVTzuW7-CiVTzuW7-CiVTzuW7-CiVTzuW7.png" alt="Clik" class="h-16 sm:h-20">
                                 <span class="text-sm font-medium text-primary">Clik</span>
                             </div>
                             <span class="material-symbols-outlined text-gray-400 text-2xl">arrow_forward</span>
@@ -984,22 +999,22 @@
         <div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
             <div class="flex flex-col md:flex-row justify-between items-center gap-8">
                 <div class="flex items-center gap-2">
-                    <img src="/assets/logo.png" alt="Clik" class="h-6">
+                    <img src="/assets/logo-CiVTzuW7-CiVTzuW7-CiVTzuW7-CiVTzuW7-CiVTzuW7-CiVTzuW7-CiVTzuW7.png" alt="Clik" class="h-6">
                     <span class="text-base font-bold text-primary">Clik</span>
                 </div>
 
                 <div class="flex gap-8">
                     <a class="text-sm text-secondary hover:text-primary transition-colors"
-                        href="https://github.com/aiocean/clik" target="_blank">GitHub</a>
+                        href="https://github.com/aiocean/clik-releases" target="_blank">GitHub</a>
                     <a class="text-sm text-secondary hover:text-primary transition-colors"
-                        href="https://github.com/aiocean/clik/issues" target="_blank">Report Bug</a>
+                        href="https://github.com/aiocean/clik-releases/issues" target="_blank">Report Bug</a>
                     <a class="text-sm text-secondary hover:text-primary transition-colors"
-                        href="https://github.com/aiocean/clik/discussions" target="_blank">Discussions</a>
+                        href="https://github.com/aiocean/clik-releases/discussions" target="_blank">Discussions</a>
                 </div>
 
                 <div class="flex gap-4">
                     <a class="text-secondary hover:text-primary transition-colors"
-                        href="https://github.com/aiocean/clik" target="_blank" aria-label="GitHub">
+                        href="https://github.com/aiocean/clik-releases" target="_blank" aria-label="GitHub">
                         <svg class="h-5 w-5" fill="currentColor" viewBox="0 0 24 24">
                             <path clip-rule="evenodd"
                                 d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"
