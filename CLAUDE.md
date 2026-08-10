@@ -2,8 +2,7 @@
 
 Landing page for Clik
 
-**Primary URL:** https://clik.aiocean.io (Cloudflare Pages)
-**Secondary URL:** https://aiocean.github.io/clik-releases/ (GitHub Pages)
+**URL:** https://clik.aiocean.io (Cloudflare Pages)
 
 **Separate git repo:** `github.com/aiocean/clik-releases`
 
@@ -117,7 +116,7 @@ Tauri 2.0
 ```bash
 bun install
 bun run dev      # Dev server
-bun run build    # Build to root (.)
+bun run build    # Build to dist/
 bun run preview  # Preview build
 ```
 
@@ -129,15 +128,17 @@ clik-releases/
 ├── src/
 │   ├── main.ts      # JS interactions (mobile menu, card animations, copy button)
 │   └── style.css    # Tailwind config + custom animations
-├── assets/          # Build output (JS/CSS bundles)
-├── images/          # Marketing images
+├── public/images/   # Marketing images, favicons — copied verbatim to dist/images/
 ├── docs/screenshot/ # App screenshots
-└── vite.config.ts   # Builds to root, emptyOutDir: false
+├── dist/            # Build output (git-ignored)
+└── vite.config.ts   # Builds to dist/
 ```
 
 ## Key Details
 
-**Build output:** Assets go to `assets/` in root (not `dist/`). HTML references `/assets/index-*.js` and `/assets/index-*.css`.
+**Build output:** `bun run build` writes to `dist/`, which is git-ignored. `index.html` at the repo root is the source entry: it references `/src/main.ts` and `/images/*` and is never overwritten by a build.
+
+**Static files:** anything under `public/` is copied to `dist/` untouched, so `/images/favicon-32x32.png` keeps a stable URL. Referencing a hashed build artifact from `index.html` instead would make each build re-hash it, growing the filename one layer per build.
 
 **Version updates:** Download URL in `index.html` line 817 needs manual update on release:
 ```html
@@ -153,41 +154,23 @@ curl -L https://github.com/aiocean/clik-releases/releases/download/v0.16.25/clik
 
 ## Deployment
 
-### Cloudflare Pages (Primary)
+Cloudflare Pages, deployed manually from the local build:
 
 ```bash
-# Build with root base path
-# vite.config.ts: base: "/"
 bun run build
-wrangler pages deploy . --project-name=clik-releases
+wrangler pages deploy dist --project-name=clik-releases
 ```
 
 **URLs:**
 - Production: https://clik.aiocean.io
 - Preview: https://<hash>.clik-releases.pages.dev
 
-### GitHub Pages (Secondary)
+`git push` publishes source only — the live site changes when `wrangler pages deploy` runs.
 
-```bash
-# Build with /clik-releases/ base path
-# vite.config.ts: base: "/clik-releases/"
-bun run build
-git add . && git commit -m "deploy" && git push
-```
+### Base Path
 
-**URL:** https://aiocean.github.io/clik-releases/
-
-### Base Path - CRITICAL
-
-| Platform | vite.config.ts `base` | Why |
-|----------|----------------------|-----|
-| Local dev | `"/"` | Dev server at localhost:5173/ |
-| Cloudflare Pages | `"/"` | Hosted at root domain |
-| GitHub Pages | `"/clik-releases/"` | Hosted at /clik-releases/ subpath |
-
-**Remember:** Always check `base` in vite.config.ts before building for target platform.
+`base: "/"` in vite.config.ts, matching both the root of the custom domain and the dev server.
 
 ### Other
 
-- Build assets committed to repo (for GitHub Pages)
 - DMG files hosted on GitHub Releases (not in repo)
