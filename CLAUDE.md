@@ -6,7 +6,7 @@ Landing page for Clik
 
 **Separate git repo:** `github.com/aiocean/clik-releases`
 
-**Tauri app:** `/Users/firegroup/projects/clik/clik` - the main Tauri app source code (React + Rust)
+**App source:** `/Users/firegroup/projects/clik/clik` - native Rust + GPUI app
 
 ## Product: Clik - AI-First Screenshot Tool
 
@@ -20,7 +20,7 @@ Clik là macOS screenshot tool được xây dựng cho AI workflows. Khác vớ
 | Minimal tools | Chỉ 5 annotation tools (không phải 16+ như Shottr) |
 | Numbered markers | Auto-increment counters cho precise AI reference |
 | One-click AI sharing | Direct share to ChatGPT, Claude, Gemini |
-| Native performance | Rust backend, Tauri, <50ms capture speed |
+| Native performance | Single Rust binary (GPUI), no webview |
 
 ### Target Users
 
@@ -79,11 +79,11 @@ Checkout qua Polar (buy.polar.sh)
 ### Tech Stack
 
 ```
-Tauri 2.0
-├─ Frontend: React 19, Tailwind, Tldraw (headless)
-├─ Backend:  Rust, screencapturekit-rs, image
-├─ Build:    Vite 7, Bun
-└─ Release:  GitHub Actions
+Rust (single binary)
+├─ UI:       GPUI (Zed), native canvas editor
+├─ Capture:  ScreenCaptureKit
+├─ Render:   cosmic-text + tiny-skia
+└─ Release:  scripts/release.sh (local: build, sign, notarize, publish)
 ```
 
 ### Performance
@@ -97,11 +97,11 @@ Tauri 2.0
 
 ### Distribution
 
-- **Platform:** macOS only (Arm64, Intel deprecated)
-- **Format:** DMG
-- **Hosting:** GitHub Releases (aiocean/clik-releases)
-- **Auto-update:** In-app với Tauri updater
-- **Signing:** Ad-hoc signing với Tauri signer
+- **Platform:** macOS only, Apple Silicon (arm64)
+- **Format:** DMG on GitHub Releases (aiocean/clik-releases)
+- **Homebrew:** `brew install --cask aiocean/tap/clik` (tap: github.com/aiocean/homebrew-tap)
+- **Signing:** Developer ID Application: Duoc Nguyen (53NJTFJB2R), notarized + stapled by Apple — opens without a Gatekeeper warning
+- **Auto-update:** in-app updater reads `latest.json` from the latest GitHub release (minisign-signed tarball)
 
 ## Tech Stack
 
@@ -140,10 +140,7 @@ clik-releases/
 
 **Static files:** anything under `public/` is copied to `dist/` untouched, so `/images/favicon-32x32.png` keeps a stable URL. Referencing a hashed build artifact from `index.html` instead would make each build re-hash it, growing the filename one layer per build.
 
-**Version updates:** Download URL in `index.html` line 817 needs manual update on release:
-```html
-curl -L https://github.com/aiocean/clik-releases/releases/download/v0.16.25/clik_0.16.25_aarch64.dmg ...
-```
+**Version updates:** `scripts/release.sh` in the clik repo rewrites every `releases/download/v<version>/clik_<version>_aarch64.dmg` URL in `index.html` and `README.md` (the download button in `#download`), commits and pushes. Keep that URL format when editing the download section.
 
 **Tailwind v4:** Uses `@theme` block in style.css for custom colors/animations - different from v3 config.
 
@@ -154,18 +151,20 @@ curl -L https://github.com/aiocean/clik-releases/releases/download/v0.16.25/clik
 
 ## Deployment
 
-Cloudflare Pages, deployed manually from the local build:
+Cloudflare Pages project `clik-releases`, production domain https://clik.aiocean.io.
+
+The project is connected to this git repo, and every push to `main` triggers a Cloudflare build. Cloudflare's build settings must be **build command `bun run build`, output directory `dist`**. With an empty build command Cloudflare publishes the repo root, so the live page loads `/src/main.ts` and renders unstyled.
+
+Manual deploy (also the fix when a push published unbuilt source):
 
 ```bash
 bun run build
-wrangler pages deploy dist --project-name=clik-releases
+wrangler pages deploy dist --project-name=clik-releases --branch=main
 ```
 
 **URLs:**
 - Production: https://clik.aiocean.io
 - Preview: https://<hash>.clik-releases.pages.dev
-
-`git push` publishes source only — the live site changes when `wrangler pages deploy` runs.
 
 ### Base Path
 
