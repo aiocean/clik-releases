@@ -1603,7 +1603,7 @@
             <div class="flex items-center gap-3">
               <span class="idx">/04</span>
               <span class="caps" style="font-size: 11px; color: var(--ink-dim)"
-                >deploy // 3 steps · &lt;30s</span
+                >deploy // 2 steps · &lt;30s</span
               >
             </div>
             <span class="meta">arm64 · macos 13+ · 14mb</span>
@@ -1623,7 +1623,7 @@
               margin: 0 0 32px 0;
             "
           >
-            // single command. no wizard. no analytics. install, launch, ship.
+            // download, drag, done. no wizard. no analytics.
           </p>
 
           <!-- Apple Silicon warning banner -->
@@ -1686,63 +1686,57 @@
                 </div>
                 <div class="flex-1">
                   <h3 class="display" style="font-size: 22px; color: var(--ink); margin: 0 0 8px 0">
-                    open terminal
+                    download
                   </h3>
                   <div
                     style="
                       font-family: &quot;JetBrains Mono&quot;, monospace;
                       font-size: 13px;
                       color: var(--ink-dim);
-                      display: flex;
-                      flex-wrap: wrap;
-                      align-items: center;
-                      gap: 6px;
                     "
                   >
-                    // hit
-                    <span class="kbd">⌘</span>
-                    <span class="kbd">SPACE</span>
-                    , type <span class="code-chip">terminal</span>, hit
-                    <span class="kbd">↵</span>
+                    // signed + notarized by apple. opens like any mac app.
                   </div>
                 </div>
               </div>
 
-              <!-- Terminal mock -->
+              <a
+                href="https://github.com/aiocean/clik-releases/releases/download/v0.18.0/clik_0.18.0_aarch64.dmg"
+                class="btn btn-primary"
+              >
+                <span>▸</span> download clik.dmg
+              </a>
+
               <div
                 style="
-                  display: inline-flex;
-                  align-items: center;
-                  gap: 12px;
-                  padding: 10px 16px;
-                  background: var(--bg);
-                  border: 2px solid var(--ink-mute);
+                  font-family: &quot;JetBrains Mono&quot;, monospace;
+                  font-size: 13px;
+                  color: var(--ink-dim);
+                  margin: 24px 0 8px 0;
                 "
               >
-                <span
+                // or with homebrew
+              </div>
+              <div class="terminal">
+                <code
+                  id="install-command"
+                  class="terminal-prompt"
                   style="
-                    display: inline-flex;
-                    align-items: center;
-                    justify-content: center;
-                    width: 24px;
-                    height: 24px;
-                    background: var(--lime);
-                    color: #050507;
-                    font-family: &quot;JetBrains Mono&quot;, monospace;
-                    font-size: 11px;
-                    font-weight: 700;
-                  "
-                  >_></span
-                >
-                <span
-                  style="
-                    font-family: &quot;JetBrains Mono&quot;, monospace;
-                    font-size: 13px;
+                    white-space: pre-wrap;
+                    word-break: break-all;
                     color: var(--ink);
+                    font-family: &quot;JetBrains Mono&quot;, monospace;
+                    font-size: 12px;
+                    line-height: 1.6;
+                    display: block;
                   "
-                  >Terminal.app</span
+                  >brew install --cask aiocean/tap/clik</code
                 >
               </div>
+              <button id="copy-btn" class="btn btn-primary" style="margin-top: 16px">
+                <span id="copy-icon">⎘</span>
+                <span id="copy-text">copy</span>
+              </button>
             </div>
 
             <!-- Step 02 -->
@@ -1766,76 +1760,6 @@
                   "
                 >
                   02
-                </div>
-                <div class="flex-1">
-                  <h3 class="display" style="font-size: 22px; color: var(--ink); margin: 0 0 8px 0">
-                    paste this
-                  </h3>
-                  <div
-                    style="
-                      font-family: &quot;JetBrains Mono&quot;, monospace;
-                      font-size: 13px;
-                      color: var(--ink-dim);
-                      display: flex;
-                      flex-wrap: wrap;
-                      align-items: center;
-                      gap: 6px;
-                    "
-                  >
-                    // copy below, then
-                    <span class="kbd">⌘</span>
-                    <span class="kbd">V</span>
-                    in terminal
-                  </div>
-                </div>
-              </div>
-
-              <!-- Terminal block -->
-              <div class="terminal">
-                <code
-                  id="install-command"
-                  class="terminal-prompt"
-                  style="
-                    white-space: pre-wrap;
-                    word-break: break-all;
-                    color: var(--ink);
-                    font-family: &quot;JetBrains Mono&quot;, monospace;
-                    font-size: 12px;
-                    line-height: 1.6;
-                    display: block;
-                  "
-                  >curl -L
-                  https://github.com/aiocean/clik-releases/releases/download/v0.18.0/clik_0.18.0_aarch64.dmg
-                  -o ~/Downloads/clik.dmg && open ~/Downloads/clik.dmg</code
-                >
-              </div>
-              <button id="copy-btn" class="btn btn-primary" style="margin-top: 16px">
-                <span id="copy-icon">⎘</span>
-                <span id="copy-text">copy</span>
-              </button>
-            </div>
-
-            <!-- Step 03 -->
-            <div class="panel" style="padding: 36px 28px">
-              <div class="flex items-start gap-5 mb-6">
-                <div
-                  style="
-                    flex-shrink: 0;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    width: 44px;
-                    height: 44px;
-                    background: var(--lime);
-                    color: #050507;
-                    border: 3px solid var(--lime);
-                    box-shadow: 4px 4px 0 0 var(--magenta);
-                    font-family: &quot;JetBrains Mono&quot;, monospace;
-                    font-size: 18px;
-                    font-weight: 700;
-                  "
-                >
-                  03
                 </div>
                 <div class="flex-1">
                   <h3 class="display" style="font-size: 22px; color: var(--ink); margin: 0 0 8px 0">
